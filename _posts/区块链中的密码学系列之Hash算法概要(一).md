@@ -4,7 +4,7 @@ title: "区块链中的密码学系列之Hash算法概要(一)"
 date: 2019-02-20 
 description: "区块链中的密码学系列之Hash算法概要(一)"
 categories: 密码学 hash算法
-tag: 博客 
+tag: 密码学 hash算法
 ---   
 
 # 前言
