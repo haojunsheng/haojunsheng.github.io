@@ -13,7 +13,7 @@ tag: 共识算法
 **协议过程(来源微信团队)**
 
 **第一阶段A**
-
+ 
 Proposer选择一个提议编号n，向所有的Acceptor广播Prepare（n）请求。
 
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20190508145721.png)
