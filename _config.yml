@@ -9,10 +9,14 @@ avatarDesc: 区块链/ 密码学/ 分布式
 url: "http://anapodoton.github.io"
 
 # Comment
-comment:
-    disqus: haojs1995
-    gitment: AnapodotonBlog
-    #uyan: 2143225  # 有言id,登录有言官网申请
+# comment:
+#     #disqus: haojs1995
+#     gitment: anapodoton.github.io
+#     #uyan: 2143225  # 有言id,登录有言官网申请
+
+comment_gitment_repo: anapodoton.github.io
+comment_gitment_clientId: e03746f1f25f97a7b766
+comment_gitment_clientSecret: cef15f1e424275920776e1d82dfa21b03af3f5e8
 
 # Social
 social:
