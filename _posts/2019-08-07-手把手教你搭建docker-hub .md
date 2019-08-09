@@ -92,7 +92,7 @@ Harbor正是一个用于存储Docker镜像的企业级Registry服务。是一个
 
 # The IP address or hostname to access admin UI and registry service.
 # DO NOT use localhost or 127.0.0.1, because Harbor needs to be accessed by external clients.
-hostname: 120.92.210.116
+hostname: *.*.*.*
 
 # http related config
 http:
@@ -235,9 +235,7 @@ bash install.sh
 
 我们可以在浏览器输入提下内容，将看到启动界面如下：
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20190807163013.png)
-
-
+![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20190808190227.png)
 
 输入用户名和密码后，我们可以看到我们的docker-hub仓库。
 
@@ -266,7 +264,7 @@ docker-compose start
 
 ## 4.2 拉取/推送镜像
 
- 首先我们需要进行登录，`docker login 120.92.210.156`  
+ 首先我们需要进行登录，`docker login ip`  
 
 但是我们可能遇到下面的错误。
 
@@ -275,3 +273,47 @@ docker-compose start
 这样的原因是因为Harbor默认使用http，docker默认使用https的原因。
 
 我们可以强制docker使用http，要在daemon.json中添加--insecure-registry myregistrydomain.com，即
+
+```
+{
+  "log-driver":"json-file",
+  "log-opts": {"max-size":"100m", "max-file":"1"},
+  "insecure-registries" : ["myregistrydomain.com"]
+}
+```
+
+然后我们还可能遇到下面的错误：
+
+![img](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20190808182730.png)
+
+在github上的官方找到了下面的解决方案：原因是因为ubuntu上安装docker-compose的时候，不需要golang-docker-credential-helpers这个组件，我们把它删除即可，所以`apt-get remove golang-docker-credential-helpers`
+
+这是第一种方案，第二中方案是让Harbor使用https,即申请一个CA证书，然后把CA证书放在/etc/docker/certs.d/myregistrydomain.com/ca.crt中。
+
+下面我们进行推送镜像。
+
+```
+docker tag monitor-baseos:0.2 ip/kledger/monitor-baseos:0.2
+docker push ip/kledger/monitor-baseos:0.2
+```
+
+记得替换ip。
+
+![img](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20190808183801.png)
+
+然后我们在浏览器中就可以看到了。
+
+![img](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20190808183959.png)
+
+拉取镜像就更加简单了。
+
+```
+docker pull ip/kledger/monitor-baseos:0.2
+```
+
+同样的记得修改ip地址。
+
+
+
+
+
