@@ -132,7 +132,18 @@ https://mirrors.tuna.tsinghua.edu.cn/jenkins/updates/update-center.json
 2.创建一个目录用于保存docker的镜像和容器，mkdir -p /opt/docker/lib
 3.迁移/var/lib/docker到上面的目录中，rsync -avz /var/lib/docker  /opt/docker/lib
 4.配置docker的配置文件，Ubuntu下的docker配置文件在，/lib/systemd/system/docker.service，修改
-ExecStart=/usr/bin/dockerd --graph=/opt/docker/lib/docker
+ExecStart=/usr/bin/dockerd -H fd:// --graph=/opt/docker/lib/docker --containerd=/run/containerd/containerd.sock
+
+或者我们可以修改/etc/docker/daemon.json。
+
+{
+ //...
+ "graph": "/opt/docker/lib/docker",
+ //...
+}
+
+值得注意的是，graph在v17.05.0中被废弃了，所以我们可以使用data-root来代替graph即可。
+
 5.重写加载docker
 
 ```
@@ -145,7 +156,7 @@ systemctl enable docker
 
 6. 查看是否成功
    docker info
-
+    
 ![](https://img2018.cnblogs.com/blog/1358741/201906/1358741-20190604145851470-801075982.png)
 
 deal。。。。
