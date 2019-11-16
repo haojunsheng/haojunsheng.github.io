@@ -5,3 +5,8 @@
 邮箱: haojunsheng@ruc.edu.cn
 
 Github Repositories: https://github.com/Anapodoton
+
+也可以关注我的微信公众号和头条号，我会不定期来更新的：
+
+![wechat](images/wechat.jpg)<img src="images/toutiao.jpeg" alt="toutiao" style="zoom:25%;" />
+
