@@ -8,5 +8,5 @@ Github Repositories: https://github.com/Anapodoton
 
 也可以关注我的微信公众号和头条号「区块链指北」，我会不定期来更新的：
 
-<img src="./images/wechat.png" alt="wechat" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img20191121111043.png" style="zoom:50%;" />
 
