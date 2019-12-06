@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "2019-06-25-fabric可以跨链吗？"
+title: "fabric可以跨链吗？"
 date: 2019-06-25 
 description: "2019-06-23-fabric可以跨链吗？"
 categories: fabric

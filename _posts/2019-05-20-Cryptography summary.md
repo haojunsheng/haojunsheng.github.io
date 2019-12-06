@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "2019-05-20-密码学学习总结"
+title: "密码学学习总结"
 date: 2019-05-20 
 description: "2019-05-20-密码学学习总结"
 categories: 密码学

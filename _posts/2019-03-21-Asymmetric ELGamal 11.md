@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "2019-03-21-区块链中的密码学系列之非对称密码ELGamal算法（十一）"
+title: "区块链中的密码学系列之非对称密码ELGamal算法（十一）"
 date: 2019-03-21 
 description: "2019-03-21-区块链中的密码学系列之非对称密码ELGamal算法（十一）"
 categories: 密码学

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "2019-12-05-Linker & Loader"
+title: "Linker & Loader"
 date: 2019-12-05
 description: "2019-12-05-Linker & Loader"
 categories: 编译原理

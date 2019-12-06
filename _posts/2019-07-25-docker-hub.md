@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "2019-07-25-手把手教你搭建docker-hub"
+title: "手把手教你搭建docker-hub"
 date: 2019-07-25 
 description: "2019-07-25-手把手教你搭建docker-hub"
 categories: docker

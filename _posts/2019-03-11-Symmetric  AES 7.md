@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "2019-03-11-区块链中的密码学系列之加密算法AES（七）"
+title: "区块链中的密码学系列之加密算法AES（七）"
 date: 2019-03-11 
 description: "2019-03-11-区块链中的密码学系列之加密算法AES（七）"
 categories: 密码学

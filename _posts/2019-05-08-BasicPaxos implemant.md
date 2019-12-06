@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "2019-05-08-BasicPaxos的实现"
+title: "BasicPaxos的实现"
 date: 2019-05-08 
 description: "2019-05-08-BasicPaxos的实现"
 categories: 共识算法

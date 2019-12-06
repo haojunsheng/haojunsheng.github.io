@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "2019-06-04-jenkins+gitlab"
+title: "jenkins+gitlab"
 date: 2019-06-04 
 description: "2019-06-04-jenkins+gitlab"
 categories: fabric

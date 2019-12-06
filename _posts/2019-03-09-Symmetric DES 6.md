@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "2019-03-09-区块链中的密码学系列之对称加密算法DES（六）"
+title: "区块链中的密码学系列之对称加密算法DES（六）"
 date: 2019-03-09 
 description: "2019-03-09-区块链中的密码学系列之对称加密算法DES（六）"
 categories: 密码学

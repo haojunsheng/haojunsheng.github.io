@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "2019-10-23-Fabric部署注意事项"
+title: "Fabric部署注意事项"
 date: 2019-10-23
 description: "2019-10-23-Fabric部署注意事项"
 categories: fabric
