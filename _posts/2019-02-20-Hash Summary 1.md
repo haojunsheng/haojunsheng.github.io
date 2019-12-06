@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "2019-02-20-区块链中的密码学系列之Hash算法概要(一)"
+title: "区块链中的密码学系列之Hash算法概要(一)"
 date: 2019-02-20 
 description: "2019-02-20-区块链中的密码学系列之Hash算法概要(一)"
 categories: 密码学
