@@ -20,39 +20,39 @@ layout: default
   </section>
 </article>
 {% if site.comment_gitment_repo %}
-<div id="gitmentContainer"></div>
+<!-- <div id="gitmentContainer"></div>
 <link rel="stylesheet" href="https://billts.site/extra_css/gitment.css">
 <script src="https://billts.site/js/gitment.js"></script>
 <script>
-    // var gitment = new Gitment({
-    // id: '<%= page.date %>',
-    //     owner: 'anapodoton',
-    //     repo: '{{site.comment_gitment_repo}}',
-    //     oauth: {
-    //         client_id: '{{site.comment_gitment_clientId}}',
-    //         client_secret: '{{site.comment_gitment_clientSecret}}',
-    //     },
-    // });
-    // gitment.render('gitmentContainer')
-    <!-- 来必力City版安装代码 -->
-    <div id="lv-container" data-id="city" data-uid="MTAyMC80Nzg4MC8yNDM3Nw==">
-      <script type="text/javascript">
-       (function(d, s) {
-           var j, e = d.getElementsByTagName(s)[0];
+    var gitment = new Gitment({
+    id: '<%= page.date %>',
+        owner: 'anapodoton',
+        repo: '{{site.comment_gitment_repo}}',
+        oauth: {
+            client_id: '{{site.comment_gitment_clientId}}',
+            client_secret: '{{site.comment_gitment_clientSecret}}',
+        },
+    });
+    gitment.render('gitmentContainer')
+</script> -->
+<!-- 来必力City版安装代码 -->
+<div id="lv-container" data-id="city" data-uid="MTAyMC80Nzg4MC8yNDM3Nw==">
+  <script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
 
-           if (typeof LivereTower === 'function') { return; }
+       if (typeof LivereTower === 'function') { return; }
 
-           j = d.createElement(s);
-           j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-           j.async = true;
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
 
-           e.parentNode.insertBefore(j, e);
-       })(document, 'script');
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
   </script>
 <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
 </div>
 <!-- City版安装代码已完成 -->
-</script>
 {% endif %}
 {% include new-old.html %}
 {% include comments.html %}
