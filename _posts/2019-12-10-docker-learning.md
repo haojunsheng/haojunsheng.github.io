@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "一文读懂docker"
+title: "docker的学习之路"
 date: 2019-12-10
-description: "2019-12-10-一文读懂docker"
+description: "2019-12-10-docker的学习之路"
 categories: docker
 tag: docker
 ---
