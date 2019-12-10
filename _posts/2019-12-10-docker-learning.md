@@ -174,7 +174,42 @@ unshare() 和 setns() 都比较简单，大家可以自己man，我这里不说�
 首先，我们来看一下一个最简单的clone()系统调用的示例，（后面，我们的程序都会基于这个程序做修改）：
 
 ```c
-`#define _GNU_SOURCE``#include ``#include ``#include ``#include ``#include ``#include ` `/* 定义一个给 clone 用的栈，栈大小1M */``#define STACK_SIZE (1024 * 1024)``static` `char` `container_stack[STACK_SIZE];` `char``* ``const` `container_args[] = {``  ``"/bin/bash"``,``  ``NULL``};` `int` `container_main(``void``* arg)``{``  ``printf``(``"Container - inside the container!\n"``);``  ``/* 直接执行一个shell，以便我们观察这个进程空间里的资源是否被隔离了 */``  ``execv(container_args[0], container_args); ``  ``printf``(``"Something's wrong!\n"``);``  ``return` `1;``}` `int` `main()``{``  ``printf``(``"Parent - start a container!\n"``);``  ``/* 调用clone函数，其中传出一个函数，还有一个栈空间的（为什么传尾指针，因为栈是反着的） */``  ``int` `container_pid = clone(container_main, container_stack+STACK_SIZE, SIGCHLD, NULL);``  ``/* 等待子进程结束 */``  ``waitpid(container_pid, NULL, 0);``  ``printf``(``"Parent - container stopped!\n"``);``  ``return` `0;``}`
+#define _GNU_SOURCE
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <stdio.h>
+#include <sched.h>
+#include <signal.h>
+#include <unistd.h>
+ 
+/* 定义一个给 clone 用的栈，栈大小1M */
+#define STACK_SIZE (1024 * 1024)
+static char container_stack[STACK_SIZE];
+ 
+char* const container_args[] = {
+    "/bin/bash",
+    NULL
+};
+ 
+int container_main(void* arg)
+{
+    printf("Container - inside the container!\n");
+    /* 直接执行一个shell，以便我们观察这个进程空间里的资源是否被隔离了 */
+    execv(container_args[0], container_args); 
+    printf("Something's wrong!\n");
+    return 1;
+}
+ 
+int main()
+{
+    printf("Parent - start a container!\n");
+    /* 调用clone函数，其中传出一个函数，还有一个栈空间的（为什么传尾指针，因为栈是反着的） */
+    int container_pid = clone(container_main, container_stack+STACK_SIZE, SIGCHLD, NULL);
+    /* 等待子进程结束 */
+    waitpid(container_pid, NULL, 0);
+    printf("Parent - container stopped!\n");
+    return 0;
+}
 ```
 
 从上面的程序，我们可以看到，这和pthread基本上是一样的玩法。但是，对于上面的程序，父子进程的进程空间是没有什么差别的，父进程能访问到的子进程也能。![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191210151747.png)
@@ -186,7 +221,24 @@ unshare() 和 setns() 都比较简单，大家可以自己man，我这里不说�
 下面的代码，我略去了上面那些头文件和数据结构的定义，只有最重要的部分。
 
 ```c
-`int` `container_main(``void``* arg)``{``  ``printf``(``"Container - inside the container!\n"``);``  ``sethostname(``"container"``,10); ``/* 设置hostname */``  ``execv(container_args[0], container_args);``  ``printf``(``"Something's wrong!\n"``);``  ``return` `1;``}` `int` `main()``{``  ``printf``(``"Parent - start a container!\n"``);``  ``int` `container_pid = clone(container_main, container_stack+STACK_SIZE, ``      ``CLONE_NEWUTS | SIGCHLD, NULL); ``/*启用CLONE_NEWUTS Namespace隔离 */``  ``waitpid(container_pid, NULL, 0);``  ``printf``(``"Parent - container stopped!\n"``);``  ``return` `0;``}`
+int container_main(void* arg)
+{
+    printf("Container - inside the container!\n");
+    sethostname("container",10); /* 设置hostname */
+    execv(container_args[0], container_args);
+    printf("Something's wrong!\n");
+    return 1;
+}
+ 
+int main()
+{
+    printf("Parent - start a container!\n");
+    int container_pid = clone(container_main, container_stack+STACK_SIZE, 
+            CLONE_NEWUTS | SIGCHLD, NULL); /*启用CLONE_NEWUTS Namespace隔离 */
+    waitpid(container_pid, NULL, 0);
+    printf("Parent - container stopped!\n");
+    return 0;
+}
 ```
 
 运行上面的程序你会发现（需要root权限），子进程的hostname变成了 container。
