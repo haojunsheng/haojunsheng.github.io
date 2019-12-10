@@ -252,13 +252,20 @@ IPC全称 Inter-Process Communication，是Unix/Linux下进程间通信的一种
 要启动IPC隔离，我们只需要在调用clone时加上CLONE_NEWIPC参数就可以了。
 
 ```c
-`int` `container_pid = clone(container_main, container_stack+STACK_SIZE, ``      ``CLONE_NEWUTS | CLONE_NEWIPC | SIGCHLD, NULL);`
+int container_pid = clone(container_main, container_stack+STACK_SIZE, 
+            CLONE_NEWUTS | CLONE_NEWIPC | SIGCHLD, NULL);
 ```
 
 首先，我们先创建一个IPC的Queue（如下所示，全局的Queue ID是0）
 
 ```
-`hchen@ubuntu:~$ ipcmk -Q ``Message queue ``id``: 0` `hchen@ubuntu:~$ ipcs -q``------ Message Queues --------``key    msqid   owner   perms   used-bytes  messages  ``0xd0d56eb2 0     hchen   644    0      0`
+hchen@ubuntu:~$ ipcmk -Q 
+Message queue id: 0
+ 
+hchen@ubuntu:~$ ipcs -q
+------ Message Queues --------
+key        msqid      owner      perms      used-bytes   messages    
+0xd0d56eb2 0          hchen      644        0            0
 ```
 
 如果我们运行没有CLONE_NEWIPC的程序，我们会看到，在子进程中还是能看到这个全启的IPC Queue。
@@ -274,7 +281,26 @@ IPC全称 Inter-Process Communication，是Unix/Linux下进程间通信的一种
 我们继续修改上面的程序：
 
 ```c
-`int` `container_main(``void``* arg)``{``  ``/* 查看子进程的PID，我们可以看到其输出子进程的 pid 为 1 */``  ``printf``(``"Container [%5d] - inside the container!\n"``, getpid());``  ``sethostname(``"container"``,10);``  ``execv(container_args[0], container_args);``  ``printf``(``"Something's wrong!\n"``);``  ``return` `1;``}` `int` `main()``{``  ``printf``(``"Parent [%5d] - start a container!\n"``, getpid());``  ``/*启用PID namespace - CLONE_NEWPID*/``  ``int` `container_pid = clone(container_main, container_stack+STACK_SIZE, ``      ``CLONE_NEWUTS | CLONE_NEWPID | SIGCHLD, NULL); ``  ``waitpid(container_pid, NULL, 0);``  ``printf``(``"Parent - container stopped!\n"``);``  ``return` `0;``}`
+int container_main(void* arg)
+{
+    /* 查看子进程的PID，我们可以看到其输出子进程的 pid 为 1 */
+    printf("Container [%5d] - inside the container!\n", getpid());
+    sethostname("container",10);
+    execv(container_args[0], container_args);
+    printf("Something's wrong!\n");
+    return 1;
+}
+ 
+int main()
+{
+    printf("Parent [%5d] - start a container!\n", getpid());
+    /*启用PID namespace - CLONE_NEWPID*/
+    int container_pid = clone(container_main, container_stack+STACK_SIZE, 
+            CLONE_NEWUTS | CLONE_NEWPID | SIGCHLD, NULL); 
+    waitpid(container_pid, NULL, 0);
+    printf("Parent - container stopped!\n");
+    return 0;
+}
 ```
 
 运行结果如下（我们可以看到，子进程的pid是1了）：
@@ -292,7 +318,27 @@ IPC全称 Inter-Process Communication，是Unix/Linux下进程间通信的一种
 下面的例程中，我们在启用了mount namespace并在子进程中重新mount了/proc文件系统。
 
 ```c
-`int` `container_main(``void``* arg)``{``  ``printf``(``"Container [%5d] - inside the container!\n"``, getpid());``  ``sethostname(``"container"``,10);``  ``/* 重新mount proc文件系统到 /proc下 */``  ``system``(``"mount -t proc proc /proc"``);``  ``execv(container_args[0], container_args);``  ``printf``(``"Something's wrong!\n"``);``  ``return` `1;``}` `int` `main()``{``  ``printf``(``"Parent [%5d] - start a container!\n"``, getpid());``  ``/* 启用Mount Namespace - 增加CLONE_NEWNS参数 */``  ``int` `container_pid = clone(container_main, container_stack+STACK_SIZE, ``      ``CLONE_NEWUTS | CLONE_NEWPID | CLONE_NEWNS | SIGCHLD, NULL);``  ``waitpid(container_pid, NULL, 0);``  ``printf``(``"Parent - container stopped!\n"``);``  ``return` `0;``}`
+int container_main(void* arg)
+{
+    printf("Container [%5d] - inside the container!\n", getpid());
+    sethostname("container",10);
+    /* 重新mount proc文件系统到 /proc下 */
+    system("mount -t proc proc /proc");
+    execv(container_args[0], container_args);
+    printf("Something's wrong!\n");
+    return 1;
+}
+ 
+int main()
+{
+    printf("Parent [%5d] - start a container!\n", getpid());
+    /* 启用Mount Namespace - 增加CLONE_NEWNS参数 */
+    int container_pid = clone(container_main, container_stack+STACK_SIZE, 
+            CLONE_NEWUTS | CLONE_NEWPID | CLONE_NEWNS | SIGCHLD, NULL);
+    waitpid(container_pid, NULL, 0);
+    printf("Parent - container stopped!\n");
+    return 0;
+}
 ```
 
 运行结果如下,我们可以看到只有两个进程 ，而且pid=1的进程是我们的/bin/bash。我们还可以看到/proc目录下也干净了很多：下图，我们也可以看到在子进程中的top命令只看得到两个进程了。
@@ -312,37 +358,74 @@ IPC全称 Inter-Process Communication，是Unix/Linux下进程间通信的一种
 首先，我们需要一个rootfs，也就是我们需要把我们要做的镜像中的那些命令什么的copy到一个rootfs的目录下，我们模仿Linux构建如下的目录：
 
 ```
-`hchen@ubuntu:~``/rootfs``$ ``ls``bin dev etc home lib lib64 mnt opt proc root run sbin sys tmp usr var`
+hchen@ubuntu:~/rootfs$ ls
+bin  dev  etc  home  lib  lib64  mnt  opt  proc  root  run  sbin  sys  tmp  usr  var
 ```
 
 然后，我们把一些我们需要的命令copy到 rootfs/bin目录中（sh命令必需要copy进去，不然我们无法 chroot ）
 
 ```
-`hchen@ubuntu:~``/rootfs``$ ``ls` `.``/bin` `.``/usr/bin`` ` `.``/bin``:``bash`  `chown` `gzip`   `less` `mount`    `netstat` `rm`   `tabs ``tee`   `top`    `tty``cat`  `cp`   `hostname` `ln`  `mountpoint ``ping`   `sed`  `tac  ``test`   `touch`   `umount``chgrp` `echo`  `ip    ``ls`  `mv`     `ps`    `sh   ``tail` `timeout ``tr`    `uname``chmod` `grep`  `kill`   `more` `nc`     `pwd`   `sleep` `tar`  `toe   truncate ``which` `.``/usr/bin``:``awk` `env` `groups` `head` `id` `mesg ``sort` `strace` `tail` `top` `uniq` `vi` `wc` `xargs`
+hchen@ubuntu:~/rootfs$ ls ./bin ./usr/bin
+  
+./bin:
+bash   chown  gzip      less  mount       netstat  rm     tabs  tee      top       tty
+cat    cp     hostname  ln    mountpoint  ping     sed    tac   test     touch     umount
+chgrp  echo   ip        ls    mv          ps       sh     tail  timeout  tr        uname
+chmod  grep   kill      more  nc          pwd      sleep  tar   toe      truncate  which
+ 
+./usr/bin:
+awk  env  groups  head  id  mesg  sort  strace  tail  top  uniq  vi  wc  xargs
 ```
 
 注：你可以使用ldd命令把这些命令相关的那些so文件copy到对应的目录：
 
 ```
-`hchen@ubuntu:~``/rootfs/bin``$ ldd ``bash``  ``linux-vdso.so.1 => (0x00007fffd33fc000)``  ``libtinfo.so.5 => ``/lib/x86_64-linux-gnu/libtinfo``.so.5 (0x00007f4bd42c2000)``  ``libdl.so.2 => ``/lib/x86_64-linux-gnu/libdl``.so.2 (0x00007f4bd40be000)``  ``libc.so.6 => ``/lib/x86_64-linux-gnu/libc``.so.6 (0x00007f4bd3cf8000)``  ``/lib64/ld-linux-x86-64``.so.2 (0x00007f4bd4504000)`
+hchen@ubuntu:~/rootfs/bin$ ldd bash
+    linux-vdso.so.1 =>  (0x00007fffd33fc000)
+    libtinfo.so.5 => /lib/x86_64-linux-gnu/libtinfo.so.5 (0x00007f4bd42c2000)
+    libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007f4bd40be000)
+    libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f4bd3cf8000)
+    /lib64/ld-linux-x86-64.so.2 (0x00007f4bd4504000)
 ```
 
 下面是我的rootfs中的一些so文件：
 
 ```
-`hchen@ubuntu:~``/rootfs``$ ``ls` `.``/lib64` `.``/lib/x86_64-linux-gnu/` `.``/lib64``:``ld-linux-x86-64.so.2` `.``/lib/x86_64-linux-gnu/``:``libacl.so.1   libmemusage.so     libnss_files-2.19.so  libpython3.4m.so.1``libacl.so.1.1.0 libmount.so.1     libnss_files.so.2    libpython3.4m.so.1.0``libattr.so.1   libmount.so.1.1.0   libnss_hesiod-2.19.so  libresolv-2.19.so``libblkid.so.1  libm.so.6       libnss_hesiod.so.2   libresolv.so.2``libc-2.19.so   libncurses.so.5    libnss_nis-2.19.so   libselinux.so.1``libcap.a     libncurses.so.5.9   libnss_nisplus-2.19.so libtinfo.so.5``libcap.so    libncursesw.so.5    libnss_nisplus.so.2   libtinfo.so.5.9``libcap.so.2   libncursesw.so.5.9   libnss_nis.so.2     libutil-2.19.so``libcap.so.2.24  libnsl-2.19.so     libpcre.so.3      libutil.so.1``libc.so.6    libnsl.so.1      libprocps.so.3     libuuid.so.1``libdl-2.19.so  libnss_compat-2.19.so libpthread-2.19.so   libz.so.1``libdl.so.2    libnss_compat.so.2   libpthread.so.0``libgpm.so.2   libnss_dns-2.19.so   libpython2.7.so.1``libm-2.19.so   libnss_dns.so.2    libpython2.7.so.1.0`
+hchen@ubuntu:~/rootfs$ ls ./lib64 ./lib/x86_64-linux-gnu/
+ 
+./lib64:
+ld-linux-x86-64.so.2
+ 
+./lib/x86_64-linux-gnu/:
+libacl.so.1      libmemusage.so         libnss_files-2.19.so    libpython3.4m.so.1
+libacl.so.1.1.0  libmount.so.1          libnss_files.so.2       libpython3.4m.so.1.0
+libattr.so.1     libmount.so.1.1.0      libnss_hesiod-2.19.so   libresolv-2.19.so
+libblkid.so.1    libm.so.6              libnss_hesiod.so.2      libresolv.so.2
+libc-2.19.so     libncurses.so.5        libnss_nis-2.19.so      libselinux.so.1
+libcap.a         libncurses.so.5.9      libnss_nisplus-2.19.so  libtinfo.so.5
+libcap.so        libncursesw.so.5       libnss_nisplus.so.2     libtinfo.so.5.9
+libcap.so.2      libncursesw.so.5.9     libnss_nis.so.2         libutil-2.19.so
+libcap.so.2.24   libnsl-2.19.so         libpcre.so.3            libutil.so.1
+libc.so.6        libnsl.so.1            libprocps.so.3          libuuid.so.1
+libdl-2.19.so    libnss_compat-2.19.so  libpthread-2.19.so      libz.so.1
+libdl.so.2       libnss_compat.so.2     libpthread.so.0
+libgpm.so.2      libnss_dns-2.19.so     libpython2.7.so.1
+libm-2.19.so     libnss_dns.so.2        libpython2.7.so.1.0
 ```
 
 包括这些命令依赖的一些配置文件：
 
 ```
-`hchen@ubuntu:~``/rootfs``$ ``ls` `.``/etc``bash``.bashrc group ``hostname` `hosts ld.so.cache nsswitch.conf ``passwd` `profile ``resolv.conf shadow`
+hchen@ubuntu:~/rootfs$ ls ./etc
+bash.bashrc  group  hostname  hosts  ld.so.cache  nsswitch.conf  passwd  profile  
+resolv.conf  shadow
 ```
 
 你现在会说，我靠，有些配置我希望是在容器起动时给他设置的，而不是hard code在镜像中的。比如：/etc/hosts，/etc/hostname，还有DNS的/etc/resolv.conf文件。好的。那我们在rootfs外面，我们再创建一个conf目录，把这些文件放到这个目录中。
 
 ```
-`hchen@ubuntu:~$ ``ls` `.``/conf``hostname`   `hosts   resolv.conf`
+hchen@ubuntu:~$ ls ./conf
+hostname     hosts     resolv.conf
 ```
 
 这样，我们的父进程就可以动态地设置容器需要的这些文件的配置， 然后再把他们mount进容器，这样，容器的镜像中的配置就比较灵活了。
@@ -350,13 +433,115 @@ IPC全称 Inter-Process Communication，是Unix/Linux下进程间通信的一种
 好了，终于到了我们的程序。
 
 ```c
-`#define _GNU_SOURCE``#include ``#include ``#include ``#include ``#include ``#include ``#include ` `#define STACK_SIZE (1024 * 1024)` `static` `char` `container_stack[STACK_SIZE];``char``* ``const` `container_args[] = {``  ``"/bin/bash"``,``  ``"-l"``,``  ``NULL``};` `int` `container_main(``void``* arg)``{``  ``printf``(``"Container [%5d] - inside the container!\n"``, getpid());` `  ``//set hostname``  ``sethostname(``"container"``,10);` `  ``//remount "/proc" to make sure the "top" and "ps" show container's information``  ``if` `(mount(``"proc"``, ``"rootfs/proc"``, ``"proc"``, 0, NULL) !=0 ) {``    ``perror``(``"proc"``);``  ``}``  ``if` `(mount(``"sysfs"``, ``"rootfs/sys"``, ``"sysfs"``, 0, NULL)!=0) {``    ``perror``(``"sys"``);``  ``}``  ``if` `(mount(``"none"``, ``"rootfs/tmp"``, ``"tmpfs"``, 0, NULL)!=0) {``    ``perror``(``"tmp"``);``  ``}``  ``if` `(mount(``"udev"``, ``"rootfs/dev"``, ``"devtmpfs"``, 0, NULL)!=0) {``    ``perror``(``"dev"``);``  ``}``  ``if` `(mount(``"devpts"``, ``"rootfs/dev/pts"``, ``"devpts"``, 0, NULL)!=0) {``    ``perror``(``"dev/pts"``);``  ``}``  ``if` `(mount(``"shm"``, ``"rootfs/dev/shm"``, ``"tmpfs"``, 0, NULL)!=0) {``    ``perror``(``"dev/shm"``);``  ``}``  ``if` `(mount(``"tmpfs"``, ``"rootfs/run"``, ``"tmpfs"``, 0, NULL)!=0) {``    ``perror``(``"run"``);``  ``}``  ``/* ``   ``* 模仿Docker的从外向容器里mount相关的配置文件 ``   ``* 你可以查看：/var/lib/docker/containers//目录，``   ``* 你会看到docker的这些文件的。``   ``*/``  ``if` `(mount(``"conf/hosts"``, ``"rootfs/etc/hosts"``, ``"none"``, MS_BIND, NULL)!=0 ||``     ``mount(``"conf/hostname"``, ``"rootfs/etc/hostname"``, ``"none"``, MS_BIND, NULL)!=0 ||``     ``mount(``"conf/resolv.conf"``, ``"rootfs/etc/resolv.conf"``, ``"none"``, MS_BIND, NULL)!=0 ) {``    ``perror``(``"conf"``);``  ``}``  ``/* 模仿docker run命令中的 -v, --volume=[] 参数干的事 */``  ``if` `(mount(``"/tmp/t1"``, ``"rootfs/mnt"``, ``"none"``, MS_BIND, NULL)!=0) {``    ``perror``(``"mnt"``);``  ``}` `  ``/* chroot 隔离目录 */``  ``if` `( chdir(``"./rootfs"``) != 0 || chroot(``"./"``) != 0 ){``    ``perror``(``"chdir/chroot"``);``  ``}` `  ``execv(container_args[0], container_args);``  ``perror``(``"exec"``);``  ``printf``(``"Something's wrong!\n"``);``  ``return` `1;``}` `int` `main()``{``  ``printf``(``"Parent [%5d] - start a container!\n"``, getpid());``  ``int` `container_pid = clone(container_main, container_stack+STACK_SIZE, ``      ``CLONE_NEWUTS | CLONE_NEWIPC | CLONE_NEWPID | CLONE_NEWNS | SIGCHLD, NULL);``  ``waitpid(container_pid, NULL, 0);``  ``printf``(``"Parent - container stopped!\n"``);``  ``return` `0;``}`
+#define _GNU_SOURCE
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <sys/mount.h>
+#include <stdio.h>
+#include <sched.h>
+#include <signal.h>
+#include <unistd.h>
+ 
+#define STACK_SIZE (1024 * 1024)
+ 
+static char container_stack[STACK_SIZE];
+char* const container_args[] = {
+    "/bin/bash",
+    "-l",
+    NULL
+};
+ 
+int container_main(void* arg)
+{
+    printf("Container [%5d] - inside the container!\n", getpid());
+ 
+    //set hostname
+    sethostname("container",10);
+ 
+    //remount "/proc" to make sure the "top" and "ps" show container's information
+    if (mount("proc", "rootfs/proc", "proc", 0, NULL) !=0 ) {
+        perror("proc");
+    }
+    if (mount("sysfs", "rootfs/sys", "sysfs", 0, NULL)!=0) {
+        perror("sys");
+    }
+    if (mount("none", "rootfs/tmp", "tmpfs", 0, NULL)!=0) {
+        perror("tmp");
+    }
+    if (mount("udev", "rootfs/dev", "devtmpfs", 0, NULL)!=0) {
+        perror("dev");
+    }
+    if (mount("devpts", "rootfs/dev/pts", "devpts", 0, NULL)!=0) {
+        perror("dev/pts");
+    }
+    if (mount("shm", "rootfs/dev/shm", "tmpfs", 0, NULL)!=0) {
+        perror("dev/shm");
+    }
+    if (mount("tmpfs", "rootfs/run", "tmpfs", 0, NULL)!=0) {
+        perror("run");
+    }
+    /* 
+     * 模仿Docker的从外向容器里mount相关的配置文件 
+     * 你可以查看：/var/lib/docker/containers/<container_id>/目录，
+     * 你会看到docker的这些文件的。
+     */
+    if (mount("conf/hosts", "rootfs/etc/hosts", "none", MS_BIND, NULL)!=0 ||
+          mount("conf/hostname", "rootfs/etc/hostname", "none", MS_BIND, NULL)!=0 ||
+          mount("conf/resolv.conf", "rootfs/etc/resolv.conf", "none", MS_BIND, NULL)!=0 ) {
+        perror("conf");
+    }
+    /* 模仿docker run命令中的 -v, --volume=[] 参数干的事 */
+    if (mount("/tmp/t1", "rootfs/mnt", "none", MS_BIND, NULL)!=0) {
+        perror("mnt");
+    }
+ 
+    /* chroot 隔离目录 */
+    if ( chdir("./rootfs") != 0 || chroot("./") != 0 ){
+        perror("chdir/chroot");
+    }
+ 
+    execv(container_args[0], container_args);
+    perror("exec");
+    printf("Something's wrong!\n");
+    return 1;
+}
+ 
+int main()
+{
+    printf("Parent [%5d] - start a container!\n", getpid());
+    int container_pid = clone(container_main, container_stack+STACK_SIZE, 
+            CLONE_NEWUTS | CLONE_NEWIPC | CLONE_NEWPID | CLONE_NEWNS | SIGCHLD, NULL);
+    waitpid(container_pid, NULL, 0);
+    printf("Parent - container stopped!\n");
+    return 0;
+}
 ```
 
 sudo运行上面的程序，你会看到下面的挂载信息以及一个所谓的“镜像”：
 
 ```shell
-`hchen@ubuntu:~$ ``sudo` `.``/mount``Parent [ 4517] - start a container!``Container [  1] - inside the container!``root@container:/``# mount``proc on ``/proc` `type` `proc (rw,relatime)``sysfs on ``/sys` `type` `sysfs (rw,relatime)``none on ``/tmp` `type` `tmpfs (rw,relatime)``udev on ``/dev` `type` `devtmpfs (rw,relatime,size=493976k,nr_inodes=123494,mode=755)``devpts on ``/dev/pts` `type` `devpts (rw,relatime,mode=600,ptmxmode=000)``tmpfs on ``/run` `type` `tmpfs (rw,relatime)``/dev/disk/by-uuid/18086e3b-d805-4515-9e91-7efb2fe5c0e2` `on ``/etc/hosts` `type` `ext4 (rw,relatime,errors=remount-ro,data=ordered)``/dev/disk/by-uuid/18086e3b-d805-4515-9e91-7efb2fe5c0e2` `on ``/etc/hostname` `type` `ext4 (rw,relatime,errors=remount-ro,data=ordered)``/dev/disk/by-uuid/18086e3b-d805-4515-9e91-7efb2fe5c0e2` `on ``/etc/resolv``.conf ``type` `ext4 (rw,relatime,errors=remount-ro,data=ordered)` `root@container:/``# ls /bin /usr/bin``/bin``:``bash`  `chmod` `echo` `hostname` `less` `more`  `mv`  `ping` `rm`  `sleep` `tail` `test`   `top`  `truncate ``uname``cat`  `chown` `grep` `ip    ``ln`  `mount`  `nc`  `ps`  `sed` `tabs  ``tar`  `timeout ``touch` `tty`    `which``chgrp` `cp`   `gzip` `kill`   `ls`  `mountpoint ``netstat` `pwd`  `sh  tac  ``tee`  `toe   ``tr`   `umount` `/usr/bin``:``awk` `env` `groups` `head` `id` `mesg ``sort` `strace` `tail` `top` `uniq` `vi` `wc` `xargs`
+hchen@ubuntu:~$ sudo ./mount
+Parent [ 4517] - start a container!
+Container [    1] - inside the container!
+root@container:/# mount
+proc on /proc type proc (rw,relatime)
+sysfs on /sys type sysfs (rw,relatime)
+none on /tmp type tmpfs (rw,relatime)
+udev on /dev type devtmpfs (rw,relatime,size=493976k,nr_inodes=123494,mode=755)
+devpts on /dev/pts type devpts (rw,relatime,mode=600,ptmxmode=000)
+tmpfs on /run type tmpfs (rw,relatime)
+/dev/disk/by-uuid/18086e3b-d805-4515-9e91-7efb2fe5c0e2 on /etc/hosts type ext4 (rw,relatime,errors=remount-ro,data=ordered)
+/dev/disk/by-uuid/18086e3b-d805-4515-9e91-7efb2fe5c0e2 on /etc/hostname type ext4 (rw,relatime,errors=remount-ro,data=ordered)
+/dev/disk/by-uuid/18086e3b-d805-4515-9e91-7efb2fe5c0e2 on /etc/resolv.conf type ext4 (rw,relatime,errors=remount-ro,data=ordered)
+ 
+root@container:/# ls /bin /usr/bin
+/bin:
+bash   chmod  echo  hostname  less  more    mv   ping  rm   sleep  tail  test     top    truncate  uname
+cat    chown  grep  ip        ln    mount   nc   ps    sed  tabs   tar   timeout  touch  tty       which
+chgrp  cp     gzip  kill      ls    mountpoint  netstat  pwd   sh   tac    tee   toe      tr     umount
+ 
+/usr/bin:
+awk  env  groups  head  id  mesg  sort  strace  tail  top  uniq  vi  wc  xargs
 ```
 
 关于如何做一个chroot的目录，这里有个工具叫[DebootstrapChroot](https://wiki.ubuntu.com/DebootstrapChroot)，你可以顺着链接去看看（英文的哦）
@@ -380,13 +565,15 @@ ID-inside-ns ID-outside-ns length
 比如，把真实的uid=1000映射成容器内的uid=0
 
 ```
-`$ ``cat` `/proc/2465/uid_map``     ``0    1000     1`
+$ cat /proc/2465/uid_map
+         0       1000          1
 ```
 
 再比如下面的示例：表示把namespace内部从0开始的uid映射到外部从0开始的uid，其最大范围是无符号32位整形
 
 ```
-`$ ``cat` `/proc/``$$``/uid_map``     ``0     0     4294967295`
+$ cat /proc/$$/uid_map
+         0          0          4294967295
 ```
 
 另外，需要注意的是：
@@ -543,13 +730,58 @@ Network的Namespace比较啰嗦。在Linux下，我们一般用ip命令创建Net
 当你启动一个Docker容器后，你可以使用ip link show或ip addr show来查看当前宿主机的网络情况（我们可以看到有一个docker0，还有一个veth22a38e6的虚拟网卡——给容器用的）：
 
 ```
-`hchen@ubuntu:~$ ip link show``1: lo:  mtu 65536 qdisc noqueue state ... ``  ``link``/loopback` `00:00:00:00:00:00 brd 00:00:00:00:00:00``2: eth0:  mtu 1500 qdisc ...``  ``link``/ether` `00:0c:29:b7:67:7d brd ff:ff:ff:ff:ff:ff``3: docker0:  mtu 1500 ...``  ``link``/ether` `56:84:7a:fe:97:99 brd ff:ff:ff:ff:ff:ff``5: veth22a38e6:  mtu 1500 qdisc ...``  ``link``/ether` `8e:30:2a:ac:8c:d1 brd ff:ff:ff:ff:ff:ff`
+hchen@ubuntu:~$ ip link show
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state ... 
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc ...
+    link/ether 00:0c:29:b7:67:7d brd ff:ff:ff:ff:ff:ff
+3: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 ...
+    link/ether 56:84:7a:fe:97:99 brd ff:ff:ff:ff:ff:ff
+5: veth22a38e6: <BROADCAST,UP,LOWER_UP> mtu 1500 qdisc ...
+    link/ether 8e:30:2a:ac:8c:d1 brd ff:ff:ff:ff:ff:ff
 ```
 
 那么，要做成这个样子应该怎么办呢？我们来看一组命令：
 
 ```shell
-`## 首先，我们先增加一个网桥lxcbr0，模仿docker0``brctl addbr lxcbr0``brctl stp lxcbr0 off``ifconfig` `lxcbr0 192.168.10.1``/24` `up ``#为网桥设置IP地址` `## 接下来，我们要创建一个network namespace - ns1` `# 增加一个namesapce 命令为 ns1 （使用ip netns add命令）``ip netns add ns1 ` `# 激活namespace中的loopback，即127.0.0.1（使用ip netns exec ns1来操作ns1中的命令）``ip netns ``exec` `ns1  ip link ``set` `dev lo up ` `## 然后，我们需要增加一对虚拟网卡` `# 增加一个pair虚拟网卡，注意其中的veth类型，其中一个网卡要按进容器中``ip link add veth-ns1 ``type` `veth peer name lxcbr0.1` `# 把 veth-ns1 按到namespace ns1中，这样容器中就会有一个新的网卡了``ip link ``set` `veth-ns1 netns ns1` `# 把容器里的 veth-ns1改名为 eth0 （容器外会冲突，容器内就不会了）``ip netns ``exec` `ns1 ip link ``set` `dev veth-ns1 name eth0 ` `# 为容器中的网卡分配一个IP地址，并激活它``ip netns ``exec` `ns1 ``ifconfig` `eth0 192.168.10.11``/24` `up` `# 上面我们把veth-ns1这个网卡按到了容器中，然后我们要把lxcbr0.1添加上网桥上``brctl addif lxcbr0 lxcbr0.1` `# 为容器增加一个路由规则，让容器可以访问外面的网络``ip netns ``exec` `ns1   ip route add default via 192.168.10.1` `# 在/etc/netns下创建network namespce名称为ns1的目录，``# 然后为这个namespace设置resolv.conf，这样，容器内就可以访问域名了``mkdir` `-p ``/etc/netns/ns1``echo` `"nameserver 8.8.8.8"` `> ``/etc/netns/ns1/resolv``.conf`
+## 首先，我们先增加一个网桥lxcbr0，模仿docker0
+brctl addbr lxcbr0
+brctl stp lxcbr0 off
+ifconfig lxcbr0 192.168.10.1/24 up #为网桥设置IP地址
+ 
+## 接下来，我们要创建一个network namespace - ns1
+ 
+# 增加一个namesapce 命令为 ns1 （使用ip netns add命令）
+ip netns add ns1 
+ 
+# 激活namespace中的loopback，即127.0.0.1（使用ip netns exec ns1来操作ns1中的命令）
+ip netns exec ns1   ip link set dev lo up 
+ 
+## 然后，我们需要增加一对虚拟网卡
+ 
+# 增加一个pair虚拟网卡，注意其中的veth类型，其中一个网卡要按进容器中
+ip link add veth-ns1 type veth peer name lxcbr0.1
+ 
+# 把 veth-ns1 按到namespace ns1中，这样容器中就会有一个新的网卡了
+ip link set veth-ns1 netns ns1
+ 
+# 把容器里的 veth-ns1改名为 eth0 （容器外会冲突，容器内就不会了）
+ip netns exec ns1  ip link set dev veth-ns1 name eth0 
+ 
+# 为容器中的网卡分配一个IP地址，并激活它
+ip netns exec ns1 ifconfig eth0 192.168.10.11/24 up
+ 
+ 
+# 上面我们把veth-ns1这个网卡按到了容器中，然后我们要把lxcbr0.1添加上网桥上
+brctl addif lxcbr0 lxcbr0.1
+ 
+# 为容器增加一个路由规则，让容器可以访问外面的网络
+ip netns exec ns1     ip route add default via 192.168.10.1
+ 
+# 在/etc/netns下创建network namespce名称为ns1的目录，
+# 然后为这个namespace设置resolv.conf，这样，容器内就可以访问域名了
+mkdir -p /etc/netns/ns1
+echo "nameserver 8.8.8.8" > /etc/netns/ns1/resolv.conf
 ```
 
 上面基本上就是docker网络的原理了，只不过，
@@ -560,7 +792,13 @@ Network的Namespace比较啰嗦。在Linux下，我们一般用ip命令创建Net
 了解了这些后，你甚至可以为正在运行的docker容器增加一个新的网卡：
 
 ```
-`ip link add peerA ``type` `veth peer name peerB ``brctl addif docker0 peerA ``ip link ``set` `peerA up ``ip link ``set` `peerB netns ${container-pid} ``ip netns ``exec` `${container-pid} ip link ``set` `dev peerB name eth1 ``ip netns ``exec` `${container-pid} ip link ``set` `eth1 up ; ``ip netns ``exec` `${container-pid} ip addr add ${ROUTEABLE_IP} dev eth1 ;`
+ip link add peerA type veth peer name peerB 
+brctl addif docker0 peerA 
+ip link set peerA up 
+ip link set peerB netns ${container-pid} 
+ip netns exec ${container-pid} ip link set dev peerB name eth1 
+ip netns exec ${container-pid} ip link set eth1 up ; 
+ip netns exec ${container-pid} ip addr add ${ROUTEABLE_IP} dev eth1 ;
 ```
 
 上面的示例是我们为正在运行的docker容器，增加一个eth1的网卡，并给了一个静态的可被外部访问到的IP地址。
@@ -578,7 +816,10 @@ Network的Namespace比较啰嗦。在Linux下，我们一般用ip命令创建Net
 让我们运行一下上篇中的那个pid.mnt的程序（也就是PID Namespace中那个mount proc的程序），然后不要退出。
 
 ```
-`$ sudo ./pid.mnt ``[sudo] password ``for` `hchen: ``Parent [ 4599] - start a container!``Container [  1] - inside the container!`
+$ sudo ./pid.mnt 
+[sudo] password for hchen: 
+Parent [ 4599] - start a container!
+Container [    1] - inside the container!
 ```
 
 我们到另一个shell中查看一下父子进程的PID：
@@ -592,13 +833,27 @@ Network的Namespace比较啰嗦。在Linux下，我们一般用ip命令创建Net
 下面是父进程的：
 
 ```
-`hchen@ubuntu:~$ ``sudo` `ls` `-l ``/proc/4599/ns``total 0``lrwxrwxrwx 1 root root 0 4月 7 22:01 ipc -> ipc:[4026531839]``lrwxrwxrwx 1 root root 0 4月 7 22:01 mnt -> mnt:[4026531840]``lrwxrwxrwx 1 root root 0 4月 7 22:01 net -> net:[4026531956]``lrwxrwxrwx 1 root root 0 4月 7 22:01 pid -> pid:[4026531836]``lrwxrwxrwx 1 root root 0 4月 7 22:01 user -> user:[4026531837]``lrwxrwxrwx 1 root root 0 4月 7 22:01 uts -> uts:[4026531838]`
+hchen@ubuntu:~$ sudo ls -l /proc/4599/ns
+total 0
+lrwxrwxrwx 1 root root 0  4月  7 22:01 ipc -> ipc:[4026531839]
+lrwxrwxrwx 1 root root 0  4月  7 22:01 mnt -> mnt:[4026531840]
+lrwxrwxrwx 1 root root 0  4月  7 22:01 net -> net:[4026531956]
+lrwxrwxrwx 1 root root 0  4月  7 22:01 pid -> pid:[4026531836]
+lrwxrwxrwx 1 root root 0  4月  7 22:01 user -> user:[4026531837]
+lrwxrwxrwx 1 root root 0  4月  7 22:01 uts -> uts:[4026531838]
 ```
 
 下面是子进程的：
 
 ```
-`hchen@ubuntu:~$ ``sudo` `ls` `-l ``/proc/4600/ns``total 0``lrwxrwxrwx 1 root root 0 4月 7 22:01 ipc -> ipc:[4026531839]``lrwxrwxrwx 1 root root 0 4月 7 22:01 mnt -> mnt:[4026532520]``lrwxrwxrwx 1 root root 0 4月 7 22:01 net -> net:[4026531956]``lrwxrwxrwx 1 root root 0 4月 7 22:01 pid -> pid:[4026532522]``lrwxrwxrwx 1 root root 0 4月 7 22:01 user -> user:[4026531837]``lrwxrwxrwx 1 root root 0 4月 7 22:01 uts -> uts:[4026532521]`
+hchen@ubuntu:~$ sudo ls -l /proc/4600/ns
+total 0
+lrwxrwxrwx 1 root root 0  4月  7 22:01 ipc -> ipc:[4026531839]
+lrwxrwxrwx 1 root root 0  4月  7 22:01 mnt -> mnt:[4026532520]
+lrwxrwxrwx 1 root root 0  4月  7 22:01 net -> net:[4026531956]
+lrwxrwxrwx 1 root root 0  4月  7 22:01 pid -> pid:[4026532522]
+lrwxrwxrwx 1 root root 0  4月  7 22:01 user -> user:[4026531837]
+lrwxrwxrwx 1 root root 0  4月  7 22:01 uts -> uts:[4026532521]
 ```
 
 我们可以看到，其中的ipc，net，user是同一个ID，而mnt,pid,uts都是不一样的。如果两个进程指向的namespace编号相同，就说明他们在同一个namespace下，否则则在不同namespace里面。
@@ -608,13 +863,14 @@ Network的Namespace比较啰嗦。在Linux下，我们一般用ip命令创建Net
 另外，我们在上篇中讲过一个setns的系统调用，其函数声明如下：
 
 ```
-`int` `setns(``int` `fd, ``int` `nstype);`
+int setns(int fd, int nstype);
 ```
 
 其中第一个参数就是一个fd，也就是一个open()系统调用打开了上述文件后返回的fd，比如：
 
 ```
-`fd = open(``"/proc/4600/ns/nts"``, O_RDONLY); ``// 获取namespace文件描述符``setns(fd, 0); ``// 加入新的namespace`
+fd = open("/proc/4600/ns/nts", O_RDONLY);  // 获取namespace文件描述符
+setns(fd, 0); // 加入新的namespace
 ```
 
 ### 参考文档
@@ -653,7 +909,18 @@ Linux CGroupCgroup 可让您为系统中所运行任务（进程）的用户定�
 首先，Linux把CGroup这个事实现成了一个file system，你可以mount。在我的Ubuntu 14.04下，你输入以下命令你就可以看到cgroup已为你mount好了。
 
 ```
-`hchen@ubuntu:~$ ``mount` `-t cgroup``cgroup on ``/sys/fs/cgroup/cpuset` `type` `cgroup (rw,relatime,cpuset)``cgroup on ``/sys/fs/cgroup/cpu` `type` `cgroup (rw,relatime,cpu)``cgroup on ``/sys/fs/cgroup/cpuacct` `type` `cgroup (rw,relatime,cpuacct)``cgroup on ``/sys/fs/cgroup/memory` `type` `cgroup (rw,relatime,memory)``cgroup on ``/sys/fs/cgroup/devices` `type` `cgroup (rw,relatime,devices)``cgroup on ``/sys/fs/cgroup/freezer` `type` `cgroup (rw,relatime,freezer)``cgroup on ``/sys/fs/cgroup/blkio` `type` `cgroup (rw,relatime,blkio)``cgroup on ``/sys/fs/cgroup/net_prio` `type` `cgroup (rw,net_prio)``cgroup on ``/sys/fs/cgroup/net_cls` `type` `cgroup (rw,net_cls)``cgroup on ``/sys/fs/cgroup/perf_event` `type` `cgroup (rw,relatime,perf_event)``cgroup on ``/sys/fs/cgroup/hugetlb` `type` `cgroup (rw,relatime,hugetlb)`
+hchen@ubuntu:~$ mount -t cgroup
+cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,relatime,cpuset)
+cgroup on /sys/fs/cgroup/cpu type cgroup (rw,relatime,cpu)
+cgroup on /sys/fs/cgroup/cpuacct type cgroup (rw,relatime,cpuacct)
+cgroup on /sys/fs/cgroup/memory type cgroup (rw,relatime,memory)
+cgroup on /sys/fs/cgroup/devices type cgroup (rw,relatime,devices)
+cgroup on /sys/fs/cgroup/freezer type cgroup (rw,relatime,freezer)
+cgroup on /sys/fs/cgroup/blkio type cgroup (rw,relatime,blkio)
+cgroup on /sys/fs/cgroup/net_prio type cgroup (rw,net_prio)
+cgroup on /sys/fs/cgroup/net_cls type cgroup (rw,net_cls)
+cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,relatime,perf_event)
+cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,relatime,hugetlb)
 ```
 
 或者使用lssubsys命令：
@@ -678,19 +945,43 @@ hugetlb /sys/fs/cgroup/hugetlb
 如果你没有看到上述的目录，你可以自己mount，下面给了一个示例：
 
 ```
-`mkdir` `cgroup``mount` `-t tmpfs cgroup_root .``/cgroup``mkdir` `cgroup``/cpuset``mount` `-t cgroup -ocpuset cpuset .``/cgroup/cpuset/``mkdir` `cgroup``/cpu``mount` `-t cgroup -ocpu cpu .``/cgroup/cpu/``mkdir` `cgroup``/memory``mount` `-t cgroup -omemory memory .``/cgroup/memory/`
+mkdir cgroup
+mount -t tmpfs cgroup_root ./cgroup
+mkdir cgroup/cpuset
+mount -t cgroup -ocpuset cpuset ./cgroup/cpuset/
+mkdir cgroup/cpu
+mount -t cgroup -ocpu cpu ./cgroup/cpu/
+mkdir cgroup/memory
+mount -t cgroup -omemory memory ./cgroup/memory/
 ```
 
 一旦mount成功，你就会看到这些目录下就有好文件了，比如，如下所示的cpu和cpuset的子系统：
 
 ```
-`hchen@ubuntu:~$ ``ls` `/sys/fs/cgroup/cpu` `/sys/fs/cgroup/cpuset/``/sys/fs/cgroup/cpu``:``cgroup.clone_children cgroup.sane_behavior cpu.shares     release_agent``cgroup.event_control  cpu.cfs_period_us   cpu.stat      tasks``cgroup.procs      cpu.cfs_quota_us   notify_on_release user` `/sys/fs/cgroup/cpuset/``:``cgroup.clone_children cpuset.mem_hardwall       cpuset.sched_load_balance``cgroup.event_control  cpuset.memory_migrate      cpuset.sched_relax_domain_level``cgroup.procs      cpuset.memory_pressure     notify_on_release``cgroup.sane_behavior  cpuset.memory_pressure_enabled release_agent``cpuset.cpu_exclusive  cpuset.memory_spread_page    tasks``cpuset.cpus      cpuset.memory_spread_slab    user``cpuset.mem_exclusive  cpuset.mems`
+hchen@ubuntu:~$ ls /sys/fs/cgroup/cpu /sys/fs/cgroup/cpuset/
+/sys/fs/cgroup/cpu:
+cgroup.clone_children  cgroup.sane_behavior  cpu.shares         release_agent
+cgroup.event_control   cpu.cfs_period_us     cpu.stat           tasks
+cgroup.procs           cpu.cfs_quota_us      notify_on_release  user
+ 
+/sys/fs/cgroup/cpuset/:
+cgroup.clone_children  cpuset.mem_hardwall             cpuset.sched_load_balance
+cgroup.event_control   cpuset.memory_migrate           cpuset.sched_relax_domain_level
+cgroup.procs           cpuset.memory_pressure          notify_on_release
+cgroup.sane_behavior   cpuset.memory_pressure_enabled  release_agent
+cpuset.cpu_exclusive   cpuset.memory_spread_page       tasks
+cpuset.cpus            cpuset.memory_spread_slab       user
+cpuset.mem_exclusive   cpuset.mems
 ```
 
 你可以到/sys/fs/cgroup的各个子目录下去make个dir，你会发现，一旦你创建了一个子目录，这个子目录里又有很多文件了。
 
 ```
-`hchen@ubuntu:``/sys/fs/cgroup/cpu``$ ``sudo` `mkdir` `haoel``[``sudo``] password ``for` `hchen: ``hchen@ubuntu:``/sys/fs/cgroup/cpu``$ ``ls` `.``/haoel``cgroup.clone_children cgroup.procs    cpu.cfs_quota_us cpu.stat      tasks``cgroup.event_control  cpu.cfs_period_us cpu.shares    notify_on_release`
+hchen@ubuntu:/sys/fs/cgroup/cpu$ sudo mkdir haoel
+[sudo] password for hchen: 
+hchen@ubuntu:/sys/fs/cgroup/cpu$ ls ./haoel
+cgroup.clone_children  cgroup.procs       cpu.cfs_quota_us  cpu.stat           tasks
+cgroup.event_control   cpu.cfs_period_us  cpu.shares        notify_on_release
 ```
 
 好了，我们来看几个示例。
@@ -700,37 +991,111 @@ hugetlb /sys/fs/cgroup/hugetlb
 假设，我们有一个非常吃CPU的程序，叫deadloop，其源码如下：
 
 ```
-`int` `main(``void``)``{``  ``int` `i = 0;``  ``for``(;;) i++;``  ``return` `0;``}`
+int main(void)
+{
+    int i = 0;
+    for(;;) i++;
+    return 0;
+}
 ```
 
 用sudo执行起来后，毫无疑问，CPU被干到了100%（下面是top命令的输出）
 
 ```
-`PID USER   PR NI  VIRT  RES  SHR S %CPU %MEM   TIME+ COMMAND   ``3529 root   20  0  4196  736  656 R 99.6 0.1  0:23.13 deadloop`
+PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND     
+3529 root      20   0    4196    736    656 R 99.6  0.1   0:23.13 deadloop
 ```
 
 然后，我们这前不是在/sys/fs/cgroup/cpu下创建了一个haoel的group。我们先设置一下这个group的cpu利用的限制：
 
 ```
-`hchen@ubuntu:~``# cat /sys/fs/cgroup/cpu/haoel/cpu.cfs_quota_us ``-1``root@ubuntu:~``# echo 20000 > /sys/fs/cgroup/cpu/haoel/cpu.cfs_quota_us`
+hchen@ubuntu:~# cat /sys/fs/cgroup/cpu/haoel/cpu.cfs_quota_us 
+-1
+root@ubuntu:~# echo 20000 > /sys/fs/cgroup/cpu/haoel/cpu.cfs_quota_us
 ```
 
 我们看到，这个进程的PID是3529，我们把这个进程加到这个cgroup中：
 
 ```
-`# echo 3529 >> /sys/fs/cgroup/cpu/haoel/tasks`
+# echo 3529 >> /sys/fs/cgroup/cpu/haoel/tasks
 ```
 
 然后，就会在top中看到CPU的利用立马下降成20%了。（前面我们设置的20000就是20%的意思）
 
 ```
-`PID USER   PR NI  VIRT  RES  SHR S %CPU %MEM   TIME+ COMMAND   ``3529 root   20  0  4196  736  656 R 19.9 0.1  8:06.11 deadloop`
+PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND     
+3529 root      20   0    4196    736    656 R 19.9  0.1   8:06.11 deadloop
 ```
 
 下面的代码是一个线程的示例：
 
 ```c
-`#define _GNU_SOURCE     /* See feature_test_macros(7) */` `#include ``#include ``#include ``#include ``#include ``#include ``#include ` `const` `int` `NUM_THREADS = 5;` `void` `*thread_main(``void` `*threadid)``{``  ``/* 把自己加入cgroup中（syscall(SYS_gettid)为得到线程的系统tid） */``  ``char` `cmd[128];``  ``sprintf``(cmd, ``"echo %ld >> /sys/fs/cgroup/cpu/haoel/tasks"``, syscall(SYS_gettid));``  ``system``(cmd); ``  ``sprintf``(cmd, ``"echo %ld >> /sys/fs/cgroup/cpuset/haoel/tasks"``, syscall(SYS_gettid));``  ``system``(cmd);` `  ``long` `tid;``  ``tid = (``long``)threadid;``  ``printf``(``"Hello World! It's me, thread #%ld, pid #%ld!\n"``, tid, syscall(SYS_gettid));``  ` `  ``int` `a=0; ``  ``while``(1) {``    ``a++;``  ``}``  ``pthread_exit(NULL);``}``int` `main (``int` `argc, ``char` `*argv[])``{``  ``int` `num_threads;``  ``if` `(argc > 1){``    ``num_threads = ``atoi``(argv[1]);``  ``}``  ``if` `(num_threads<=0 || num_threads>=100){``    ``num_threads = NUM_THREADS;``  ``}` `  ``/* 设置CPU利用率为50% */``  ``mkdir(``"/sys/fs/cgroup/cpu/haoel"``, 755);``  ``system``(``"echo 50000 > /sys/fs/cgroup/cpu/haoel/cpu.cfs_quota_us"``);` `  ``mkdir(``"/sys/fs/cgroup/cpuset/haoel"``, 755);``  ``/* 限制CPU只能使用#2核和#3核 */``  ``system``(``"echo \"2,3\" > /sys/fs/cgroup/cpuset/haoel/cpuset.cpus"``);` `  ``pthread_t* threads = (pthread_t*) ``malloc` `(``sizeof``(pthread_t)*num_threads);``  ``int` `rc;``  ``long` `t;``  ``for``(t=0; t`    ``printf``(``"In main: creating thread %ld\n"``, t);``    ``rc = pthread_create(&threads[t], NULL, thread_main, (``void` `*)t);``    ``if` `(rc){``      ``printf``(``"ERROR; return code from pthread_create() is %d\n"``, rc);``      ``exit``(-1);``    ``}``  ``}` `  ``/* Last thing that main() should do */``  ``pthread_exit(NULL);``  ``free``(threads);``}`
+#define _GNU_SOURCE         /* See feature_test_macros(7) */
+ 
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/syscall.h>
+ 
+ 
+const int NUM_THREADS = 5;
+ 
+void *thread_main(void *threadid)
+{
+    /* 把自己加入cgroup中（syscall(SYS_gettid)为得到线程的系统tid） */
+    char cmd[128];
+    sprintf(cmd, "echo %ld >> /sys/fs/cgroup/cpu/haoel/tasks", syscall(SYS_gettid));
+    system(cmd); 
+    sprintf(cmd, "echo %ld >> /sys/fs/cgroup/cpuset/haoel/tasks", syscall(SYS_gettid));
+    system(cmd);
+ 
+    long tid;
+    tid = (long)threadid;
+    printf("Hello World! It's me, thread #%ld, pid #%ld!\n", tid, syscall(SYS_gettid));
+     
+    int a=0; 
+    while(1) {
+        a++;
+    }
+    pthread_exit(NULL);
+}
+int main (int argc, char *argv[])
+{
+    int num_threads;
+    if (argc > 1){
+        num_threads = atoi(argv[1]);
+    }
+    if (num_threads<=0 || num_threads>=100){
+        num_threads = NUM_THREADS;
+    }
+ 
+    /* 设置CPU利用率为50% */
+    mkdir("/sys/fs/cgroup/cpu/haoel", 755);
+    system("echo 50000 > /sys/fs/cgroup/cpu/haoel/cpu.cfs_quota_us");
+ 
+    mkdir("/sys/fs/cgroup/cpuset/haoel", 755);
+    /* 限制CPU只能使用#2核和#3核 */
+    system("echo \"2,3\" > /sys/fs/cgroup/cpuset/haoel/cpuset.cpus");
+ 
+    pthread_t* threads = (pthread_t*) malloc (sizeof(pthread_t)*num_threads);
+    int rc;
+    long t;
+    for(t=0; t<num_threads; t++){
+        printf("In main: creating thread %ld\n", t);
+        rc = pthread_create(&threads[t], NULL, thread_main, (void *)t);
+        if (rc){
+            printf("ERROR; return code from pthread_create() is %d\n", rc);
+            exit(-1);
+        }
+    }
+ 
+    /* Last thing that main() should do */
+    pthread_exit(NULL);
+    free(threads);
+}
 ```
 
 ### 内存使用限制
@@ -738,13 +1103,42 @@ hugetlb /sys/fs/cgroup/hugetlb
 我们再来看一个限制内存的例子（下面的代码是个死循环，其它不断的分配内存，每次512个字节，每次休息一秒）：
 
 ```c
-`#include ``#include ``#include ``#include ``#include ` `int` `main(``void``)``{``  ``int` `size = 0;``  ``int` `chunk_size = 512;``  ``void` `*p = NULL;` `  ``while``(1) {` `    ``if` `((p = ``malloc``(p, chunk_size)) == NULL) {``      ``printf``(``"out of memory!!\n"``);``      ``break``;``    ``}``    ``memset``(p, 1, chunk_size);``    ``size += chunk_size;``    ``printf``(``"[%d] - memory is allocated [%8d] bytes \n"``, getpid(), size);``    ``sleep(1);``  ``}``  ``return` `0;``}`
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
+ 
+int main(void)
+{
+    int size = 0;
+    int chunk_size = 512;
+    void *p = NULL;
+ 
+    while(1) {
+ 
+        if ((p = malloc(p, chunk_size)) == NULL) {
+            printf("out of memory!!\n");
+            break;
+        }
+        memset(p, 1, chunk_size);
+        size += chunk_size;
+        printf("[%d] - memory is allocated [%8d] bytes \n", getpid(), size);
+        sleep(1);
+    }
+    return 0;
+}
 ```
 
 然后，在我们另外一边：
 
 ```
-`# 创建memory cgroup``$ ``mkdir` `/sys/fs/cgroup/memory/haoel``$ ``echo` `64k > ``/sys/fs/cgroup/memory/haoel/memory``.limit_in_bytes` `# 把上面的进程的pid加入这个cgroup``$ ``echo` `[pid] > ``/sys/fs/cgroup/memory/haoel/tasks`
+# 创建memory cgroup
+$ mkdir /sys/fs/cgroup/memory/haoel
+$ echo 64k > /sys/fs/cgroup/memory/haoel/memory.limit_in_bytes
+ 
+# 把上面的进程的pid加入这个cgroup
+$ echo [pid] > /sys/fs/cgroup/memory/haoel/tasks
 ```
 
 你会看到，一会上面的进程就会因为内存问题被kill掉了。
@@ -754,31 +1148,34 @@ hugetlb /sys/fs/cgroup/hugetlb
 我们先看一下我们的硬盘IO，我们的模拟命令如下：（从/dev/sda1上读入数据，输出到/dev/null上）
 
 ```
-`sudo` `dd` `if``=``/dev/sda1` `of=``/dev/null`
+sudo dd if=/dev/sda1 of=/dev/null
 ```
 
 我们通过iotop命令我们可以看到相关的IO速度是55MB/s（虚拟机内）：
 
 ```
-`TID PRIO USER   DISK READ DISK WRITE SWAPIN   IO>  COMMAND     ``8128 be``/4` `root    55.74 M``/s`  `0.00 B``/s` `0.00 % 85.65 % ``dd` `if``=``/de``~=``/dev/null``...`
+TID  PRIO  USER     DISK READ  DISK WRITE  SWAPIN     IO>    COMMAND          
+8128 be/4 root       55.74 M/s    0.00 B/s  0.00 % 85.65 % dd if=/de~=/dev/null...
 ```
 
 然后，我们先创建一个blkio（块设备IO）的cgroup
 
 ```
-`mkdir` `/sys/fs/cgroup/blkio/haoel`
+mkdir /sys/fs/cgroup/blkio/haoel
 ```
 
 并把读IO限制到1MB/s，并把前面那个dd命令的pid放进去（注：8:0 是设备号，你可以通过ls -l /dev/sda1获得）：
 
 ```
-`root@ubuntu:~``# echo '8:0 1048576' > /sys/fs/cgroup/blkio/haoel/blkio.throttle.read_bps_device ``root@ubuntu:~``# echo 8128 > /sys/fs/cgroup/blkio/haoel/tasks`
+root@ubuntu:~# echo '8:0 1048576'  > /sys/fs/cgroup/blkio/haoel/blkio.throttle.read_bps_device 
+root@ubuntu:~# echo 8128 > /sys/fs/cgroup/blkio/haoel/tasks
 ```
 
 再用iotop命令，你马上就能看到读速度被限制到了1MB/s左右。
 
 ```
-`TID PRIO USER   DISK READ DISK WRITE SWAPIN   IO>  COMMAND     ``8128 be``/4` `root   973.20 K``/s`  `0.00 B``/s` `0.00 % 94.41 % ``dd` `if``=``/de``~=``/dev/null``...`
+TID  PRIO  USER     DISK READ  DISK WRITE  SWAPIN     IO>    COMMAND          
+8128 be/4 root      973.20 K/s    0.00 B/s  0.00 % 94.41 % dd if=/de~=/dev/null...
 ```
 
 ### CGroup的子系统
@@ -800,7 +1197,13 @@ hugetlb /sys/fs/cgroup/hugetlb
 注意，你可能在Ubuntu 14.04下看不到net_cls和net_prio这两个cgroup，你需要手动mount一下：
 
 ```
-`$ ``sudo` `modprobe cls_cgroup``$ ``sudo` `mkdir` `/sys/fs/cgroup/net_cls``$ ``sudo` `mount` `-t cgroup -o net_cls none ``/sys/fs/cgroup/net_cls` `$ ``sudo` `modprobe netprio_cgroup``$ ``sudo` `mkdir` `/sys/fs/cgroup/net_prio``$ ``sudo` `mount` `-t cgroup -o net_prio none ``/sys/fs/cgroup/net_prio`
+$ sudo modprobe cls_cgroup
+$ sudo mkdir /sys/fs/cgroup/net_cls
+$ sudo mount -t cgroup -o net_cls none /sys/fs/cgroup/net_cls
+ 
+$ sudo modprobe netprio_cgroup
+$ sudo mkdir /sys/fs/cgroup/net_prio
+$ sudo mount -t cgroup -o net_prio none /sys/fs/cgroup/net_prio
 ```
 
 关于各个子系统的参数细节，以及更多的Linux CGroup的文档，你可以看看下面的文档：
@@ -832,7 +1235,13 @@ CGroup有下述术语：
 我们mount一下看看：
 
 ```
-`$ ``sudo` `mount` `-t cgroup -o __DEVEL__sane_behavior cgroup .``/cgroup` `$ ``ls` `.``/cgroup``cgroup.controllers cgroup.procs cgroup.sane_behavior cgroup.subtree_control ` `$ ``cat` `.``/cgroup/cgroup``.controllers``cpuset cpu cpuacct memory devices freezer net_cls blkio perf_event net_prio hugetlb`
+$ sudo mount -t cgroup -o __DEVEL__sane_behavior cgroup ./cgroup
+ 
+$ ls ./cgroup
+cgroup.controllers  cgroup.procs  cgroup.sane_behavior  cgroup.subtree_control 
+ 
+$ cat ./cgroup/cgroup.controllers
+cpuset cpu cpuacct memory devices freezer net_cls blkio perf_event net_prio hugetlb
 ```
 
 我们可以看到有四个文件，然后，你在这里mkdir一个子目录，里面也会有这四个文件。**上级的cgroup.subtree_control控制下级的cgroup.controllers。**
@@ -840,7 +1249,19 @@ CGroup有下述术语：
 举个例子：假设我们有以下的目录结构，b代表blkio，m代码memory，其中，A是root，包括所有的子系统（）。
 
 ```
-`# A(b,m) - B(b,m) - C (b)``#        \ - D (b) - E` `# 下面的命令中， +表示enable， -表示disable` `# 在B上的enable blkio``# echo +blkio > A/cgroup.subtree_control` `# 在C和D上enable blkio ``# echo +blkio > A/B/cgroup.subtree_control` `# 在B上enable memory ``# echo +memory > A/cgroup.subtree_control`
+# A(b,m) - B(b,m) - C (b)
+#               \ - D (b) - E
+ 
+# 下面的命令中， +表示enable， -表示disable
+ 
+# 在B上的enable blkio
+# echo +blkio > A/cgroup.subtree_control
+ 
+# 在C和D上enable blkio 
+# echo +blkio > A/B/cgroup.subtree_control
+ 
+# 在B上enable memory  
+# echo +memory > A/cgroup.subtree_control
 ```
 
 在上述的结构中，
@@ -873,13 +1294,31 @@ AUFS又叫Another UnionFS，后来叫Alternative UnionFS，后来可能觉得不
 首先，我们建上两个目录（水果和蔬菜），并在这两个目录中放上一些文件，水果中有苹果和蕃茄，蔬菜有胡萝卜和蕃茄。
 
 ```
-`$ tree``.``├── fruits``│  ├── apple``│  └── tomato``└── vegetables``  ``├── carrots``  ``└── tomato`
+$ tree
+.
+├── fruits
+│   ├── apple
+│   └── tomato
+└── vegetables
+    ├── carrots
+    └── tomato
 ```
 
 然后，我们输入以下命令：
 
 ```
-`# 创建一个mount目录``$ ``mkdir` `mnt` `# 把水果目录和蔬菜目录union mount到 ./mnt目录中``$ ``sudo` `mount` `-t aufs -o ``dirs``=.``/fruits``:.``/vegetables` `none .``/mnt` `# 查看./mnt目录``$ tree .``/mnt``.``/mnt``├── apple``├── carrots``└── tomato`
+# 创建一个mount目录
+$ mkdir mnt
+ 
+# 把水果目录和蔬菜目录union mount到 ./mnt目录中
+$ sudo mount -t aufs -o dirs=./fruits:./vegetables none ./mnt
+ 
+#  查看./mnt目录
+$ tree ./mnt
+./mnt
+├── apple
+├── carrots
+└── tomato
 ```
 
 我们可以看到在./mnt目录下有三个文件，苹果apple、胡萝卜carrots和蕃茄tomato。水果和蔬菜的目录被union到了./mnt目录下了。
@@ -887,13 +1326,21 @@ AUFS又叫Another UnionFS，后来叫Alternative UnionFS，后来可能觉得不
 我们来修改一下其中的文件内容：
 
 ```
-`$ ``echo` `mnt > .``/mnt/apple``$ ``cat` `.``/mnt/apple``mnt``$ ``cat` `.``/fruits/apple``mnt`
+$ echo mnt > ./mnt/apple
+$ cat ./mnt/apple
+mnt
+$ cat ./fruits/apple
+mnt
 ```
 
 上面的示例，我们可以看到./mnt/apple的内容改了，./fruits/apple的内容也改了。
 
 ```
-`$ ``echo` `mnt_carrots > .``/mnt/carrots``$ ``cat` `.``/vegetables/carrots` `$ ``cat` `.``/fruits/carrots``mnt_carrots`
+$ echo mnt_carrots > ./mnt/carrots
+$ cat ./vegetables/carrots
+ 
+$ cat ./fruits/carrots
+mnt_carrots
 ```
 
 上面的示例，我们可以看到，我们修改了./mnt/carrots的文件内容，./vegetables/carrots并没有变化，反而是./fruits/carrots的目录中出现了carrots文件，其内容是我们在./mnt/carrots里的内容。
@@ -903,13 +1350,27 @@ AUFS又叫Another UnionFS，后来叫Alternative UnionFS，后来可能觉得不
 所以，如果我们像下面这样指定权限来mount aufs，你就会发现有不一样的效果（记得先把上面./fruits/carrots的文件删除了）：
 
 ```
-`$ ``sudo` `mount` `-t aufs -o ``dirs``=.``/fruits``=rw:.``/vegetables``=rw none .``/mnt` `$ ``echo` `"mnt_carrots"` `> .``/mnt/carrots` `$ ``cat` `.``/vegetables/carrots``mnt_carrots` `$ ``cat` `.``/fruits/carrots``cat``: .``/fruits/carrots``: No such ``file` `or directory`
+$ sudo mount -t aufs -o dirs=./fruits=rw:./vegetables=rw none ./mnt
+ 
+$ echo "mnt_carrots" > ./mnt/carrots
+ 
+$ cat ./vegetables/carrots
+mnt_carrots
+ 
+$ cat ./fruits/carrots
+cat: ./fruits/carrots: No such file or directory
 ```
 
 现在，在这情况下，如果我们要修改./mnt/tomato这个文件，那么究竟是哪个文件会被改写？
 
 ```
-`$ ``echo` `"mnt_tomato"` `> .``/mnt/tomato` `$ ``cat` `.``/fruits/tomato``mnt_tomato` `$ ``cat` `.``/vegetables/tomato``I am a vegetable`
+$ echo "mnt_tomato" > ./mnt/tomato
+ 
+$ cat ./fruits/tomato
+mnt_tomato
+ 
+$ cat ./vegetables/tomato
+I am a vegetable
 ```
 
 可见，如果有重复的文件名，在mount命令行上，越往前的就优先级越高。
@@ -931,13 +1392,32 @@ Docker把UnionFS的想像力发挥到了容器的镜像。你是否还记得我�
 关于docker的分层镜像，除了aufs，docker还支持btrfs, devicemapper和vfs，你可以使用 -s 或 –storage-driver= 选项来指定相关的镜像存储。在Ubuntu 14.04下，docker默认Ubuntu的 aufs（在CentOS7下，用的是devicemapper，关于devicemapper，我会以以后的文章中讲解）你可以在下面的目录中查看相关的每个层的镜像：
 
 ```
-`/var/lib/docker/aufs/diff/``<``id``>`
+/var/lib/docker/aufs/diff/<id>
 ```
 
 在docker执行起来后（比如：docker run -it ubuntu /bin/bash ），你可以从/sys/fs/aufs/si_[id]目录下查看aufs的mount的情况，下面是个示例：
 
 ```
-`#ls /sys/fs/aufs/si_b71b209f85ff8e75/``br0   br2   br4   br6   brid1  brid3  brid5  xi_path``br1   br3   br5   brid0  brid2  brid4  brid6 ` `# cat /sys/fs/aufs/si_b71b209f85ff8e75/*``/var/lib/docker/aufs/diff/87315f1367e5703f599168d1e17528a0500bd2e2df7d2fe2aaf9595f3697dbd7``=rw``/var/lib/docker/aufs/diff/87315f1367e5703f599168d1e17528a0500bd2e2df7d2fe2aaf9595f3697dbd7-init``=ro+wh``/var/lib/docker/aufs/diff/d0955f21bf24f5bfffd32d2d0bb669d0564701c271bc3dfc64cfc5adfdec2d07``=ro+wh``/var/lib/docker/aufs/diff/9fec74352904baf5ab5237caa39a84b0af5c593dc7cc08839e2ba65193024507``=ro+wh``/var/lib/docker/aufs/diff/a1a958a248181c9aa6413848cd67646e5afb9797f1a3da5995c7a636f050f537``=ro+wh``/var/lib/docker/aufs/diff/f3c84ac3a0533f691c9fea4cc2ceaaf43baec22bf8d6a479e069f6d814be9b86``=ro+wh``/var/lib/docker/aufs/diff/511136ea3c5a64f264b78b5433614aec563103b4d4702f3ba7d4d2698e22c158``=ro+wh``64``65``66``67``68``69``70``/run/shm/aufs``.xino`
+#ls /sys/fs/aufs/si_b71b209f85ff8e75/
+br0      br2      br4      br6      brid1    brid3    brid5    xi_path
+br1      br3      br5      brid0    brid2    brid4    brid6 
+ 
+# cat /sys/fs/aufs/si_b71b209f85ff8e75/*
+/var/lib/docker/aufs/diff/87315f1367e5703f599168d1e17528a0500bd2e2df7d2fe2aaf9595f3697dbd7=rw
+/var/lib/docker/aufs/diff/87315f1367e5703f599168d1e17528a0500bd2e2df7d2fe2aaf9595f3697dbd7-init=ro+wh
+/var/lib/docker/aufs/diff/d0955f21bf24f5bfffd32d2d0bb669d0564701c271bc3dfc64cfc5adfdec2d07=ro+wh
+/var/lib/docker/aufs/diff/9fec74352904baf5ab5237caa39a84b0af5c593dc7cc08839e2ba65193024507=ro+wh
+/var/lib/docker/aufs/diff/a1a958a248181c9aa6413848cd67646e5afb9797f1a3da5995c7a636f050f537=ro+wh
+/var/lib/docker/aufs/diff/f3c84ac3a0533f691c9fea4cc2ceaaf43baec22bf8d6a479e069f6d814be9b86=ro+wh
+/var/lib/docker/aufs/diff/511136ea3c5a64f264b78b5433614aec563103b4d4702f3ba7d4d2698e22c158=ro+wh
+64
+65
+66
+67
+68
+69
+70
+/run/shm/aufs.xino
 ```
 
 你会看到只有最顶上的层（branch）是rw权限，其它的都是ro+wh权限只读的。
@@ -963,19 +1443,35 @@ AUFS有所有Union FS的特性，把多个目录，合并成同一个目录，�
 假设我们有三个目录和文件如下所示（test是个空目录）：
 
 ```
-`# tree``.``├── fruits``│  ├── apple``│  └── tomato``├── ``test``└── vegetables``  ``├── carrots``  ``└── tomato`
+# tree
+.
+├── fruits
+│   ├── apple
+│   └── tomato
+├── test
+└── vegetables
+    ├── carrots
+    └── tomato
 ```
 
 我们如下mount：
 
 ```
-`# mkdir mnt` `# mount -t aufs -o dirs=./test=rw:./fruits=ro:./vegetables=ro none ./mnt` `# # ls ./mnt/``apple carrots tomato`
+# mkdir mnt
+ 
+# mount -t aufs -o dirs=./test=rw:./fruits=ro:./vegetables=ro none ./mnt
+ 
+# # ls ./mnt/
+apple  carrots  tomato
 ```
 
 现在我们在权限为rw的test目录下建个whiteout的隐藏文件.wh.apple，你就会发现./mnt/apple这个文件就消失了:
 
 ```
-`# touch ./test/.wh.apple` `# ls ./mnt``carrots tomato`
+# touch ./test/.wh.apple
+ 
+# ls ./mnt
+carrots  tomato
 ```
 
 上面这个操作和 rm ./mnt/apple是一样的。
@@ -1014,7 +1510,16 @@ AUFS有所有Union FS的特性，把多个目录，合并成同一个目录，�
 **create=rr | round−robin** 轮询。下面的示例可以看到，新创建的文件轮流写到三个目录中
 
 ```
-`hchen$ ``sudo` `mount` `-t aufs -o ``dirs``=.``/1``=rw:.``/2``=rw:.``/3``=rw -o create=rr none .``/mnt``hchen$ ``touch` `.``/mnt/a` `.``/mnt/b` `.``/mnt/c``hchen$ tree``.``├── 1``│  └── a``├── 2``│  └── c``└── 3``  ``└── b`
+hchen$ sudo mount -t aufs  -o dirs=./1=rw:./2=rw:./3=rw -o create=rr none ./mnt
+hchen$ touch ./mnt/a ./mnt/b ./mnt/c
+hchen$ tree
+.
+├── 1
+│   └── a
+├── 2
+│   └── c
+└── 3
+    └── b
 ```
 
 **create=mfs[:second] | most−free−space[:second]** 选一个可用空间最好的分支。可以指定一个检查可用磁盘空间的时间。
@@ -1094,25 +1599,44 @@ Thin Provisioning要怎么翻译成中文，真是一件令人头痛的事，我
 首先，我们需要先建两个文件，一个是data.img，一个是meta.data.img：
 
 ```
-`~hchen$ ``sudo` `dd` `if``=``/dev/zero` `of=``/tmp/data``.img bs=1K count=1 seek=10M``1+0 records ``in``1+0 records out``1024 bytes (1.0 kB) copied, 0.000621428 s, 1.6 MB``/s` `~hchen$ ``sudo` `dd` `if``=``/dev/zero` `of=``/tmp/meta``.data.img bs=1K count=1 seek=1G``1+0 records ``in``1+0 records out``1024 bytes (1.0 kB) copied, 0.000140858 s, 7.3 MB``/s`
+~hchen$ sudo dd if=/dev/zero of=/tmp/data.img bs=1K count=1 seek=10M
+1+0 records in
+1+0 records out
+1024 bytes (1.0 kB) copied, 0.000621428 s, 1.6 MB/s
+ 
+~hchen$ sudo dd if=/dev/zero of=/tmp/meta.data.img bs=1K count=1 seek=1G
+1+0 records in
+1+0 records out
+1024 bytes (1.0 kB) copied, 0.000140858 s, 7.3 MB/s
 ```
 
 注意命令中`seek`选项，其表示为略过`of`选项指定的输出文件的前10G个output的bloksize的空间后再写入内容。因为bs是1个字节，所以也就是10G的尺寸，但其实在硬盘上是没有占有空间的，占有空间只有1k的内容。当向其写入内容时，才会在硬盘上为其分配空间。我们可以用ls命令看一下，实际分配了12K和4K。
 
 ```
-`~hchen$ ``sudo` `ls` `-lsh ``/tmp/data``.img``12K -rw-r--r--. 1 root root 11G Aug 25 23:01 ``/tmp/data``.img` `~hchen$ ``sudo` `ls` `-slh ``/tmp/meta``.data.img``4.0K -rw-r--r--. 1 root root 101M Aug 25 23:17 ``/tmp/meta``.data.img`
+~hchen$ sudo ls -lsh /tmp/data.img
+12K -rw-r--r--. 1 root root 11G Aug 25 23:01 /tmp/data.img
+ 
+~hchen$ sudo ls -slh /tmp/meta.data.img
+4.0K -rw-r--r--. 1 root root 101M Aug 25 23:17 /tmp/meta.data.img
 ```
 
 然后，我们为这个文件创建一个loopback设备。（loop2015和loop2016是我乱取的两个名字）
 
 ```
-`~hchen$ ``sudo` `losetup ``/dev/loop2015` `/tmp/data``.img``~hchen$ ``sudo` `losetup ``/dev/loop2016` `/tmp/meta``.data.img` `~hchen$ ``sudo` `losetup -a``/dev/loop2015``: [64768]:103991768 (``/tmp/data``.img)``/dev/loop2016``: [64768]:103991765 (``/tmp/meta``.data.img)`
+~hchen$ sudo losetup /dev/loop2015 /tmp/data.img
+~hchen$ sudo losetup /dev/loop2016 /tmp/meta.data.img
+ 
+~hchen$ sudo losetup -a
+/dev/loop2015: [64768]:103991768 (/tmp/data.img)
+/dev/loop2016: [64768]:103991765 (/tmp/meta.data.img)
 ```
 
 现在，我们为这个设备建一个Thin Provisioning的Pool，用dmsetup命令：
 
 ```
-`~hchen$ ``sudo` `dmsetup create hchen-thin-pool \``         ``--table "0 20971522 thin-pool ``/dev/loop2016` `/dev/loop2015` `\``              ``128 65536 1 skip_block_zeroing"`
+~hchen$ sudo dmsetup create hchen-thin-pool \
+                  --table "0 20971522 thin-pool /dev/loop2016 /dev/loop2015 \
+                           128 65536 1 skip_block_zeroing"
 ```
 
 其中的参数解释如下（更多信息可参看[Thin Provisioning的man page](https://github.com/torvalds/linux/blob/master/Documentation/device-mapper/thin-provisioning.txt)）：
@@ -1132,13 +1656,16 @@ Thin Provisioning要怎么翻译成中文，真是一件令人头痛的事，我
 然后，我们就可以看到一个Device Mapper的设备了：
 
 ```
-`~hchen$ ``sudo` `ll ``/dev/mapper/hchen-thin-pool``lrwxrwxrwx. 1 root root 7 Aug 25 23:24 ``/dev/mapper/hchen-thin-pool` `-> ..``/dm-4`
+~hchen$ sudo ll /dev/mapper/hchen-thin-pool
+lrwxrwxrwx. 1 root root 7 Aug 25 23:24 /dev/mapper/hchen-thin-pool -> ../dm-4
 ```
 
 接下来，我们的初始还没有完成，还要创建一个Thin Provisioning 的 Volume：
 
 ```
-`~hchen$ ``sudo` `dmsetup message ``/dev/mapper/hchen-thin-pool` `0 ``"create_thin 0"``~hchen$ ``sudo` `dmsetup create hchen-thin-volumn-001 \``      ``--table ``"0 2097152 thin /dev/mapper/hchen-thin-pool 0"`
+~hchen$ sudo dmsetup message /dev/mapper/hchen-thin-pool 0 "create_thin 0"
+~hchen$ sudo dmsetup create hchen-thin-volumn-001 \
+            --table "0 2097152 thin /dev/mapper/hchen-thin-pool 0"
 ```
 
 其中：
@@ -1149,19 +1676,49 @@ Thin Provisioning要怎么翻译成中文，真是一件令人头痛的事，我
 好了，在mount前，我们还要格式化一下：
 
 ```
-`~hchen$ ``sudo` `mkfs.ext4 ``/dev/mapper/hchen-thin-volumn-001``mke2fs 1.42.9 (28-Dec-2013)``Discarding device blocks: ``done``Filesystem label=``OS ``type``: Linux``Block size=4096 (log=2)``Fragment size=4096 (log=2)``Stride=16 blocks, Stripe width=16 blocks``65536 inodes, 262144 blocks``13107 blocks (5.00%) reserved ``for` `the super user``First data block=0``Maximum filesystem blocks=268435456``8 block ``groups``32768 blocks per group, 32768 fragments per group``8192 inodes per group``Superblock backups stored on blocks:``32768, 98304, 163840, 229376` `Allocating group tables: ``done``Writing inode tables: ``done``Creating journal (8192 blocks): ``done``Writing superblocks and filesystem accounting information: ``done`
+~hchen$ sudo mkfs.ext4 /dev/mapper/hchen-thin-volumn-001
+mke2fs 1.42.9 (28-Dec-2013)
+Discarding device blocks: done
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+Stride=16 blocks, Stripe width=16 blocks
+65536 inodes, 262144 blocks
+13107 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=268435456
+8 block groups
+32768 blocks per group, 32768 fragments per group
+8192 inodes per group
+Superblock backups stored on blocks:
+32768, 98304, 163840, 229376
+ 
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (8192 blocks): done
+Writing superblocks and filesystem accounting information: done
 ```
 
 好了，我们可以mount了（下面的命令中，我还创建了一个文件）
 
 ```
-`~hchen$ ``sudo` `mkdir` `-p ``/mnt/base``~hchen$ ``sudo` `mount` `/dev/mapper/hchen-thin-volumn-001` `/mnt/base``~hchen$ ``sudo` `echo` `"hello world, I am a base"` `> ``/mnt/base/id``.txt``~hchen$ ``sudo` `cat` `/mnt/base/id``.txt``hello world, I am a base`
+~hchen$ sudo mkdir -p /mnt/base
+~hchen$ sudo mount /dev/mapper/hchen-thin-volumn-001 /mnt/base
+~hchen$ sudo echo "hello world, I am a base" > /mnt/base/id.txt
+~hchen$ sudo cat /mnt/base/id.txt
+hello world, I am a base
 ```
 
 好了，接下来，我们来看看snapshot怎么搞：
 
 ```
-`~hchen$ ``sudo` `dmsetup message ``/dev/mapper/hchen-thin-pool` `0 ``"create_snap 1 0"``~hchen$ ``sudo` `dmsetup create mysnap1 \``          ``--table ``"0 2097152 thin /dev/mapper/hchen-thin-pool 1"` `~hchen$ ``sudo` `ll ``/dev/mapper/mysnap1``lrwxrwxrwx. 1 root root 7 Aug 25 23:49 ``/dev/mapper/mysnap1` `-> ..``/dm-5`
+~hchen$ sudo dmsetup message /dev/mapper/hchen-thin-pool 0 "create_snap 1 0"
+~hchen$ sudo dmsetup create mysnap1 \
+                   --table "0 2097152 thin /dev/mapper/hchen-thin-pool 1"
+ 
+~hchen$ sudo ll /dev/mapper/mysnap1
+lrwxrwxrwx. 1 root root 7 Aug 25 23:49 /dev/mapper/mysnap1 -> ../dm-5
 ```
 
 上面的命令中：
@@ -1173,19 +1730,39 @@ Thin Provisioning要怎么翻译成中文，真是一件令人头痛的事，我
 下面我们来看看：
 
 ```
-`~hchen$ ``sudo` `mkdir` `-p ``/mnt/mysnap1``~hchen$ ``sudo` `mount` `/dev/mapper/mysnap1` `/mnt/mysnap1` `~hchen$ ``sudo` `ll ``/mnt/mysnap1/``total 20``-rw-r--r--. 1 root root 25 Aug 25 23:46 ``id``.txt``drwx------. 2 root root 16384 Aug 25 23:43 lost+found` `~hchen$ ``sudo` `cat` `/mnt/mysnap1/id``.txt``hello world, I am a base`
+~hchen$ sudo mkdir -p /mnt/mysnap1
+~hchen$ sudo mount /dev/mapper/mysnap1 /mnt/mysnap1
+ 
+~hchen$ sudo ll /mnt/mysnap1/
+total 20
+-rw-r--r--. 1 root root 25 Aug 25 23:46 id.txt
+drwx------. 2 root root 16384 Aug 25 23:43 lost+found
+ 
+~hchen$ sudo cat /mnt/mysnap1/id.txt
+hello world, I am a base
 ```
 
 我们来修改一下/mnt/mysnap1/id.txt，并加上一个snap1.txt的文件：
 
 ```
-`~hchen$ ``sudo` `echo` `"I am snap1"` `>> ``/mnt/mysnap1/id``.txt``~hchen$ ``sudo` `echo` `"I am snap1"` `> ``/mnt/mysnap1/snap1``.txt` `~hchen$ ``sudo` `cat` `/mnt/mysnap1/id``.txt``hello world, I am a base``I am snap1` `~hchen$ ``sudo` `cat` `/mnt/mysnap1/snap1``.txt``I am snap1`
+~hchen$ sudo echo "I am snap1" >> /mnt/mysnap1/id.txt
+~hchen$ sudo echo "I am snap1" > /mnt/mysnap1/snap1.txt
+ 
+~hchen$ sudo cat /mnt/mysnap1/id.txt
+hello world, I am a base
+I am snap1
+ 
+~hchen$ sudo cat /mnt/mysnap1/snap1.txt
+I am snap1
 ```
 
 我们再看一下/mnt/base，你会发现没有什么变化：
 
 ```
-`~hchen$ ``sudo` `ls` `/mnt/base``id``.txt   lost+found``~hchen$ ``sudo` `cat` `/mnt/base/id``.txt``hello world, I am a base`
+~hchen$ sudo ls /mnt/base
+id.txt      lost+found
+~hchen$ sudo cat /mnt/base/id.txt
+hello world, I am a base
 ```
 
 你是不是已经看到了分层镜像的样子了？
@@ -1193,7 +1770,17 @@ Thin Provisioning要怎么翻译成中文，真是一件令人头痛的事，我
 你还要吧继续在刚才的snapshot上再建一个snapshot
 
 ```
-`~hchen$ ``sudo` `dmsetup message ``/dev/mapper/hchen-thin-pool` `0 ``"create_snap 2 1"``~hchen$ ``sudo` `dmsetup create mysnap2 \``          ``--table ``"0 2097152 thin /dev/mapper/hchen-thin-pool 2"` `~hchen$ ``sudo` `ll ``/dev/mapper/mysnap2``lrwxrwxrwx. 1 root root 7 Aug 25 23:52 ``/dev/mapper/mysnap1` `-> ..``/dm-7` `~hchen$ ``sudo` `mkdir` `-p ``/mnt/mysnap2``~hchen$ ``sudo` `mount` `/dev/mapper/mysnap2` `/mnt/mysnap2``~hchen$ ``sudo` `ls` `/mnt/mysnap2``id``.txt lost+found snap1.txt`
+~hchen$ sudo dmsetup message /dev/mapper/hchen-thin-pool 0 "create_snap 2 1"
+~hchen$ sudo dmsetup create mysnap2 \
+                   --table "0 2097152 thin /dev/mapper/hchen-thin-pool 2"
+ 
+~hchen$ sudo ll /dev/mapper/mysnap2
+lrwxrwxrwx. 1 root root 7 Aug 25 23:52 /dev/mapper/mysnap1 -> ../dm-7
+ 
+~hchen$ sudo mkdir -p /mnt/mysnap2
+~hchen$ sudo mount /dev/mapper/mysnap2 /mnt/mysnap2
+~hchen$ sudo  ls /mnt/mysnap2
+id.txt  lost+found  snap1.txt
 ```
 
 好了，我相信你看到了分层镜像的样子了。
@@ -1210,37 +1797,58 @@ Thin Provisioning要怎么翻译成中文，真是一件令人头痛的事，我
 上面基本上就是Docker的玩法了，我们可以看一下docker的loopback设备：
 
 ```
-`~hchen $ ``sudo` `losetup -a``/dev/loop0``: [64768]:38050288 (``/var/lib/docker/devicemapper/devicemapper/data``)``/dev/loop1``: [64768]:38050289 (``/var/lib/docker/devicemapper/devicemapper/metadata``)`
+~hchen $ sudo losetup -a
+/dev/loop0: [64768]:38050288 (/var/lib/docker/devicemapper/devicemapper/data)
+/dev/loop1: [64768]:38050289 (/var/lib/docker/devicemapper/devicemapper/metadata)
 ```
 
 其中data 100GB，metadata 2.0GB
 
 ```
-`~hchen $ ``sudo` `ls` `-alhs ``/var/lib/docker/devicemapper/devicemapper``506M -rw-------. 1 root root 100G Sep 10 20:15 data``1.1M -rw-------. 1 root root 2.0G Sep 10 20:15 metadata`
+~hchen $ sudo ls -alhs /var/lib/docker/devicemapper/devicemapper
+506M -rw-------. 1 root root 100G Sep 10 20:15 data
+1.1M -rw-------. 1 root root 2.0G Sep 10 20:15 metadata
 ```
 
 下面是相关的thin-pool。其中，有个当一大串hash串的device是正在启动的容器：
 
 ```
-`~hchen $ ``sudo` `ll ``/dev/mapper/dock``*``lrwxrwxrwx. 1 root root 7 Aug 25 07:57 ``/dev/mapper/docker-253``:0-104108535-pool -> ..``/dm-2``lrwxrwxrwx. 1 root root 7 Aug 25 11:13 ``/dev/mapper/docker-253``:0-104108535-deefcd630a60aa5ad3e69249f58a68e717324be4258296653406ff062f605edf -> ..``/dm-3`
+~hchen $ sudo ll /dev/mapper/dock*
+lrwxrwxrwx. 1 root root 7 Aug 25 07:57 /dev/mapper/docker-253:0-104108535-pool -> ../dm-2
+lrwxrwxrwx. 1 root root 7 Aug 25 11:13 /dev/mapper/docker-253:0-104108535-deefcd630a60aa5ad3e69249f58a68e717324be4258296653406ff062f605edf -> ../dm-3
 ```
 
 我们可以看一下它的device id（Docker都把它们记下来了）：
 
 ```
-`~hchen $ ``sudo` `cat` `/var/lib/docker/devicemapper/metadata/deefcd630a60aa5ad3e69249f58a68e717324be4258296653406ff062f605edf``{``"device_id"``:24,``"size"``:10737418240,``"transaction_id"``:26,``"initialized"``:``false``}`
+~hchen $ sudo cat /var/lib/docker/devicemapper/metadata/deefcd630a60aa5ad3e69249f58a68e717324be4258296653406ff062f605edf
+{"device_id":24,"size":10737418240,"transaction_id":26,"initialized":false}
 ```
 
 device_id是24，size是10737418240，除以512，就是20971520 个 sector，我们用这些信息来做个snapshot看看（注：我用了一个比较大的dev id – 1024）：
 
 ```
-`~hchen$ ``sudo` `dmsetup message ``"/dev/mapper/docker-253:0-104108535-pool"` `0 \``                  ``"create_snap 1024 24"``~hchen$ ``sudo` `dmsetup create dockersnap --table \``          ``"0 20971520 thin /dev/mapper/docker-253:0-104108535-pool 1024"``~hchen$ ``sudo` `mkdir` `/mnt/docker``~hchen$ ``sudo` `mount` `/dev/mapper/dockersnap` `/mnt/docker/``~hchen$ ``sudo` `ls` `/mnt/docker/``id` `lost+found rootfs``~hchen$ ``sudo` `ls` `/mnt/docker/rootfs/``bin dev etc home lib lib64 lost+found media mnt opt proc root run sbin srv sys tmp usr var`
+~hchen$ sudo dmsetup message "/dev/mapper/docker-253:0-104108535-pool" 0 \
+                                    "create_snap 1024 24"
+~hchen$ sudo dmsetup create dockersnap --table \
+                    "0 20971520 thin /dev/mapper/docker-253:0-104108535-pool 1024"
+~hchen$ sudo mkdir /mnt/docker
+~hchen$ sudo mount /dev/mapper/dockersnap /mnt/docker/
+~hchen$ sudo ls /mnt/docker/
+id lost+found rootfs
+~hchen$ sudo ls /mnt/docker/rootfs/
+bin dev etc home lib lib64 lost+found media mnt opt proc root run sbin srv sys tmp usr var
 ```
 
 我们在docker的容器里用findmnt命令也可以看到相关的mount的情况（因为太长，下面只是摘要）：
 
 ```
-`# findmnt``TARGET        SOURCE        ``/         ``/dev/mapper/docker-253``:0-104108535-deefcd630a60[``/rootfs``]``/etc/resolv``.conf ``/dev/mapper/centos-root``[``/var/lib/docker/containers/deefcd630a60/resolv``.conf]``/etc/hostname`   `/dev/mapper/centos-root``[``/var/lib/docker/containers/deefcd630a60/hostname``]``/etc/hosts`    `/dev/mapper/centos-root``[``/var/lib/docker/containers/deefcd630a60/hosts``]`
+# findmnt
+TARGET                SOURCE               
+/                 /dev/mapper/docker-253:0-104108535-deefcd630a60[/rootfs]
+/etc/resolv.conf  /dev/mapper/centos-root[/var/lib/docker/containers/deefcd630a60/resolv.conf]
+/etc/hostname     /dev/mapper/centos-root[/var/lib/docker/containers/deefcd630a60/hostname]
+/etc/hosts        /dev/mapper/centos-root[/var/lib/docker/containers/deefcd630a60/hosts]
 ```
 
 ### Device Mapper 行不行？
@@ -1259,5 +1867,6 @@ Thin Provisioning的文档中说，这还处理实验阶段，不要上Productio
 
 所以，如果你在使用loopback的devicemapper的话，当你的存储出现了问题后，正确的解决方案是：
 
+```
 rm -rf /var/lib/docker
-
+```
