@@ -4,7 +4,7 @@
 
 邮箱: haojunsheng@ruc.edu.cn
 
-Github Repositories: https://github.com/Anapodoton
+Github Repositories: https://github.com/haojunsheng
 
 也可以关注我的微信公众号和头条号「区块链指北」，我会不定期来更新的：
 
