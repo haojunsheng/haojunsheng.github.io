@@ -29,7 +29,7 @@ Kubernetes，也即k8s,是 Google 开源的容器集群管理系统，是 Google
 
 ## 1.1 Overview
 
-Kubernetes是一个可移植的，可扩展的开源平台，用于管理容器化的workloads 和 services。它拥有一个庞大且快速增长的生态系统。Kubernetes的服务，工具广泛可用。
+Kubernetes 是一个跨主机集群的 [开源的容器调度平台，它可以自动化应用容器的部署、扩展和操作](http://www.slideshare.net/BrianGrant11/wso2con-us-2015-kubernetes-a-platform-for-automating-deployment-scaling-and-operations) , 提供以容器为中心的基础架构。
 
 ### 1.1.1 什么是k8s?
 
@@ -73,8 +73,6 @@ Kubernetes不是一个传统的，包罗万象的PaaS（平台即服务）系统
 - 不提供配置系统
 - 不提供也不采用任何全面的机器配置，维护，管理或自我修复系统。
 
-
-
 ### 1.1.2 k8s组件
 
 集群是机器（节点）的集合，一个集群至少一个work node,一个master node。work node管理应用程序组件的pod。master 管理work node和pod。多个master用来提供高可用服务。
@@ -91,7 +89,7 @@ master提供了集群的控制服务，他们将会检测和回应集群的事�
 
 **etcd**
 
-用来备份集群数据的高可用的数据库。
+[etcd](https://kubernetes.io/docs/admin/etcd) 用于 Kubernetes 的后端存储。所有集群数据都存储在此处，始终为您的 Kubernetes 集群的 etcd 数据提供备份计划。
 
 **kube-scheduler**
 
@@ -114,11 +112,18 @@ master提供了集群的控制服务，他们将会检测和回应集群的事�
 
 **kubelet**
 
-是代理，确保容器运行在pod中，kubelet包含通过各种机制提供的一组PodSpec，并确保这些PodSpec中描述的容器运行正常。Kubelet不管理非Kubernetes创建的容器。
+是代理，,它监测已分配给其节点的 Pod(通过 apiserver 或通过本地配置文件)，提供如下功能:
+
+- 挂载 Pod 所需要的数据卷(Volume)。
+- 下载 Pod 的 secrets。
+- 通过 Docker 运行(或通过 rkt)运行 Pod 的容器。
+- 周期性的对容器生命周期进行探测。
+- 如果需要，通过创建 *镜像 Pod（Mirror Pod）* 将 Pod 的状态报告回系统的其余部分。
+- 将节点的状态报告回系统的其余部分。
 
 **kube-proxy**
 
-
+[kube-proxy](https://kubernetes.io/docs/admin/kube-proxy)通过维护主机上的网络规则并执行连接转发，实现了Kubernetes服务抽象。
 
 **container runtime**
 
@@ -134,11 +139,153 @@ WebUI，资源监控，集群级别的日志。
 
 ### 1.1.3 k8s 对象
 
+我们可以使用yaml文件来表示k8s对象。
+
 #### 理解k8s对象
 
 **Object Spec and Status**
 
 每个Kubernetes对象都包含两个嵌套的对象字段，它们控制着对象的配置：*spec*和status。您必须提供的规范描述了对象的所需状态-您希望对象具有的特征。状态描述了对象的实际状态，并由Kubernetes系统提供和更新。在任何给定时间，Kubernetes控制平面都会主动管理对象的实际状态以匹配您提供的所需状态。
+
+Spec是必须提供的，描述了对象的期望状态，Status是实际的状态，由k8s进行更新。
+
+**k8s对象的描述**
+
+```yaml
+application/deployment.yaml 
+
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.7.9
+        ports:
+        - containerPort: 80
+```
+
+我们可以使用`kubectl apply -f https://k8s.io/examples/application/deployment.yaml --record`来创建一个对象。
+
+上面这个文件中，哪些字段是必须的：
+
+- apiVersion：创建对象的k8s API版本；
+- kind：创建对象的类型；
+- metadata:和其他对象进行区分
+- spec：对象的期望状态
+
+#### k8s对象管理
+
+对比了三种方式的优缺点：
+
+| Management technique             | Operates on          | Recommended environment | Supported writers | Learning curve |
+| :------------------------------- | :------------------- | :---------------------- | :---------------- | :------------- |
+| Imperative commands              | Live objects         | Development projects    | 1+                | Lowest         |
+| Imperative object configuration  | Individual files     | Production projects     | 1                 | Moderate       |
+| Declarative object configuration | Directories of files | Production projects     | 1+                | Highest        |
+
+**Imperative commands**  
+
+example：kubectl run nginx --image nginx
+
+Trade-offs
+
+Advantages compared to object configuration:
+
+- Commands are simple, easy to learn and easy to remember.
+- Commands require only a single step to make changes to the cluster.
+
+Disadvantages compared to object configuration:
+
+- Commands do not integrate with change review processes.
+- Commands do not provide an audit trail associated with changes.
+- Commands do not provide a source of records except for what is live.
+- Commands do not provide a template for creating new objects.
+
+**Imperative object configuration**
+
+```sh
+kubectl create -f nginx.yaml
+```
+
+Trade-offs
+
+Advantages compared to imperative commands:
+
+- Object configuration can be stored in a source control system such as Git.
+- Object configuration can integrate with processes such as reviewing changes before push and audit trails.
+- Object configuration provides a template for creating new objects.
+
+Disadvantages compared to imperative commands:
+
+- Object configuration requires basic understanding of the object schema.
+- Object configuration requires the additional step of writing a YAML file.
+
+Advantages compared to declarative object configuration:
+
+- Imperative object configuration behavior is simpler and easier to understand.
+- As of Kubernetes version 1.5, imperative object configuration is more mature.
+
+Disadvantages compared to declarative object configuration:
+
+- Imperative object configuration works best on files, not directories.
+- Updates to live objects must be reflected in configuration files, or they will be lost during the next replacement.
+
+**Declarative object configuration**
+
+```sh
+kubectl diff -f configs/
+```
+
+Trade-offs
+
+Advantages compared to imperative object configuration:
+
+- Changes made directly to live objects are retained, even if they are not merged back into the configuration files.
+- Declarative object configuration has better support for operating on directories and automatically detecting operation types (create, patch, delete) per-object.
+
+Disadvantages compared to imperative object configuration:
+
+- Declarative object configuration is harder to debug and understand results when they are unexpected.
+- Partial updates using diffs create complex merge and patch operations.
+
+#### 推荐的label
+
+| Key                            | Description                                                  | Example            | Type   |
+| :----------------------------- | :----------------------------------------------------------- | :----------------- | :----- |
+| `app.kubernetes.io/name`       | The name of the application                                  | `mysql`            | string |
+| `app.kubernetes.io/instance`   | A unique name identifying the instance of an application     | `wordpress-abcxzy` | string |
+| `app.kubernetes.io/version`    | The current version of the application (e.g., a semantic version, revision hash, etc.) | `5.7.21`           | string |
+| `app.kubernetes.io/component`  | The component within the architecture                        | `database`         | string |
+| `app.kubernetes.io/part-of`    | The name of a higher level application this one is part of   | `wordpress`        | string |
+| `app.kubernetes.io/managed-by` | The tool being used to manage the operation of an application | `helm`             | string |
+
+举个例子：
+
+```
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.kubernetes.io/name: mysql
+    app.kubernetes.io/instance: wordpress-abcxzy
+    app.kubernetes.io/version: "5.7.21"
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: wordpress
+    app.kubernetes.io/managed-by: helm
+```
+
+
 
 ## 1.2 k8s 安装教程
 
@@ -312,17 +459,44 @@ k8s可以支持docker,CRI-O,containerd等。
 | [VMware](https://cloud.vmware.com/)                          | [VMware Cloud PKS](https://cloud.vmware.com/vmware-cloud-pks) | [VMware Enterprise PKS](https://cloud.vmware.com/vmware-enterprise-pks) | [VMware Enterprise PKS](https://cloud.vmware.com/vmware-enterprise-pks) | [VMware Essential PKS](https://cloud.vmware.com/vmware-essential-pks) |                                                              | [VMware Essential PKS](https://cloud.vmware.com/vmware-essential-pks) |
 | [Z.A.R.V.I.S.](https://zarvis.ai/)                           | ✔                                                            |                                                              |                                                              |                                                              |                                                              |                                                              |
 
+## 1.3 Workloads
+
+### 1.3.1 Pods
+
+#### 1.3.1.1 Pod Overview
+
+pod是k8s对象模型中的最小可部署对象。
+
+##### 1.3.1.1.1 Pods的理解
+
+pod是k8s的基本执行单元，一个pod代表了运行在集群上的一个进程。pod包括了一个或者多个容器，存储资源，唯一的IP。
+
+- **Pods that run a single container**：是最常见的；
+- 多个容器一个pod：
+
+##### 1.3.1.1.2 Pods管理多个容器
 
 
-## Kubernetes Objects
 
-基本的k8s对象：
+<img src="https://d33wubrfki0l68.cloudfront.net/aecab1f649bc640ebef1f05581bfcc91a48038c4/728d6/images/docs/pod.svg" alt="example pod diagram" style="zoom:25%;" />
 
-要使用Kubernetes，您可以使用Kubernetes API对象来描述集群的期望状态：您要运行哪些应用程序或其他工作负载，它们使用哪些容器映像，副本数量，要使其可用的网络和磁盘资源。您可以通过使用Kubernetes API（通常是通过命令行界面kubectl）创建对象来设置所需的状态。您还可以直接使用Kubernetes API与集群进行交互并设置或修改所需的状态。
+每个pod都有一个IP地址，pod中的容器共享IP地址和端口，pod内部的容器可以相互通信，此外，存储是可以共享的。
 
-设置所需的状态后，Kubernetes *Control Plan* 将通过Pod生命周期事件生成器（PLEG）使集群的当前状态与所需的状态匹配。为此，Kubernetes自动执行各种任务，例如启动或重新启动容器，扩展给定应用程序的副本数量等等。Kubernetes Control Plane 由集群上运行的一系列进程组成：
+##### 1.3.1.1.3 pod模板
 
-- **Kubernetes Master**:是运行在集群中的节点，由三个进程组成， [kube-apiserver](https://kubernetes.io/docs/admin/kube-apiserver/), [kube-controller-manager](https://kubernetes.io/docs/admin/kube-controller-manager/) and [kube-scheduler](https://kubernetes.io/docs/admin/kube-scheduler/).
-- 每个独立的非master节点：由2个进程组成
-  - **[kubelet](https://kubernetes.io/docs/admin/kubelet/)**, 和master节点通信
-  - **[kube-proxy](https://kubernetes.io/docs/admin/kube-proxy/)**, 网络代理
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    app: myapp
+spec:
+  containers:
+  - name: myapp-container
+    image: busybox
+    command: ['sh', '-c', 'echo Hello Kubernetes! && sleep 3600']
+```
+
+
+
