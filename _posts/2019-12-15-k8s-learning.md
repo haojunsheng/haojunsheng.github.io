@@ -79,13 +79,15 @@ Kubernetes不是一个传统的，包罗万象的PaaS（平台即服务）系统
 
 ![Components of Kubernetes](https://d33wubrfki0l68.cloudfront.net/817bfdd83a524fed7342e77a26df18c87266b8f4/3da7c/images/docs/components-of-kubernetes.png)
 
+![img](https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LDAOok5ngY4pc1lEDes%2F-LpOIkR-zouVcB8QsFj_%2F-LpOIpZIYxaDoF-FJMZk%2Farchitecture.png?generation=1569161437087842&alt=media)
+
 #### master组件
 
 master提供了集群的控制服务，他们将会检测和回应集群的事件，例如当部署的replicas字段不符合要求的时候，将会启动一个新的pod。集群中的任何机器都可以作为master。
 
 **kube-apiserver**
 
-用来提供API服务，可以进行水平扩展，运行多个实例。
+用来提供API服务，可以进行水平扩展，运行多个实例，提供了资源操作的唯一入口，并提供认证、授权、访问控制、API 注册和发现等机制。
 
 **etcd**
 
@@ -93,11 +95,11 @@ master提供了集群的控制服务，他们将会检测和回应集群的事�
 
 **kube-scheduler**
 
-监控新创建的pod，有没有节点分配，并且选择一个节点来运行。
+监控新创建的pod，有没有节点分配，并且选择一个节点来运行。负责资源的调度，按照预定的调度策略将 Pod 调度到相应的机器上；
 
 **kube-controller-manager**
 
-从逻辑上讲，每个控制器是一个单独的进程，但是为了降低复杂性，它们都被编译为单个二进制文件并在单个进程中运行。
+从逻辑上讲，每个控制器是一个单独的进程，但是为了降低复杂性，它们都被编译为单个二进制文件并在单个进程中运行。负责维护集群的状态，比如故障检测、自动扩展、滚动更新等；
 
 - Node Controller:负责节点发生故障时的通知和响应；
 - Replication Controller：负责为系统中的每个复制控制器对象维护正确数量的Pod。
@@ -112,7 +114,7 @@ master提供了集群的控制服务，他们将会检测和回应集群的事�
 
 **kubelet**
 
-是代理，,它监测已分配给其节点的 Pod(通过 apiserver 或通过本地配置文件)，提供如下功能:
+负责维护容器的生命周期，同时也负责 Volume（CVI）和网络（CNI）的管理。是代理，,它监测已分配给其节点的 Pod(通过 apiserver 或通过本地配置文件)，提供如下功能:
 
 - 挂载 Pod 所需要的数据卷(Volume)。
 - 下载 Pod 的 secrets。
@@ -123,7 +125,7 @@ master提供了集群的控制服务，他们将会检测和回应集群的事�
 
 **kube-proxy**
 
-[kube-proxy](https://kubernetes.io/docs/admin/kube-proxy)通过维护主机上的网络规则并执行连接转发，实现了Kubernetes服务抽象。
+[kube-proxy](https://kubernetes.io/docs/admin/kube-proxy)通过维护主机上的网络规则并执行连接转发，实现了Kubernetes服务抽象。负责为 Service 提供 cluster 内部的服务发现和负载均衡。
 
 **container runtime**
 
@@ -467,6 +469,10 @@ k8s可以支持docker,CRI-O,containerd等。
 
 pod是k8s对象模型中的最小可部署对象。
 
+Pod 是一组紧密关联的容器集合，它们共享 PID、IPC、Network 和 UTS namespace，是 Kubernetes 调度的基本单位。Pod 内的多个容器共享网络和文件系统，可以通过进程间通信和文件共享这种简单高效的方式组合完成服务。![img](https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LDAOok5ngY4pc1lEDes%2F-LpOIkR-zouVcB8QsFj_%2F-LpOIpZEWjsArXqZpSuN%2Fpod.png?generation=1569161437022859&alt=media)
+
+
+
 ##### 1.3.1.1.1 Pods的理解
 
 pod是k8s的基本执行单元，一个pod代表了运行在集群上的一个进程。pod包括了一个或者多个容器，存储资源，唯一的IP。
@@ -498,5 +504,46 @@ spec:
     command: ['sh', '-c', 'echo Hello Kubernetes! && sleep 3600']
 ```
 
+Node 是 Pod 真正运行的主机，可以是物理机，也可以是虚拟机。为了管理 Pod，每个 Node 节点上至少要运行 container runtime（比如 docker 或者 rkt）、`kubelet` 和 `kube-proxy` 服务。
 
+![img](https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LDAOok5ngY4pc1lEDes%2F-LpOIkR-zouVcB8QsFj_%2F-LpOIpZNK7_D9lT7C57d%2Fnode.png?generation=1569161441558542&alt=media)
+
+Namespace 是对一组资源和对象的抽象集合，比如可以用来将系统内部的对象划分为不同的项目组或用户组。常见的 pods, services, replication controllers 和 deployments 等都是属于某一个 namespace 的（默认是 default），而 node, persistentVolumes 等则不属于任何 namespace。
+
+Service 是应用服务的抽象，通过 labels 为应用提供负载均衡和服务发现。匹配 labels 的 Pod IP 和端口列表组成 endpoints，由 kube-proxy 负责将服务 IP 负载均衡到这些 endpoints 上。
+
+每个 Service 都会自动分配一个 cluster IP（仅在集群内部可访问的虚拟地址）和 DNS 名，其他容器可以通过该地址或 DNS 来访问服务，而不需要了解后端容器的运行。
+
+![img](https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LDAOok5ngY4pc1lEDes%2F-LpOIkR-zouVcB8QsFj_%2F-LpOIpZQ8P49qNDyiHUJ%2F14731220608865.png?generation=1569161437146749&alt=media)
+
+
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+spec:
+  ports:
+  - port: 8078 # the port that this service should serve on
+    name: http
+    # the container on each pod to connect to, can be a name
+    # (e.g. 'www') or a number (e.g. 80)
+    targetPort: 80
+    protocol: TCP
+  selector:
+    app: nginx
+```
+
+Label 是识别 Kubernetes 对象的标签，以 key/value 的方式附加到对象上（key 最长不能超过 63 字节，value 可以为空，也可以是不超过 253 字节的字符串）。
+
+Label 不提供唯一性，并且实际上经常是很多对象（如 Pods）都使用相同的 label 来标志具体的应用。
+
+Label 定义好后其他对象可以使用 Label Selector 来选择一组相同 label 的对象（比如 ReplicaSet 和 Service 用 label 来选择一组 Pod）。Label Selector 支持以下几种方式：
+
+- 等式，如 `app=nginx` 和 `env!=production`
+- 集合，如 `env in (production, qa)`
+- 多个 label（它们之间是 AND 关系），如 `app=nginx,env=test`
+
+Annotations 是 key/value 形式附加于对象的注解。不同于 Labels 用于标志和选择对象，Annotations 则是用来记录一些附加信息，用来辅助应用部署、安全策略以及调度策略等。比如 deployment 使用 annotations 来记录 rolling update 的状态。
 
