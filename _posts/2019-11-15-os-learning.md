@@ -30,8 +30,15 @@ tag: os
          * [2.2.2 信号量临界区保护](#222-信号量临界区保护)
          * [2.2.3 信号量的代码实现](#223-信号量的代码实现)
          * [2.2.4 死锁处理](#224-死锁处理)
+   * [3. 内存管理](#3-内存管理)
+      * [3.1 内存使用与分段](#31-内存使用与分段)
+      * [3.2 内存分区与分页](#32-内存分区与分页)
+      * [3.3 多级页表与快表](#33-多级页表与快表)
+      * [3.4 段页结合的实际内存管理](#34-段页结合的实际内存管理)
+      * [3.5 内存换入-请求调页](#35-内存换入-请求调页)
+      * [3.6 内存换出](#36-内存换出)
 
-<!-- Added by: anapodoton, at: 2019年12月13日 星期五 15时42分29秒 CST -->
+<!-- Added by: anapodoton, at: 2019年12月15日 星期日 16时32分51秒 CST -->
 
 <!--te-->
 
@@ -183,7 +190,7 @@ main.c 程序首先利用前面 setup.s 程序取得的机器参数设置系统�
 
 ```c
 int main(){
-		fork();
+      fork();
 }
 ```
 
@@ -545,6 +552,143 @@ flag[1]=true,turn=1,表示1要进入临界区，并且轮到1进入。
 ![image-20191213113450967](https://tva1.sinaimg.cn/large/006tNbRwly1g9uxvu4nzpj31ca0q4kd4.jpg)
 
 ### 2.2.4 死锁处理
+
+# 3. 内存管理
+
+地址映射与共享
+
+## 3.1 内存使用与分段
+
+**Memory and** **Segmentation** 
+
+我们把程序装入内存后，需要进行重定位，那么我们什么时候进行重定位呢？编译时还是加载时呢？看看优缺点：编译时重定位的程序只能放在内存固定位置 ，载入时重定位的程序一旦载入内存就不能动了。
+
+这两个方法都是存在缺点的，那么我们能不能在**运行时**进行重定位呢？
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9v9lee0rjj31600newkg.jpg" alt="image-20191213181959924" style="zoom:50%;" />
+
+我们来总结下：
+![image-20191213182208538](https://tva1.sinaimg.cn/large/006tNbRwly1g9v9nlevqrj316c0n8wjf.jpg)
+
+事情到这里。好像问题得到了完美的解决。但是没有这么简单，难道我们需要把程序都装到内存中吗？当然不是啦。
+
+我们根据代码的特点和用途，将代码进行分段，比如数据段和代码段,可以参考这个：https://haojunsheng.github.io/2019/12/Linker-Loader/
+
+真正的故事是从GDT和LDT开始的（全局符号描述表和局部符号描述表）
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9vi12ze11j31480nowic.jpg" alt="image-20191213231152911" style="zoom:50%;" />
+
+## 3.2 内存分区与分页
+
+**Memory Partition and** **Paging** 
+
+接下来我们就可以把各个段放到相应的内存分区了。
+
+由于内存需要不断的换入换出，我们首先尝试内存分区的办法，但是我们发现内存分区的效率是很低的，而且还会导致内存碎片的问题。
+
+我们还要继续去思考解决的办法，我们可以尝试将连续的内存变为离散的内存，即将内存进行分页，针对每个段内存请求，系统一页一页的分配给给这个段。
+
+**此时不再需要内存紧缩了，我们最大仅浪费4k的内存**。
+
+![image-20191214231357628](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wnpluigrj31ce0r64qp.jpg)
+
+## 3.3 多级页表与快表 
+
+**Multilevel Paging**
+
+我们为了提高空间利用率，每个页应该尽可能的小，但是页小了，页表就会变大，进而导致页表的放置成问题。哎，难搞啊。
+
+![image-20191214232426948](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wo0hpwayj316k0ncatq.jpg)
+
+但是在实际中，不是所有的逻辑地址都会使用的，比如，32位的操作系统，逻辑地址空间是4G，那么我们可不可以只存放用到的页。
+
+但是引出了新的问题，页号不再连续，我们在访问指令之前，需要先查找页，无论是采用顺序查找，还是折半查找，都是很费劲的。需要增加访问内存的次数。哎，解决了旧的问题，还有新的问题。
+
+![image-20191214233037480](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wo6wa7g8j31ao0like2.jpg)
+
+我们开始新的尝试，我们既要满足页表的连续性，又要满足尽量少放入内存的需求，哈哈，既要，又要，是不是很难搞，但是总是有办法的，我们可以引入多级列表，**即页目录+页表**。
+
+![image-20191215000836006](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wpaf7c7qj313m0o0zp6.jpg)
+
+![image-20191215000911340](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wpazymgcj30zq0osafg.jpg)
+
+![image-20191215001319496](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wpfb63qaj30n80vugry.jpg)
+
+## 3.4 段页结合的实际内存管理 
+
+**Segmentation & Paging** 
+
+段、页结合: 程序员希望用段， 物理内存希望用页,所以段和页进行结合。
+
+![image-20191215002558974](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wpshmnp8j31ag0qi1ce.jpg)
+
+
+
+![image-20191215003210854](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wpyy375sj30x40kg42z.jpg)
+
+![image-20191215003309395](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wpzyaa6vj30xu0ii78q.jpg)
+
+![image-20191215003818811](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wq5cs0loj316k0rqazc.jpg)
+
+下面我们的任务是讲清楚这5步：
+
+**分配虚存，建段表，分配内存，建页表，地址重定位。**
+
+![image-20191215004109589](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wq8aeohaj315a0q6qq0.jpg)
+
+![image-20191215004303769](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wqa8sdr7j31ao0q6aqh.jpg)
+
+![image-20191215004526129](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wqcr1djtj317a0lakaf.jpg)
+
+![image-20191215004652761](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wqe9ast9j312u0pkqk0.jpg)
+
+![image-20191215004816231](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wqfpjo4wj31a60p0ni6.jpg)
+
+![image-20191215005054084](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wqininjej30ku0f8mzh.jpg)
+
+## 3.5 内存换入-请求调页 
+
+**Swap in** 
+
+![image-20191215160450587](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xgxe2iqqj30xi0qi0x8.jpg)
+
+![image-20191215160707941](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xgzq7obwj30ly0xe0y6.jpg)
+
+![image-20191215160742141](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xh0j1pdnj30xo0n241y.jpg)
+
+## 3.6 内存换出 
+
+**Swap out** 
+
+各种置换算法没有赘述。
+
+![image-20191215161637007](https://tva1.sinaimg.cn/large/006tNbRwly1g9xh9sur45j319e0p41dm.jpg)
+
+![image-20191215162030980](https://tva1.sinaimg.cn/large/006tNbRwly1g9xhdoy916j314i0qyaz4.jpg)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
