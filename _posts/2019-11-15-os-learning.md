@@ -37,8 +37,20 @@ tag: os
       * [3.4 段页结合的实际内存管理](#34-段页结合的实际内存管理)
       * [3.5 内存换入-请求调页](#35-内存换入-请求调页)
       * [3.6 内存换出](#36-内存换出)
+      * [3.7 逻辑地址VS线性地址VS物理地址](#37-逻辑地址vs线性地址vs物理地址)
+   * [4. 设备驱动与文件系统](#4-设备驱动与文件系统)
+      * [4.1 终端设备的控制](#41-终端设备的控制)
+         * [4.1.1 IO与显示器](#411-io与显示器)
+         * [4.1.2 键盘](#412-键盘)
+      * [4.2 proc文件系统的实现](#42-proc文件系统的实现)
+         * [4.2.1 生磁盘的使用](#421-生磁盘的使用)
+         * [4.2.2 从生磁盘到文件](#422-从生磁盘到文件)
+         * [4.2.3 文件使用磁盘的实现](#423-文件使用磁盘的实现)
+         * [4.2.4 目录与文件系统](#424-目录与文件系统)
+         * [4.2.5 目录解析代码的实现](#425-目录解析代码的实现)
+   * [5. 总结](#5-总结)
 
-<!-- Added by: anapodoton, at: 2019年12月15日 星期日 16时32分51秒 CST -->
+<!-- Added by: anapodoton, at: 2019年12月17日 星期二 16时57分15秒 CST -->
 
 <!--te-->
 
@@ -425,6 +437,10 @@ This is only half true. Yes, you can easily cause problems if you call the OS yo
 
 <img src="https://i.loli.net/2019/12/11/wZ2SG6R3xqp9ujb.png" style="zoom:50%;" />
 
+我们来看下中断过程调用。
+
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191217165351.png" style="zoom:50%;" />
+
 <img src="../../../Library/Application Support/typora-user-images/image-20191211182238864.png" alt="image-20191211182238864" style="zoom:50%;" />
 
 
@@ -620,6 +636,8 @@ flag[1]=true,turn=1,表示1要进入临界区，并且轮到1进入。
 
 段、页结合: 程序员希望用段， 物理内存希望用页,所以段和页进行结合。
 
+注意：
+
 ![image-20191215002558974](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wpshmnp8j31ag0qi1ce.jpg)
 
 
@@ -668,27 +686,191 @@ flag[1]=true,turn=1,表示1要进入临界区，并且轮到1进入。
 
 
 
+## 3.7 逻辑地址VS线性地址VS物理地址
+
+来自《Linux内核完全注释》5.3节。
+
+Linux内存翻译的细节：
+
+代码和数据在**逻辑地址，线性地址（虚拟地址）和物理地址**之间的对应关系。
+
+为了有效地使用机器中的物理内存，在系统初始化阶段内存被划分成几个功 能区域 ：
+
+![image-20191215172608160](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xj9zjbxnj31460hmq4p.jpg)
+
+我们再来看内存地址空间的概念：
+
+我们需要区分：进程的逻辑地址，CPU的线性地址，实际的物理内存。
+
+- 逻辑地址：由 GDT 映射的全局地址空间和 由 LDT 映射的局部地址空间组成。由程序产生的与段相关的偏移地址部分。所以程序员可以使用的逻辑地址空间是4G。
+
+- 线性地址(Linear Address)是逻辑地址到物理地址变换之间的中间层，是处理器可寻址的内存空间 (称为线性地址空间)中的地址。 32位的为4G。
+- 物理地址(Physical Address)是指出现在 CPU 外部地址总线上的寻址物理内存的地址信号，是地址变换的最终结果地址。 
+
+在 Linux 0.12 内核中，给每个程序(进程)都划分了总容量为 64MB 的虚拟内存空间。因此程序的逻辑地址范围是 0x0000000 到 0x4000000。虚拟内存面向用户：好像给用户提供了一个很大的内存，提供一个假象。面向计算机，使用分页机制，把虚拟地址映射到物理内存，加快了读取的速度。
+
+> 所以，给每个进程提供了4G的逻辑地址（即寻址空间），给每个程序提供了64M的虚拟内存空间，注意体会之间的区别。
+
+下面我们来看下内存分段机制：
+
+![image-20191215174925440](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xjy8lpp2j314m0akmza.jpg)
+
+CPU 进行地址变换(映射)的主要目的是为了解决虚拟内存空间到物理内存空间的映射问题。虚拟 内存空间的含义是指一种利用二级或外部存储空间，使程序能不受实际物理内存量限制而使用内存的一种方法。通常虚拟内存空间要比实际物理内存量大得多。 
+
+那么虚拟存储管理是怎样实现的呢?首先，当一个程序需要使用 一块不存在的内存时(也即在内存页表项中已标出相应内存页面不在内存中)，CPU 就需要一种方法来 得知这个情况。这是通过 80386 的页错误异常中断来实现的。当一个进程引用一个不存在页面中的内存 地址时，就会触发 CPU 产生页出错异常中断，并把引起中断的线性地址放到 CR2 控制寄存器中。因此 处理该中断的过程就可以知道发生页异常的确切地址，从而可以把进程要求的页面从二级存储空间(比 如硬盘上)加载到物理内存中。如果此时物理内存已经被全部占用，那么可以借助二级存储空间的一部 分作为交换缓冲区(Swapper)把内存中暂时不使用的页面交换到二级缓冲区中，然后把要求的页面调入 内存中。这也就是内存管理的缺页加载机制，在 Linux 0.12 内核中是在程序 mm/memory.c 中实现。 
+
+在实模式下，寻址一个内存地址主要是使用段和偏移值，段值被存放在段寄存器中(例如 ds)，并 且段的长度被固定为 64KB。段内偏移地址存放在任意一个可用于寻址的寄存器中(例如 si)。因此，根 
+
+据段寄存器和偏移寄存器中的值，就可以算出实际指向的内存地址，见图 5-7 (a)所示。 而在保护模式运行方式下，段寄存器中存放的不再是被寻址段的基地址，而是一个段描述符表 (Segment Descriptor Table)中某一描述符项在表中的索引值。索引值指定的段描述符项中含有需要寻址 的内存段的基地址、段的长度值和段的访问特权级别等信息。寻址的内存位置是由该段描述符项中指定 的段基地址值与一个段内偏移值组合而成。段的长度可变，由描述符中的内容指定。可见，和实模式下 的寻址相比，段寄存器值换成了段描述符表中相应段描述符的索引值以及段表选择位和特权级，称为段 选择符(Segment Selector)，但偏移值还是使用了原实模式下的概念。这样，在保护模式下寻址一个内 存地址就需要比实模式下多一道手续，也即需要使用段描述符表。这是由于在保护模式下访问一个内存 段需要的信息比较多，而一个 16 位的段寄存器放不下这么多内容。示意图见图 5-7 (b)所示。注意，如果 你不在一个段描述符中定义一个内存线性地址空间区域，那么该地址区域就完全不能被寻址，CPU 将拒 绝访问该地址区域。 
+
+![image-20191215175145169](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xk0krinaj31360ka767.jpg)
+
+每个描述符占用 8 个字节，其中含有所描述段在线性地址空间中的起始地址(基址)、段的长度、段 的类型(例如代码段和数据段)、段的特权级别和其他一些信息。一个段可以定义的最大长度是 4GB。 
+
+保存描述符项的描述符表有 3 种类型，每种用于不同目的。全局描述符表 GDT(Global Descriptor Table)是主要的基本描述符表，该表可被所有程序用于引用访问一个内存段。中断描述符表 IDT(Interrupt Descriptor Table)保存有定义中断或异常处理过程的段描述符。IDT 表直接替代了 8086 系统中的中断向 量表。为了能在 80X86 保护模式下正常运行，我们必须为 CPU 定义一个 GDT 表和一个 IDT 表。最后一 种类型的表是局部描述符表 LDT(Local Descriptor Table)。该表应用于多任务系统中，通常每个任务使 用一个 LDT 表。作为对 GDT 表的扩充，每个 LDT 表为对应任务提供了更多的可用描述符项，因而也为 每个任务提供了可寻址内存空间的范围。这些表可以保存在线性地址空间的任何地方。为了让 CPU 能定 位 GDT 表、IDT 表和当前的 LDT 表，需要为 CPU 分别设置 GDTR、IDTR 和 LDTR 三个特殊寄存器。 这些寄存器中将存储对应表的 32 位线性基地址和表的限长字节值。表限长值是表的长度值-1。 
+
+当 CPU 要寻址一个段时，就会使用 16 位的段寄存器中的选择符来定位一个段描述符。在 80X86 CPU 中，段寄存器中的值右移 3 位即是描述符表中一个描述符的索引值。13 位的索引值最多可定位 8192 (0--8191)个的描述符项。选择符中位 2(TI)用来指定使用哪个表。若该位是 0 则选择符指定的是 GDT 表中的描述符，否则是 LDT 表中的描述符。 每个程序都可有若干个内存段组成。程序的逻辑地址(或称为虚拟地址)即是用于寻址这些段和段 
+
+中具体地址位置。在 Linux 0.12 中，程序逻辑地址到线性地址的变换过程使用了 CPU 的全局段描述符表 GDT 和局部段描述符表 LDT。由 GDT 映射的地址空间称为全局地址空间，由 LDT 映射的地址空间则称 为局部地址空间，而这两者构成了虚拟地址的空间。具体的使用方式见图 5-8 所示。 
+
+![image-20191215175421825](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xk3be92qj313q0nmn2v.jpg)
+
+下面我们再来看下内存的分页管理：
+
+内存分页管理机制的基本原理是将 CPU 整个线性内存区域划分成 4096 字节为 1 页的内存页面。
+
+![image-20191215175725425](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xk6i9v17j30xo0fujt9.jpg)
+
+![image-20191215175941890](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xk8vwd6rj313s0euta8.jpg)
+
+![image-20191215180125438](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xkaphxfkj314g0ewae4.jpg)
+
+进程逻辑地址空间中代码段(Code Section)和数据段(Data Section)的概念与CPU 分段机制中的代码段和数据段不是同一个概念。CPU 分段机制中段的概念确定了在线性地址空间中一个 段的用途以及被执行或访问的约束和限制，每个段可以设置在 4GB 线性地址空间中的任何地方，它们可 以相互独立也可以完全重叠或部分重叠。而进程在其逻辑地址空间中的代码段和数据段则是指由编译器 在编译程序和操作系统在加载程序时规定的在进程逻辑空间中顺序排列的代码区域、初始化和未初始化 的数据区域以及堆栈区域。进程逻辑地址空间中代码段和数据段等结构形式见图所示。有关逻辑地址空 间的说明请参见内存管理一章内容。其中 nr 是任务号，start_code 是进程或任务在线性地址空间的起始 位置。其他变量均表示进程在逻辑空间中的值。 
+
+![image-20191215180916590](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xkitdpx3j31360dwacd.jpg)
+
+虚拟地址、线性地址和物理地址之间的关系:
+
+![image-20191215183305811](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xl7moxfdj314g0pkn09.jpg)
+
+任务 **0** 的地址对应关系:
+
+![image-20191215183532971](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xldg6vp2j316m0logpm.jpg)
+
+任务 **1** 的地址对应关系:
+
+与任务 0 类似，任务 1 也是一个特殊的任务。它的代码也在内核代码区域中。与任务 0 不同的是在 线性地址空间中，系统在使用 fork()创建任务 1(init 进程)时为存放任务 1 的二级页表而在主内存区申 请了一页内存来存放，并复制了父进程(任务 0)的页目录和二级页表项。 
+
+![image-20191215183711488](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xlbvpmtgj315e0p8wj8.jpg)
+
+其他任务的地址对应关系:
+
+![image-20191215183740120](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xlcctc9cj315q0tk79q.jpg)
+
+# 4. 设备驱动与文件系统
+
+设备可以分为块设备(block device)和字符型设备(character device)。块型设备是一种可以以固定大小的数据块为单位进行寻址和访问的设备，例如硬盘设备和软盘设备。字符型设备是一种以字符流作为操作对象的设备，不能进行寻址操作。 例如打印机设备、网络接 口设备和终端设备。 
+
+## 4.1 终端设备的控制
+
+### 4.1.1 IO与显示器
+
+**printf(Display)** 
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xsskglq2j30za0p47p9.jpg" alt="image-20191215225351937" style="zoom:50%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xsvc0hnyj310y0tkn51.jpg" alt="image-20191215225755985" style="zoom:33%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xt2wzs7sj30tw0oian5.jpg" alt="image-20191215230521080" style="zoom:33%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xta8itv0j318m0pgke0.jpg" alt="image-20191215231221986" style="zoom:33%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xtbfgzjnj30ve0qgwrc.jpg" alt="image-20191215231326922" style="zoom:33%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xtdh37hoj315w0q8kbn.jpg" alt="image-20191215231530850" style="zoom:33%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xtgl4tgmj30zm0pu4g1.jpg" alt="image-20191215231821581" style="zoom:33%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xthnanpfj30uw0ps1b5.jpg" alt="image-20191215231923589" style="zoom:33%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xtjqlhilj30x60oodsl.jpg" alt="image-20191215232128185" style="zoom:50%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xtl14jfaj30wc0qknei.jpg" alt="image-20191215232242549" style="zoom:50%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xtocnzfoj30y00qaast.jpg" alt="image-20191215232536169" style="zoom:50%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xtoza04mj30qs15cteh.jpg" alt="image-20191215232629160" style="zoom:50%;" />
+
+### 4.1.2 键盘
+
+**Keyboard** ，终端设备包括显示器和键盘。
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xtx5591mj30wm0pq4hi.jpg" alt="image-20191215233418075" style="zoom:50%;" /><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xtzv2i1mj30kg0zmgro.jpg" alt="image-20191215233657657" style="zoom:50%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xu0dsowej30o60h8426.jpg" alt="image-20191215233726036" style="zoom:50%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xu1ivmwhj30p6136afj.jpg" alt="image-20191215233834616" style="zoom:50%;" />
+
+## 4.2 proc文件系统的实现
+
+### 4.2.1 生磁盘的使用 
+
+**Raw Disks** 
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9ystes6raj30mw0v67am.jpg" alt="image-20191216194148400" style="zoom:33%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9ysx648ptj316a0psazt.jpg" alt="image-20191216194526326" style="zoom:33%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yt2fl5jbj30m20v8ahx.jpg" alt="image-20191216195028068" style="zoom:25%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yt4sya1uj30vo0hi0wo.jpg" alt="image-20191216195244122" style="zoom:50%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yt64n3ssj30qa0gqq70.jpg" alt="image-20191216195358319" style="zoom:50%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yt6m1ceaj30pq11wn4a.jpg" alt="image-20191216195427753" style="zoom:50%;" />
+
+### 4.2.2 从生磁盘到文件
+
+**Files- cooked Disks** 
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9ytntdf3fj313c0my45p.jpg" alt="image-20191216201057596" style="zoom:50%;" />
+
+文件在磁盘中的存储分为3种，顺序存储，链式存储，和索引存储。
+
+### 4.2.3 文件使用磁盘的实现
+
+**Files Implementation** 
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yu0olerij310a0pewts.jpg" alt="image-20191216202320286" style="zoom:50%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yu3or6sqj30zc0qqnc6.jpg" alt="image-20191216202612938" style="zoom:50%;" />
+
+下一步是算出盘块号：
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yu7igilsj31ce0sk1kx.jpg" alt="image-20191216202953111" style="zoom:33%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yu9izq3nj316y0qoqok.jpg" alt="image-20191216203149223" style="zoom:50%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yuakj8l5j31by0n27mz.jpg" alt="image-20191216203249129" style="zoom:50%;" />
+
+> **整个故事是从文件名找到inode,从inode找到盘块号，根据盘块号放到电梯队列，根据电梯队列中的盘块号算出CHS，然后使用out指令发送到磁盘控制器，磁盘控制器控制马达，电生磁，磁生电，形成数据。**
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yui4hbgmj30ky11gn2z.jpg" alt="image-20191216204004488" style="zoom:50%;" />
+
+### 4.2.4 目录与文件系统
+
+**File System**
+
+磁盘文件**:** 建立了字符流到盘块集合的映射关系。
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yuwm4jopj310s0octqj.jpg" alt="image-20191216205401548" style="zoom:50%;" />
+
+### 4.2.5 目录解析代码的实现
+
+**Directory Resolution**
 
 
 
+# 5. 总结
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yv6db62bj31gq0qg1kx.jpg" alt="image-20191216210324134" style="zoom:50%;" />

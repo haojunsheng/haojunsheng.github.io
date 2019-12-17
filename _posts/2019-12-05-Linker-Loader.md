@@ -67,13 +67,96 @@ ELF，executable linkable format。动态链接库（.so）和静态链接库（
 
 文件头，段表，重定位表，字符串表（段名，变量名），符号表。 
 
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191217143040.png" style="zoom:50%;" />
+
+- 执行头部分(exec header)。执行文件头部分。该部分中含有一些参数(exec 结构)，是有关目标文件 
+
+  的整体结构信息。例如代码和数据区的长度、未初始化数据区的长度、对应源程序文件名以及目标文 件创建时间等。内核使用这些参数把执行文件加载到内存中并执行，而链接程序(ld)使用这些参数 将一些模块文件组合成一个可执行文件。这是目标文件唯一必要的组成部分。 
+
+- 代码区(text segment)。由编译器或汇编器生成的二进制指令代码和数据信息，含有程序执行时被加 载到内存中的指令代码和相关数据。可以以只读形式被加载。 
+
+-  数据区(data segment)。由编译器或汇编器生成的二进制指令代码和数据信息，这部分含有已经初始 化过的数据，总是被加载到可读写的内存中。 
+
+-  代码重定位部分(text relocations)。这部分含有供链接程序使用的记录数据。在组合目标模块文件时 用于定位代码段中的指针或地址。当链接程序需要改变目标代码的地址时就需要修正和维护这些地方。 
+
+-  数据重定位部分(data relocations)。类似于代码重定位部分的作用，但是用于数据段中指针的重定位。 
+
+-  符号表部分(symbol table)。这部分同样含有供链接程序使用的记录数据。这些记录数据保存着模块 文件中定义的全局符号以及需要从其他模块文件中输入的符号，或者是由链接器定义的符号，用于在 模块文件之间对命名的变量和函数(符号)进行交叉引用。 
+
+- 字符串表部分(string table)。该部分含有与符号名相对应的字符串。用于调试程序调试目标代码，与 
+
+  链接过程无关。这些信息可包含源程序代码和行号、局部符号以及数据结构描述信息等。 
+
+文件头的定义在 include/a.out.h ，
+
+```c
+struct exec {
+  unsigned long a_magic;	/* Use macros N_MAGIC, etc for access */
+  unsigned a_text;		/* length of text, in bytes */
+  unsigned a_data;		/* length of data, in bytes */
+  unsigned a_bss;		/* length of uninitialized data area for file, in bytes */
+  unsigned a_syms;		/* length of symbol table data in file, in bytes */
+  unsigned a_entry;		/* start address */
+  unsigned a_trsize;		/* length of relocation info for text, in bytes */
+  unsigned a_drsize;		/* length of relocation info for data, in bytes */
+};
+```
+
+重定位信息部分的定义， include/a.out.h。有2个用处，一是当代码段被重定位到一个不同的基地址处时，重定位项则用于指出需要 修改的地方。二是在模块文件中存在对未定义符号引用时，当此未定义符号最终被定义时链接程序就可以使用相应重定位项对符号的值进行修正。 
+
+```c
+/* This structure describes a single relocation to be performed.
+   The text-relocation section of the file is a vector of these structures,
+   all of which apply to the text section.
+   Likewise, the data-relocation section applies to the data section.  */
+
+struct relocation_info
+{
+  /* Address (within segment) to be relocated.  */
+  int r_address;
+  /* The meaning of r_symbolnum depends on r_extern.  */
+  unsigned int r_symbolnum:24;
+  /* Nonzero means value is a pc-relative offset
+     and it should be relocated for changes in its own address
+     as well as for changes in the symbol or section specified.  */
+  unsigned int r_pcrel:1;
+  /* Length (as exponent of 2) of the field to be relocated.
+     Thus, a value of 2 indicates 1<<2 bytes.  */
+  unsigned int r_length:2;
+  /* 1 => relocate with value of symbol.
+          r_symbolnum is the index of the symbol
+	  in file's the symbol table.
+     0 => relocate with the address of a segment.
+          r_symbolnum is N_TEXT, N_DATA, N_BSS or N_ABS
+	  (the N_EXT bit may be set also, but signifies nothing).  */
+  unsigned int r_extern:1;
+  /* Four bits that aren't used, but when writing an object file
+     it is desirable to clear them.  */
+  unsigned int r_pad:4;
+};
+```
+
+符号表和字符串：
+
+```c
+struct nlist {
+  union {
+    char *n_name;
+    struct nlist *n_next;
+    long n_strx;
+  } n_un;
+  unsigned char n_type;
+  char n_other;
+  short n_desc;
+  unsigned long n_value;
+};
+```
+
 **字符串表和符号表的区别：** 
 
-我的理解字符串表存放的是，字符串的值，如String s1="hello world",那么s1存放在符号表中，hello world存放在字符串表中，s1的值是hello world的地址。 
+如String s1="hello world",我的理解字符串表存放的是s1,符号表中存放的是s1在字符串中的下标和"hello world"的地址。  
 
-确实我的理解是对的。 
-
-准备程序，simpleSecticon.c 
+下面我们使用simpleSecticon.c来一步一步的了解目标文件究竟是什么样子的，毕竟上面只是纸上谈兵，准备程序，simpleSecticon.c 
 
 ```c
 int printf(const char* format,...); 
@@ -107,28 +190,38 @@ return a;
 } 
 ```
 
-只编译不连接：gcc -c simpleSecticon.c 
+只编译不连接：gcc -c simpleSecticon.c 获取目标文件。
 
-使用objdump -h simpleSecticon.o来打印基本信息： 
+使用objdump -h simpleSecticon.o来打印目标文件的基本信息： 
 
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205112927.png)
 
-将所有段的内容以十六进制的方式打印，并且指令反汇编 
+我们已经了解了几个段在目标文件中的分布，下面我们来详细看下：
+
+首先看下代码段，将所有段的内容以十六进制的方式打印，并且指令反汇编 
 
 objdump -s -d simpleSecticon.o 
 
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113009.png)
 
-使用readelf -h simpleSecticon.o来查看头部基本信息 
+我们可以看到代码段包含func1和main函数的指令。
+
+接着我们可以看数据段，.data段存放全局静态变量和局部静态变量，字符串常量也是在数据段中的。
+
+bss段不再赘述。
+
+在上面我们通过一个例子，大概了解了ELF文件的轮廓，接着我们来看下ELF文件的结构格式。
+
+我们首先来看下ELF文件头，使用readelf -h simpleSecticon.o来查看头部基本信息 
 
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113026.png)
 
-
+elf文件头定义在/usr/include/elf.h中
 
 ```c
 /* The ELF file header. This appears at the start of every ELF file. */ 
 
-\#define EI_NIDENT (16) 
+#define EI_NIDENT (16) 
 
 typedef struct 
 
@@ -165,9 +258,7 @@ Elf32_Half e_shstrndx; /* Section header string table index */
 } Elf32_Ehdr; 
 ```
 
-
-
-使用readelf -S simpleSecticon.o来查看详细的段表结构，段表的结构是Elf32_Shdr,定义在/usr/include/elf.h中。 
+在上面我们已经看到了目标文件有各种各样的段，我们使用使用readelf -S simpleSecticon.o来查看详细的段表结构，段表的结构是Elf32_Shdr,定义在/usr/include/elf.h中。 
 
 ```c
 typedef struct 
@@ -199,11 +290,27 @@ Elf32_Word sh_entsize; /* Entry size if section holds table */
 
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113136.png)
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113154.png) 
+分析到现在，我们已经把头部和段表都进行了分析，如下图所示，当然只是大概的，具体的没有展开。
+
+<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113154.png" style="zoom:50%;" /> 
+
+哈哈，我们还有rel.text重定位表，字符串表，和符号表。
+
+重定位表可以参考2.4里面的静态链接，不再详述。
+
+下面看下字符串表。elf文件中用到了很多的字符串，有段名，变量名等。我们用偏移来表示字符串。字符串表分为strtab和section header string table，前者用来保存普通的字符串，如变量名，后者用来保存段名。
+
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191217153125.png" style="zoom:50%;" />
+
+我们简单的看下符号表，具体的在下面讲解，符号表存放的是符号名在字符串表中的下表和符号对应的值的地址。
+
+我们来总结下，二者之间的区别：
+
+> 如String s1="hello world",我的理解字符串表存放的是s1,符号表中存放的是s1在字符串中的下标和"hello world"的地址。 
 
 ### 2.3.5 链接的接口-符号 
 
-ELF符号表结构，特殊符号。 
+我们再来详细看下符号表。ELF符号表结构，特殊符号。 
 
 函数名和变量名叫符号名（Symbol），符号的值是地址。 
 
@@ -647,6 +754,10 @@ CPU 进行地址变换(映射)的主要目的是为了解决虚拟内存空间�
 其他任务的地址对应关系:
 
 ![image-20191215183740120](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xlcctc9cj315q0tk79q.jpg)
+
+总体来看下：
+
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191217165102.png" style="zoom:50%;" />
 
 ## 7. 动态链接 
 
