@@ -350,39 +350,64 @@ Elf32_Section st_shndx; /* Section index */
 
 ## 2.4 静态链接 
 
-空间和地址分配，符号解析与重定位，common块，静态库链接，链接过程控制，BFD库 
+空间和地址分配，符号解析与重定位，common块，静态库链接，链接过程控制，BFD库 。
+
+使用a.c和b.c来做为演示：
+
+```c
+//a.c
+extern int shared;
+int main(){
+    int a=100;
+    swap(&a,&shared);
+}
+```
+
+```c
+//b.c
+int shared=1;
+void swap(int *a,int *b){
+	*a^=*b^=*a^=*b;
+}
+```
 
 ### 2.4.1 空间和地址分配 
 
-**分配地址和空间有2层含义：第一个指的是可执行文件中的空间，第二个执行的是装载后在虚拟地址中的空间。** 
+我们想把a.o,b.o输出为ab，那么问题来了，多个目标文件的各个段怎么进行合并。
 
-\- 按序叠加： 
+- 按序叠加： 
+  - 优点：简单 
+  - 缺点：浪费空间 
 
-\- 优点：简单 
+- 相似段合并： 
 
-\- 缺点：浪费空间 
+**分配地址和空间有2层含义：第一个指的是可执行文件中的空间，第二个执行的是装载后在虚拟地址中的空间。** 对于有实际数据的段，比如data和text的，在可执行文件和虚拟地址中都要分配空间。对于bss段，仅仅在虚拟地址分配空间。
 
-\- 相似段合并： 
+链接分为2步，第一步是空间与地址分配，第二步是符号解析与**重定位（核心）**。 
 
-链接分为2步，第一步是空间与地址分配，第二步是符号解析与**重定位**。 
+gcc -c a.c b.c生成a.o和b.o 
 
-使用gcc a.o b.o -e main可以进行链接，（注，书上是ld，但是我用ld不可以） 
+使用gcc a.o b.o -e main可以进行链接，生成a.out（注，书上是ld，但是我用ld不可以） 
 
 接下来我们使用objdump来查看链接前后的地址分配情况： 
 
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113429.png)
 
-其中，vma（virtual memory address）表示虚拟地址，lma（load memory address）表示加载地址。 
+其中，vma（virtual memory address）表示虚拟地址，lma（load memory address）表示加载地址。一般情况下，二者是相同的。
 
-总结，先确定各个段的地址，在确定符号的地址，且符号的地址是在段内是相对固定的。 
+我们可以发现，在链接之前，VMA的值都是0，链接后，VMA中被赋予了值，就是虚拟地址。
+
+上面我们已经确定了段的地址，然后我们确定符号的地址，事实上符号的地址是在段内是相对固定的。 
 
 ### 2.4.2 符号地址解析与重定位 
 
-我们先来看重定位，使用objdump -d a.o进行反汇编来看下效果： 
+上面的研究完成之后，我们需要进行符号解析和重定位。
+
+在此之前，我们需要研究研究下a.o是怎么使用shared和swap两个外部变量的。使用objdump -d a.o进行反汇编来看下效果： 
 
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113455.png)
 
-我们可以看到调用的地址并不是真正的地址，而是00。 
+我们可以看到调用的地址（shared和swap）并不是真正的地址，而是00。 
 
 然后，我们在来用objdump -d a.out来看下重定位的效果： 
 
@@ -414,9 +439,9 @@ Elf32_Word r_info; /* Relocation type and symbol index */
 
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113612.png) 
 
-### 2.4.5 静态库链接 
+### 2.4.5 静态库链接
 
-我们使用ar -t /usr/lib/x86_64-linux-gnu/libc.a来查看c语言所提供的库包含哪些静态库： 
+一个静态库可以看做是一组目标文件的集合。我们使用ar -t /usr/lib/x86_64-linux-gnu/libc.a来查看c语言所提供的库包含哪些静态库： 
 
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113632.png) 
 
@@ -438,7 +463,7 @@ Elf32_Word r_info; /* Relocation type and symbol index */
 
 ### 2.4.6 链接过程控制 
 
-我们来尝试自己实现一个hello world，不同的是我们不在使用main，printf这样的库函数。 
+我们来尝试自己实现一个hello world，不同的是我们不在使用main，printf这样的库函数。 print使用了linux的系统调用WRITE,exit使用了Linux的系统调用EXIT
 
 ```c
 // TinyHelloWorld.c 
@@ -447,42 +472,26 @@ char *str = "Hello World!\n";
 
 // use Linux WRITE system call 
 
-void print(){ 
-
-asm("mov $13,%%edx \n\t" 
-
-"mov $0,%%ecx \n\t" 
-
-"mov $0,%%ebx \n\t" 
-
-"mov $4,%%eax \n\t" 
-
-"int $0x80 \n\t" 
-
-::"r"(str):"edx","ecx","ebx"); 
-
+void print(){
+asm("movl $13,%%edx \n\t"
+"movl %0,%%ecx \n\t"
+"movl $0,%%ebx \n\t"
+"movl $4,%%eax \n\t"
+"int $0x80 \n\t"
+::"r"(str):"edx","ecx","ebx");
 } 
 
 // use Linux EXIT system call 
-
 void exit(){ 
-
-asm("mov $42,%%ebx \n\t" 
-
-"mov $1,%%eax \n\t" 
-
-"int $0x80 \n\t" 
-
-::"r"(str):"edx","ecx","ebx"); 
-
+asm("movl $42,%ebx \n\t"
+"movl $1,%eax \n\t"
+"int $0x80 \n\t");
 } 
 
 void nomain(){ 
-
 print(); 
 
 exit(); 
-
 } 
 ```
 
@@ -490,7 +499,9 @@ gcc -c -fno-builtin TinyHelloWorld.c
 
 ld -static -e nomain -o TinyHelloWorld TinyHelloWorld.o 
 
+到了喜闻乐见的总结了：我们是先确定段的地址，然后进行符号解析和重定位，使他们指向正确的地址。
 
+到这里了，我们生成了一个可执行文件，现在的寻址是基址+偏移。事情到这里并没有结束，我们还需要进行分页，来把程序分块装入内存。
 
 # 3.装载与动态链接 
 
@@ -502,21 +513,30 @@ ld -static -e nomain -o TinyHelloWorld TinyHelloWorld.o
 
 32位cpu和64位cpu的区别：32位指的是寻址空间，即4G，64位的寻址空间很大，2^64。不是实际内存的大小。 
 
+每个进程的寻址空间可以是4G(32位CPU)，如果不够的话，可以借助PAE技术。
+
 ### 6.2 装载的方式 
 
-覆盖装入（Overlay）和页映射（Paging），前者已经被抛弃。 
+覆盖装入（Overlay）和页映射（Paging），也就是分页机制，前者已经被抛弃。 
 
 ### 6.3 从操作系统角度看可执行文件的装载 
 
-\- 创建一个独立的虚拟地址空间，映射了虚拟内存和物理内存，实际上是创建映射函数所需要的数据结构。 
+首先我们来看下进程的创建，分为以下几步，
 
-\- 读取可执行文件头，并且建立虚拟空间与可执行文件的映射关系。 
+- 创建一个独立的虚拟地址空间，映射了虚拟内存和物理内存，实际上是创建映射函数所需要的数据结构，创建页目录。（这一步建立的是**虚拟空间和物理内存**的映射关系）
 
-\- 将CPU的指令寄存器设置成可执行文件的入口地址，启动执行。 
+- 读取可执行文件头，并且建立**虚拟空间与可执行文件**的映射关系。 
+  - Linux中将进程虚拟空间中的一个段叫做虚拟内存区域（Virtual Memory Area，VMA），
+
+- 将CPU的指令寄存器设置成可执行文件的入口地址，启动执行。 
+
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191219163216.png" style="zoom:50%;" />
 
 ### 6.4 进程虚存空间分布 
 
 #### 6.4.1 ELF文件链接视图和执行视图 
+
+本质上来讲，分段是为了避免代码段被修改，分页是为了解决物理内存不够的问题。
 
 为了减少段的数量多导致的空间的浪费，我们按照段的权限把段进行合并。我们引入了一个新的概念，Section表示链接视图，Segment表示执行视图，我们来看一下具体的例子： 
 
@@ -578,7 +598,7 @@ Elf32_Word p_align; /* Segment alignment */
 
 #### 6.4.2 堆和栈 
 
-VMA的用途：映射可执行文件中的Segment，对进程的地址空间进行管理。 
+VMA的用途：映射可执行文件中的Segment，对进程的地址空间进行管理(包括堆和栈)。 
 
 我们使用./SectionMapping.elf & 
 
@@ -590,13 +610,13 @@ cat /proc/16148/maps 来查看进程的虚拟空间分布。
 
 一个进程可以分为如下几种VMA区域： 
 
-\- 代码VMA： 
+- 代码VMA：只读，可执行，有映像文件； 
 
-\- 数据VMA； 
+- 数据VMA； 可读，可执行，有映像文件；
 
-\- 堆VMA；无映像文件，可向上扩展 
+- 堆VMA；无映像文件，可向上扩展 
 
-\- 栈VMA：无映像文件，可向下扩展 
+- 栈VMA：无映像文件，可向下扩展 
 
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114125.png)
 
@@ -676,11 +696,19 @@ do_execve()(处理128字节的文件头部)-->>search_binary_handle()-->load_elf
 
 ### 6.6 逻辑地址VS线性地址VS物理地址
 
+这个地方，终于搞明白了，原来说的都不是一回事，逻辑地址指的是链接之后的可执行文件，线性地址指的是加载后的,物理地址指的是运行时的。如果没有页机制，线性地址就是物理地址。当CPU发生缺页中断时，会从硬盘调用，同时在Linear Address建立映射关系。
+
+顺便吐槽下，中文技术社区的质量真是一言难尽，哎。。。
+
+看一张mit的图片：
+
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191219192603.png" style="zoom:50%;" />
+
 来自《Linux内核完全注释》5.3节。
 
 Linux内存翻译的细节：
 
-代码和数据在**逻辑地址，线性地址（虚拟地址）和物理地址**之间的对应关系。
+代码和数据在**逻辑地址，线性地址和物理地址**之间的对应关系。
 
 为了有效地使用机器中的物理内存，在系统初始化阶段内存被划分成几个功 能区域 ：
 
@@ -713,13 +741,11 @@ CPU 进行地址变换(映射)的主要目的是为了解决虚拟内存空间�
 
 ![image-20191215175145169](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xk0krinaj31360ka767.jpg)
 
-每个描述符占用 8 个字节，其中含有所描述段在线性地址空间中的起始地址(基址)、段的长度、段 的类型(例如代码段和数据段)、段的特权级别和其他一些信息。一个段可以定义的最大长度是 4GB。 
+每个描述符占用 8 个字节，其中含有所描述段在线性地址空间中的起始地址(基址)、段的长度、段 的类型(例如代码段和数据段)、段的特权级别和其他一些信息。**一个段可以定义的最大长度是 4GB**。 
 
 保存描述符项的描述符表有 3 种类型，每种用于不同目的。全局描述符表 GDT(Global Descriptor Table)是主要的基本描述符表，该表可被所有程序用于引用访问一个内存段。中断描述符表 IDT(Interrupt Descriptor Table)保存有定义中断或异常处理过程的段描述符。IDT 表直接替代了 8086 系统中的中断向 量表。为了能在 80X86 保护模式下正常运行，我们必须为 CPU 定义一个 GDT 表和一个 IDT 表。最后一 种类型的表是局部描述符表 LDT(Local Descriptor Table)。该表应用于多任务系统中，通常每个任务使 用一个 LDT 表。作为对 GDT 表的扩充，每个 LDT 表为对应任务提供了更多的可用描述符项，因而也为 每个任务提供了可寻址内存空间的范围。这些表可以保存在线性地址空间的任何地方。为了让 CPU 能定 位 GDT 表、IDT 表和当前的 LDT 表，需要为 CPU 分别设置 GDTR、IDTR 和 LDTR 三个特殊寄存器。 这些寄存器中将存储对应表的 32 位线性基地址和表的限长字节值。表限长值是表的长度值-1。 
 
-当 CPU 要寻址一个段时，就会使用 16 位的段寄存器中的选择符来定位一个段描述符。在 80X86 CPU 中，段寄存器中的值右移 3 位即是描述符表中一个描述符的索引值。13 位的索引值最多可定位 8192 (0--8191)个的描述符项。选择符中位 2(TI)用来指定使用哪个表。若该位是 0 则选择符指定的是 GDT 表中的描述符，否则是 LDT 表中的描述符。 每个程序都可有若干个内存段组成。程序的逻辑地址(或称为虚拟地址)即是用于寻址这些段和段 
-
-中具体地址位置。在 Linux 0.12 中，程序逻辑地址到线性地址的变换过程使用了 CPU 的全局段描述符表 GDT 和局部段描述符表 LDT。由 GDT 映射的地址空间称为全局地址空间，由 LDT 映射的地址空间则称 为局部地址空间，而这两者构成了虚拟地址的空间。具体的使用方式见图 5-8 所示。 
+当 CPU 要寻址一个段时，就会使用 16 位的段寄存器中的选择符来定位一个段描述符。在 80X86 CPU 中，段寄存器中的值右移 3 位即是描述符表中一个描述符的索引值。13 位的索引值最多可定位 8192 (0--8191)个的描述符项。选择符中位 2(TI)用来指定使用哪个表。若该位是 0 则选择符指定的是 GDT 表中的描述符，否则是 LDT 表中的描述符。 每个程序都可有若干个内存段组成。程序的逻辑地址(或称为虚拟地址)即是用于寻址这些段和段中具体地址位置。在 Linux 0.12 中，**程序逻辑地址到线性地址的变换过程使用了 CPU 的全局段描述符表 GDT 和局部段描述符表 LDT**。由 GDT 映射的地址空间称为全局地址空间，由 LDT 映射的地址空间则称 为局部地址空间，而这两者构成了虚拟地址的空间。具体的使用方式见图 5-8 所示。 
 
 ![image-20191215175421825](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xk3be92qj313q0nmn2v.jpg)
 
@@ -727,7 +753,11 @@ CPU 进行地址变换(映射)的主要目的是为了解决虚拟内存空间�
 
 内存分页管理机制的基本原理是将 CPU 整个线性内存区域划分成 4096 字节为 1 页的内存页面。
 
+线性地址到物理地址的变换过程。由于Linux 0.1x系统中内核和所有任务都共用同一个页目录表，使得任何时刻处理器线性地址空间 到物理地址空间的映射函数都一样。因此为了让内核和所有任务都不互相重叠和干扰，它们都必须从虚 拟地址空间映射到线性地址空间的不同位置，即占用不同的线性地址空间范围。
+
 ![image-20191215175725425](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xk6i9v17j30xo0fujt9.jpg)
+
+一个任务的虚拟地址需要首先通 过其局部段描述符变换为 CPU 整个线性地址空间中的地址，然后再使用页目录表 PDT(一级页表)和 页表 PT(二级页表)映射到实际物理地址页上。为了使用实际物理内存，每个进程的线性地址通过二级内存页表动态地映射到主内存区域的不同物理内存页上。由于 Linux 0.12 中把每个进程最大可用虚拟内 存空间定义为 64MB，因此每个进程的逻辑地址通过加上(任务号)*64MB，即可转换为线性空间中的地址。 
 
 ![image-20191215175941890](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xk8vwd6rj313s0euta8.jpg)
 
@@ -763,11 +793,11 @@ CPU 进行地址变换(映射)的主要目的是为了解决虚拟内存空间�
 
 ### 7.1 为什么要动态链接 
 
-浪费空间，模块更新困难引入了动态链接，节省了内存，减少了物理页面的换入换出，增加了CPU的命中率，易于升级。 
-
-但是动态链接也不是万能的，也有其他的缺点，新旧版本无法兼容是最大的问题。 
+浪费空间，模块更新困难引入了动态链接，节省了内存，减少了物理页面的换入换出，增加了CPU的命中率，易于升级。 但是动态链接也不是万能的，也有其他的缺点，新旧版本无法兼容是最大的问题。 
 
 动态链接的基本实现：程序被分为主要模块和动态链接库。当程序被装载的时候，动态链接器会把所有的动态链接库装载到程序的进程空间，真正的链接工作是由动态链接器完成的，也就是说，被延后了。但是性能会损失5%左右，还是十分划算的。 
+
+动态共享对象（Dynamic Shared Object）。
 
 ### 7.2 简单的动态链接例子 
 
@@ -823,7 +853,7 @@ gcc -fPIC -shared -o Lib.so Lib.c
 
 gcc -o Program1 Program1.c ./Lib.so 
 
-gcc -o Program1 Program2.c ./Lib.so 
+gcc -o Program2 Program2.c ./Lib.so 
 
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114314.png)
 
@@ -848,7 +878,7 @@ sleep(-1);
 
 然后重新编译,看进程的虚拟地址空间分布： 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114347.png) 
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191219173119.png" style="zoom:50%;" /> 
 
 可以看到，二者被操作系统用同样的方法映射到进程中。 
 
@@ -856,21 +886,170 @@ sleep(-1);
 
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114408.png) 
 
+我们竟然看到是从0开始的，这明显是无效地址，我们来**推断**：共享对象的最终装载地址在编译时不确定，在装载时动态分配一块空间给相应的共享对象。
+
+下面我们来进行验证。
+
 ### 7.3 地址无关代码 
 
-共享对象在装载的时候，我们如何确定它在进程虚拟地址空间中的位置？我们第一个面临的问题就是共享对象地址冲突的问题。 
+共享对象在装载的时候，我们如何确定它在进程虚拟地址空间中的位置？
+
+如果我们采用固定装载地址的话，我们第一个面临的问题就是共享对象地址冲突的问题。 比如模块A占用0x1000-0x2000,B占用0x2000-0x3000,如果一个人开发一个程序，使用了模块B，可能会把0x1000-0x2000分给C，那么就出问题了。
 
 为了解决地址冲突的问题，我们要让共享对象在编译时不能假设自己在进程虚拟地址空间中的位置。（与之对应的是，可执行文件在编译的时候基本就可以知道自己在虚拟地址空间中的位置） 
 
-于是我们引入了装载时重定位：即在装载时对所有的绝对地址的引用不做重定位，在装载的时候在做。假设foobar相对于代码段的位置是0x100,当该模块的地址装载在0x1000,那么foobar的地址是0x1100。 
+于是我们引入了**装载时重定位**：即在装载时对所有的绝对地址的引用不做重定位，在装载的时候在做。假设foobar相对于代码段的位置是0x100,当该模块的地址装载在0x1000,那么foobar的地址是0x1100。 
 
-但是并没有解决所有的问题，无法在多个进程间共享，浪费空间。在来看下，我们的目的是**希望程序模块中共享的指令在装载时不需要因为装载地址的改变为改变**。所以我们的思路很简单，把指令中需要修改的部分抽离出来，和数据放在一块，这样，指令部分就可以保持不变，数据部分在每个进程中持有一个副本。这种方案就是**地址无关代码**（PIC，Position-independent Code）。 
+ 但是事情并没有得到完美的解决，指令无法在多个进程之间共享，我们需要去寻找更加牛逼的方法。在来看我们的目的，**希望程序模块中共享的指令不因装载地址的改变而改变**，所以我们需要把共享模块中需要修改的部门抽取出来，和数据模块放在一块，然后指令部门就抽取出来了，这就叫做指令无关码（PIC，Position-Independent Code）。
+
+在此之前，我们需要分析模块中各种类型地址的引用方式： 
 
 在此之前，我们需要分析模块中各种类型地址的引用方式： 
 
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114428.png) 
 
-函数内部调用、跳转： 
+总结一下指令无关码：
+
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191219203455.png" style="zoom:50%;" />
+
+### 7.4 延迟绑定（PLT）
+
+上面的地址无关码这个话题告一段落，下面我来看下下一个话题，延迟绑定。
+
+延迟绑定主要想解决的问题是动态链接造成的性能损耗的问题，我们再来考虑下，如果我们真的动态链接的话，那么我们真的需要全部都进行链接吗？代码的所有部分都会被访问吗？不尽然吧。我们可不可以在用到的时候，在进行链接呢？这就引入了延迟绑定的概念，这个概念在软件开发中也是很有用的，Java中有一个叫做懒汉模式。
+
+### 7.5 动态链接相关结构
+
+我们在上面了解了动态链接的基本原理，现在我们尝试进行实现动态链接。
+
+在动态链接情况下，操作系统在装载完可执行文件后，会先启动一个动态链接器（Dynamic Linker）。ld.so也是一个共享对象，同样需要加载到进程的地址空间中，然后由动态链接器对可执行文件进行链接，完成之后，程序才可以真正执行。
+
+那么问题来了，是不是所有的动态链接器都是/lib/ld.so呢，实际上并不是（因为环境不同），这个是由ELF文件中的.interp段来决定的，我们可以使用objdump -s a.out来查看：
+
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191219210554.png" style="zoom:50%;" />
+
+可以看到在我的机器上是/lib64/ld-linux-x86-64.so.2。我们找到了动态链接器，接着我们看dynamic段，这个段里面保存了动态链接器需要的基本信息，比如依赖的共享对象，动态链接符号表的位置，动态链接重定位表的位置，共享对象初始化代码的地址，结构定义在elf.h中。
+
+```c
+/* Dynamic section entry.  */
+
+typedef struct
+{
+  Elf32_Sword   d_tag;                  /* Dynamic entry type */
+  union
+    {
+      Elf32_Word d_val;                 /* Integer value */
+      Elf32_Addr d_ptr;                 /* Address value */
+    } d_un;
+} Elf32_Dyn;
+```
+
+我们使用readelf -d Lib.so来查看dynamic段的内容。
+
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191219225648.png" style="zoom:50%;" />
+
+我们还可以使用，ldd Program1来查看该程序依赖哪些共享模块。
+
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191219230126.png)
+
+下面我们来看动态符号表。和静态链接中的符号表systab相似，我们定义了动态符号表（Dynamic table）来表示动态连接中的模块之间的导入导出关系。除此之外，我们还需要辅助表dynstr表。
+
+我们继续看，动态链接重定位表，使用readelf -r Lib.so 和readelf -S Lib.so来查看：
+
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191219233953.png)
+
+结构图如下所示：
+
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191219234044.png)
+
+我们接着看动态链接时进程堆栈初始化信息：
+
+进程初始化的时候，堆栈里面保存了关于进程执行环境和命令行参数等信息，以及动态链接器需要的辅助信息数组（Auxiliary Vector）。
+
+```c
+/* Auxiliary vector.  */
+
+/* This vector is normally only used by the program interpreter.  The
+   usual definition in an ABI supplement uses the name auxv_t.  The
+   vector is not usually defined in a standard <elf.h> file, but it
+   can't hurt.  We rename it to avoid conflicts.  The sizes of these
+   types are an arrangement between the exec server and the program
+   interpreter, so we don't fully specify them here.  */
+
+typedef struct
+{
+  uint32_t a_type;              /* Entry type */
+  union
+    {
+      uint32_t a_val;           /* Integer value */
+      /* We use to have pointer elements added here.  We cannot do that,
+         though, since it does not work when using 32-bit definitions
+         on 64-bit platforms and vice versa.  */
+    } a_un;
+} Elf32_auxv_t;
+```
+
+我们可以写个小程序来打印堆栈中的初始化信息：
+
+```c
+//auxiliary_vestor.c
+#include<stdio.h>
+#include<elf.h>
+
+int main(int argc, char * argv[])
+{
+      int *p = (int *)argv;
+      int i;
+      Elf32_auxv_t *aux;
+
+      printf("Argument count:%d\n", *(p-1) );
+      for(i=0; i<*(p-1); i++)
+      {
+            printf("Argument %d : %s\n", i, *(p+i) );
+      }
+      p += i;
+      p++;
+
+      printf("Environment:\n");
+      while(*p)
+      {
+            printf("%s\n", *p);
+            p++;
+      }
+
+      p++;
+
+      printf("Auxiliary Vectors:\n");
+      aux = (Elf32_auxv_t *)p;
+      while(aux->a_type != AT_NULL)
+      {
+            printf("Type: %02d Value: %x\n", aux->a_type, aux->a_un.a_val);
+            aux++;
+      }
+
+      return 0;
+}
+```
+
+然后编译：gcc -g auxiliary_vestor.c -o auxiliary_vestor
+
+最后运行：./auxiliary_vestor haojs
+
+初始化堆栈如下图所示：
+
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191219235551.png)
+
+### 7.6 动态链接的步骤和实现
+
+我们在前面学习了动态链接的基本知识，下面我们开始着手实现。主要是分为3步，第一步是启动动态链接器本身，然后装载所需要的共享对象，最后是重定位和初始化。
+
+我们首先来看动态链接器自举，我们需要思考这个问题，动态链接器这个共享对象是由谁来重定位的问题呢？鸡生蛋，蛋生鸡的问题啊。我们必须打破这个循环，首先动态链接器不可以依赖其他共享对象，然后动态链接器依赖的需要的全局变量和和静态变量的重定位工作由自身完成。
+
+然后我们来看共享对象的装载。自举完成后，所有的符号都合并到全局符号表中。
+
+我们接着来看重定位和初始化。
+
+最后我们来看Linux动态链接器的实现。
 
 # 4 库与运行库 
 
@@ -880,31 +1059,31 @@ sleep(-1);
 
 一般情况下，我们的内存可以分为： 
 
-\* 内核空间 
+* 内核空间 
 
-\* 用户空间 
+* 用户空间 
 
-\* 栈：用于维护函数调用的上下文； 
+* 栈：用于维护函数调用的上下文； 
 
-\* 堆：用来动态分配的区域； 
+* 堆：用来动态分配的区域； 
 
-\* 可执行文件映像：存储着可执行文件在内存里的映像，装载时将可执行文件的内存读取到这里； 
+* 可执行文件映像：存储着可执行文件在内存里的映像，装载时将可执行文件的内存读取到这里； 
 
-\* 保留区：不是单一的，比如NULL是受保护的。 
+* 保留区：不是单一的，比如NULL是受保护的。 
 
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114448.png) 
 
-### 10.2 栈 
+### 10.2 栈与调用惯例
 
 我们为什么要用栈？--主要是为了处理函数调用。 
 
 栈里面的2个重要概念，esp（栈指针）和ebp（帧指针），堆栈一般包含下面的内容： 
 
-\- 函数的返回地址和参数； 
+- 函数的返回地址和参数； 
 
-\- 临时变量：函数的非静态局部变量； 
+- 临时变量：函数的非静态局部变量； 
 
-\- 保存的上下文：在函数调用前后需要保持不变的寄存器。 
+- 保存的上下文：在函数调用前后需要保持不变的寄存器。 
 
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114504.png) 
 
@@ -1028,9 +1207,17 @@ off_t offset);
 
 ## 12 系统调用 
 
-Linux系统差不多有300多个系统调用。 
+### 12.1 系统调用介绍
+
+我们首先来看看什么是系统调用？
+
+为了让应用程序访问系统资源。
+
+具体来看下，EAX寄存器用来表示系统调用的接口号，具体的见下表。Linux系统差不多有300多个系统调用。 
 
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114811.png)
+
+### 12.2 系统调用的原理
 
 下面我们来看下系统调用的原理。用户模式和内核模式，由用户模式进入进入内核模式，有2中方法，一是轮询，2是信号。 
 
@@ -1063,6 +1250,8 @@ Linux系统差不多有300多个系统调用。
 
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114958.png) 
 
+
+
 # 附录 
 
 ELF常见段： 
@@ -1070,3 +1259,12 @@ ELF常见段：
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205115015.png) 
 
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205115029.png) 
+
+常见开发工具命令行：
+
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191220121637.png" style="zoom:50%;" />
+
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191220121712.png" style="zoom:50%;" />
+
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191220121754.png" style="zoom:50%;" />
+
