@@ -383,7 +383,9 @@ grep -E --color 'vmx|svm' /proc/cpuinfo
 
       <img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191211145542.png" style="zoom:50%;" />
 
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191220173425.png)
 
+值得注意的是，在使用minikube的时候，尽量使用Ubuntu，不要使用centos，原因大概和Docker是有问题的，具体的不是很清楚。
 
 #### 1.2.1.3 快速开始
 
@@ -391,18 +393,16 @@ grep -E --color 'vmx|svm' /proc/cpuinfo
 2. 接下来使用kubectl和集群来交互，`kubectl create deployment hello-minikube --image=k8s.gcr.io/echoserver:1.10`
 3. 把hello-minikube作为服务暴露出去：`kubectl expose deployment hello-minikube --type=NodePort --port=8080`
 4. 在使用之前需要检查这个pod的状态：kubectl get pod，我们需要等待状态变为Running。
-5. 获取  服务暴露的url ：minikube service hello-minikube --url
-6. 把url粘贴到浏览器中，看到如下的信息：
-7. 删除服务：kubectl delete services hello-minikube
-8. 删除部署环境：kubectl delete deployment hello-minikube
-9. 停掉集群：minikube stop
-10. 删除集群：minikube delete
+5.   获取  服务暴露的url ：minikube service hello-minikube --url
+6.   把url粘贴到浏览器中，看到如下的信息：<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191223165538.png" style="zoom:50%;" />
+7.   删除服务：kubectl delete services hello-minikube
+8.   删除部署环境：kubectl delete deployment hello-minikube
+9.   停掉集群：minikube stop
+10.   删除集群：minikube delete
 
 ### 1.2.2 生产环境
 
 k8s可以支持docker,CRI-O,containerd等。
-
-
 
 生产环境：
 
@@ -461,6 +461,264 @@ k8s可以支持docker,CRI-O,containerd等。
 | [VMware](https://cloud.vmware.com/)                          | [VMware Cloud PKS](https://cloud.vmware.com/vmware-cloud-pks) | [VMware Enterprise PKS](https://cloud.vmware.com/vmware-enterprise-pks) | [VMware Enterprise PKS](https://cloud.vmware.com/vmware-enterprise-pks) | [VMware Essential PKS](https://cloud.vmware.com/vmware-essential-pks) |                                                              | [VMware Essential PKS](https://cloud.vmware.com/vmware-essential-pks) |
 | [Z.A.R.V.I.S.](https://zarvis.ai/)                           | ✔                                                            |                                                              |                                                              |                                                              |                                                              |                                                              |
 
+### 1.2.3 常用命令学习
+
+yaml文件也是十分重要的，需要去学习。
+
+下面来学习下常用的命令：
+
+1. kubectl run（创建容器镜像）
+
+kubectl run NAME --image=image [--env="key=value"] [--port=port] [--replicas=replicas] [--dry-run=bool] [--overrides=inline-json] [--command] -- [COMMAND] [args...]
+
+示例：
+
+启动nginx实例。
+
+```shell
+kubectl run nginx --image=nginx
+```
+
+启动hazelcast实例，暴露容器端口 5701。
+
+```shell
+kubectl run hazelcast --image=hazelcast --port=5701
+```
+
+启动hazelcast实例，在容器中设置环境变量“DNS_DOMAIN = cluster”和“POD_NAMESPACE = default”。
+
+```shell
+kubectl run hazelcast --image=hazelcast --env="DNS_DOMAIN=cluster" --env="POD_NAMESPACE=default"
+```
+
+启动nginx实例，设置副本数5。
+
+```shell
+kubectl run nginx --image=nginx --replicas=5
+```
+
+运行 Dry  打印相应的API对象而不创建它们。
+
+```shell
+kubectl run nginx --image=nginx --dry-run
+```
+
+2. kubectl expose（将资源暴露为新的 Service）
+
+   将资源暴露为新的Kubernetes Service。指定[deployment](http://docs.kubernetes.org.cn/317.html)、service、[replica set](http://docs.kubernetes.org.cn/314.html)、[replication controller](http://docs.kubernetes.org.cn/437.html)或[pod](http://docs.kubernetes.org.cn/312.html) ，并使用该资源的选择器作为指定端口上新服务的选择器。deployment 或 replica set只有当其选择器可转换为service支持的选择器时，即当选择器仅包含matchLabels组件时才会作为暴露新的Service。
+
+   语法：kubectl expose (-f FILENAME | TYPE NAME) [--port=port] [--protocol=TCP|UDP] [--target-port=number-or-name] [--name=name] [--external-ip=external-ip-of-service] [--type=type]
+
+   为RC的nginx创建service，并通过Service的80端口转发至容器的8000端口上。
+
+   ```
+   kubectl expose rc nginx --port=80 --target-port=8000
+   ```
+
+   由“nginx-controller.yaml”中指定的type和name标识的RC创建Service，并通过Service的80端口转发至容器的8000端口上。
+
+   ```
+   kubectl expose -f nginx-controller.yaml --port=80 --target-port=8000
+   ```
+
+3. kubectl create（创建一个集群资源对象）
+
+   通过配置文件名或stdin创建一个集群资源对象。支持JSON和YAML格式的文件。
+
+   通过pod.json文件创建一个pod。
+
+   ```
+   kubectl create -f ./pod.json
+   ```
+
+   通过stdin的JSON创建一个pod。
+
+   ```
+   cat pod.json | kubectl create -f -
+   ```
+
+   API版本为v1的JSON格式的docker-registry.yaml文件创建资源。
+
+   ```
+   kubectl create -f docker-registry.yaml --edit --output-version=v1 -o json
+   ```
+
+4. kubectl delete（删除资源对象）
+
+   通过配置文件名、stdin、资源名称或label选择器来删除资源。支持JSON和YAML格式文件。
+
+   ```
+   kubectl delete ([-f FILENAME] | TYPE [(NAME | -l label | --all)])
+   ```
+
+   使用 pod.json中指定的资源类型和名称删除pod。
+
+   ```
+   kubectl delete -f ./pod.json
+   ```
+
+   根据传入stdin的JSON所指定的类型和名称删除pod。
+
+   ```
+   cat pod.json | kubectl delete -f -
+   ```
+
+   删除名为“baz”和“foo”的Pod和Service。
+
+   ```
+   kubectl delete pod,service baz foo
+   ```
+
+   删除 Label name = myLabel的pod和Service。
+
+   ```
+   kubectl delete pods,services -l name=myLabel
+   ```
+
+   强制删除dead node上的pod
+
+   ```
+   kubectl delete pod foo --grace-period=0 --force
+   ```
+
+   删除所有pod
+
+   ```
+   kubectl delete pods --all
+   ```
+
+5. kubectl edit（编辑服务器上定义的资源对象）
+
+   ```
+   kubectl edit (RESOURCE/NAME | -f FILENAME)
+   ```
+
+   编辑名为'docker-registry'的service：
+
+   ```
+   kubectl edit svc/docker-registry
+   ```
+
+   使用替代的编辑器
+
+   ```
+   KUBE_EDITOR="nano" kubectl edit svc/docker-registry
+   ```
+
+   编辑名为“myjob”的service，输出JSON格式 V1 API版本
+
+   ```
+   kubectl edit job.v1.batch/myjob -o json
+   ```
+
+   以YAML格式输出编辑deployment“mydeployment”，并将修改的配置保存在annotation中：
+
+   ```
+   kubectl edit deployment/mydeployment -o yaml --save-config
+   ```
+
+6. kubectl get（获取资源信息）
+
+   列出所有运行的Pod信息。
+
+   ```
+   kubectl get pods
+   ```
+
+   列出Pod以及运行Pod节点信息。
+
+   ```
+   kubectl get pods -o wide
+   ```
+
+   列出指定NAME的 replication controller信息。
+
+   ```
+   kubectl get replicationcontroller web
+   ```
+
+   以JSON格式输出一个pod信息。
+
+   ```
+   kubectl get -o json pod web-pod-13je7
+   ```
+
+   以“pod.yaml”配置文件中指定资源对象和名称输出JSON格式的Pod信息。
+
+   ```
+   kubectl get -f pod.yaml -o json
+   ```
+
+   返回指定pod的相位值。
+
+   ```
+   kubectl get -o template pod/web-pod-13je7 --template={{.status.phase}}
+   ```
+
+   列出所有replication controllers和service信息。
+
+   ```
+   kubectl get rc,services
+   ```
+
+   按其资源和名称列出相应信息。
+
+   ```
+   kubectl get rc/web service/frontend pods/web-pod-13je7
+   ```
+
+   列出所有不同的资源对象。
+
+   ```
+   kubectl get all
+   ```
+
+7. kubectl label（更新资源对象的label）
+
+   给名为foo的Pod添加label unhealthy=true。
+
+   ```
+   kubectl label pods foo unhealthy=true
+   ```
+
+   给名为foo的Pod修改label 为 'status' / value 'unhealthy'，且覆盖现有的value。
+
+   ```
+   kubectl label --overwrite pods foo status=unhealthy
+   ```
+
+   给 namespace 中的所有 pod 添加 label
+
+   ```
+   kubectl label pods --all status=unhealthy
+   ```
+
+   仅当resource-version=1时才更新 名为foo的Pod上的label。
+
+   ```
+   kubectl label pods foo status=unhealthy --resource-version=1
+   ```
+
+   删除名为“bar”的label 。（使用“ - ”减号相连）
+
+   ```
+   kubectl label pods foo bar-
+   ```
+
+8. kubectl set image（更新已有资源对象中的容器镜像）
+
+## 1.2.4 python-SDK
+
+1. 安装：pip install kubernetes
+
+2. 
+
+   
+
+
+
+
+
 ## 1.3 Workloads
 
 ### 1.3.1 Pods
@@ -477,6 +735,8 @@ Pod 是一组紧密关联的容器集合，它们共享 PID、IPC、Network 和 
 
 pod是k8s的基本执行单元，一个pod代表了运行在集群上的一个进程。pod包括了一个或者多个容器，存储资源，唯一的IP。
 
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191220171934.png" style="zoom:50%;" />
+
 - **Pods that run a single container**：是最常见的；
 - 多个容器一个pod：
 
@@ -487,6 +747,8 @@ pod是k8s的基本执行单元，一个pod代表了运行在集群上的一个�
 <img src="https://d33wubrfki0l68.cloudfront.net/aecab1f649bc640ebef1f05581bfcc91a48038c4/728d6/images/docs/pod.svg" alt="example pod diagram" style="zoom:25%;" />
 
 每个pod都有一个IP地址，pod中的容器共享IP地址和端口，pod内部的容器可以相互通信，此外，存储是可以共享的。
+
+我们可以看到pod是通过yaml来进行管理的，
 
 ##### 1.3.1.1.3 pod模板
 
@@ -535,6 +797,10 @@ spec:
     app: nginx
 ```
 
+我们可以看到，我们可以使用yaml或者json来创建pod容器，那么我们如何来管理pod容器呢？
+
+我们可以尝试使用标签，label技术来管理pod容器。这个玩意和我们经常见到的标签是一样的。
+
 Label 是识别 Kubernetes 对象的标签，以 key/value 的方式附加到对象上（key 最长不能超过 63 字节，value 可以为空，也可以是不超过 253 字节的字符串）。
 
 Label 不提供唯一性，并且实际上经常是很多对象（如 Pods）都使用相同的 label 来标志具体的应用。
@@ -544,6 +810,10 @@ Label 定义好后其他对象可以使用 Label Selector 来选择一组相同 
 - 等式，如 `app=nginx` 和 `env!=production`
 - 集合，如 `env in (production, qa)`
 - 多个 label（它们之间是 AND 关系），如 `app=nginx,env=test`
+
+可以看到，我们可以使用标签来把资源进行分组，但这个标签的分组是多对多的关系。如果我们想要一对多的关系该怎么办呢？
+
+我们可以使用Namespace的概念，
 
 Annotations 是 key/value 形式附加于对象的注解。不同于 Labels 用于标志和选择对象，Annotations 则是用来记录一些附加信息，用来辅助应用部署、安全策略以及调度策略等。比如 deployment 使用 annotations 来记录 rolling update 的状态。
 
@@ -585,7 +855,20 @@ Annotations 是 key/value 形式附加于对象的注解。不同于 Labels 用�
 
 —个pod的所有容器都运行在同—个节点上; 一个pod绝不跨越两个节点 。
 
-关于为何需要pod这种容器?为何不直接使用容器?为何甚至需要同时运行 多个容器?难道不能简单地把所有进程都放在 一 个单独的容器中吗? 
+> 关于为何需要pod这种容器?为何不直接使用容器?为何甚至需要同时运行 多个容器?难道不能简单地把所有进程都放在 一 个单独的容器中吗? 
+>
+
+为何多容器比单容器多进程要好？
+
+如果一个容器中多个进程，不方便管理日志等。由于这个原因，我们需要把多个容器放在一起管理，这就是pod的原因。
+
+下面我们来看下pod干了哪些事情？
+
+首先我们来看下同一Pod中容器之间的部分隔离？
+
+我们并不期望容器之间进行隔离，我们期望的是pod之间进行隔离。pod内的容器需要共享Namespace。这就导致了容器的主机名和网络接口是相同的。由于IPC Namespace是相同的，所以可以进行IPC通信。
+
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191220184003.png)
 
 到目前为止，我就明白了**k8s本质上是一层抽象，这一层抽象屏蔽了服务器的细节**，程序员不需要知道程序运行在哪个服务器上，只需要告诉k8s自己的需求就好。 
 
@@ -599,11 +882,11 @@ Annotations 是 key/value 形式附加于对象的注解。不同于 Labels 用�
 
 让我没有想到的是可以使用**标签**和**命名空间**对pod进行分组，但是讲解有点啰嗦，似乎也不是核心概念，稍微翻了一下就过去了。 
 
+
+
 稍等 ！为什么不在创建pod的时候指定pod的数量啊？比如我想创建10个订单服务的docker实例，在哪里指定？仔细看看那些YAML文件，确实没有副本数量，这k8s搞什么鬼？这里没有指定，肯定在别的地方，那就是说：
 
 除了pod之外，还有一个概念，用来指定pod和副本之间的关系，这个概念是什么？
-
-
 
 快速翻到第4章，哈哈，原来这个概念叫做ReplicationController（简称RC），由它来保证pod的数目符合要求，多了就删除，少了就添加。 
 
@@ -623,13 +906,17 @@ Annotations 是 key/value 形式附加于对象的注解。不同于 Labels 用�
 
 如果让我设计，我肯定得提供另外一个抽象层，**让这个抽象层来屏蔽后端的变化，让客户端连接到这个抽象层上**。 
 
-k8s 会怎么做呢？第4章给出了答案：**服务**。 我个人觉得这个词起得不好，太抽象，太广泛。 
+k8s 会怎么做呢？第5章给出了答案：**服务**。为一组功能相同的pod 提供单一不变的接入点的资源。 我个人觉得这个词起得不好，太抽象，太广泛。 
 
 ![image-20191213194501754](https://tva1.sinaimg.cn/large/006tNbRwly1g9vc1u0konj311m0quqv5.jpg)
 
 可以看出，**k8s和其他系统一样，也是不断地通过分离关注点，不断地抽象来解决一个个问题的**。
 
 到目前为止，我脑海中想的都是那些“**无状态**”的pod，可以随意增加和删除， 但肯定存在“**有状态**”的pod，有持久化的需求，可以把数据存储到硬盘上，这该怎么办？ 
+
+我们来到了第六章，有一个叫做卷volume的概念。
+
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191221150759.png)
 
 带着这个问题，继续上路吧！ 
 
@@ -643,13 +930,7 @@ k8s 会怎么做呢？第4章给出了答案：**服务**。 我个人觉得这�
 
 希望每个人都建立一套自己的知识体系，从这个知识体系中能伸出很多的触角，能像海绵一样吸收外界的知识，不断地为自己的知识体系添砖加瓦。
 
-
-
-
-
-
-
-
+ 
 
 
 
