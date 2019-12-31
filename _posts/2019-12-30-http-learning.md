@@ -9,6 +9,9 @@ tag: 计算机网络
 
 <!--ts-->
 
+
+<!-- Added by: anapodoton, at: Tue Dec 31 15:03:11 CST 2019 -->
+
 <!--te-->
 
 # 前言
@@ -140,19 +143,7 @@ http协议主要由以下几个，可以参考https://coolshell.cn/articles/1984
 
 我们再来回顾一下：
 
-原始的url值：
-
-```
-/data?cmd=Fence2Area&meta={"caller":"test","TraceId":"test"}&request={"fence":[{"lng":10.2,"lat":10.2},{"lng":10.2,"lat":8.2},{"lng":8.2,"lat":8.2},{"lng":8.2,"lat":10.2}],"coordtype":2}
-```
-
-
-
-编码后的url值：
-
-```
-data?cmd=Fence2Area&meta={%22caller%22:%22test%22,%22TraceId%22:%22test%22}&request={%22fence%22:[{%22lng%22:10.2,%22lat%22:10.2},%20{%22lng%22:10.2,%22lat%22:8.2},%20{%22lng%22:8.2,%22lat%22:8.2},%20{%22lng%22:8.2,%22lat%22:10.2}],%22coordtype%22:2}
-```
+![image-20191231150230183](https://tva1.sinaimg.cn/large/006tNbRwly1gafx1eho6pj31920fy40z.jpg)
 
 在之前的报文拆解过程中，我们看到多了很多 %22，其实， `0x22`是单引号 `"`的ascii值，
 
