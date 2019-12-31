@@ -7,6 +7,10 @@ categories: 计算机网络
 tag: 计算机网络
 ---
 
+<!--ts-->
+
+<!--te-->
+
 # 前言
 
 本篇文章主要学习http的相关知识。主要学习以下内容。
@@ -138,19 +142,25 @@ http协议主要由以下几个，可以参考https://coolshell.cn/articles/1984
 
 原始的url值：
 
-1. `/data?cmd=Fence2Area&meta={"caller":"test","TraceId":"test"}&request={"fence":[{"lng":10.2,"lat":10.2},{"lng":10.2,"lat":8.2},{"lng":8.2,"lat":8.2},{"lng":8.2,"lat":10.2}],"coordtype":2}`
+```
+/data?cmd=Fence2Area&meta={"caller":"test","TraceId":"test"}&request={"fence":[{"lng":10.2,"lat":10.2},{"lng":10.2,"lat":8.2},{"lng":8.2,"lat":8.2},{"lng":8.2,"lat":10.2}],"coordtype":2}
+```
+
+
 
 编码后的url值：
 
-1. `/data?cmd=Fence2Area&meta={%22caller%22:%22test%22,%22TraceId%22:%22test%22}&request={%22fence%22:[{%22lng%22:10.2,%22lat%22:10.2},%20{%22lng%22:10.2,%22lat%22:8.2},%20{%22lng%22:8.2,%22lat%22:8.2},%20{%22lng%22:8.2,%22lat%22:10.2}],%22coordtype%22:2}`
+```
+data?cmd=Fence2Area&meta={%22caller%22:%22test%22,%22TraceId%22:%22test%22}&request={%22fence%22:[{%22lng%22:10.2,%22lat%22:10.2},%20{%22lng%22:10.2,%22lat%22:8.2},%20{%22lng%22:8.2,%22lat%22:8.2},%20{%22lng%22:8.2,%22lat%22:10.2}],%22coordtype%22:2}
+```
 
-在之前的报文拆解过程中，我们看到多了很多 `%22`，其实， `0x22`是单引号 `"`的ascii值，
+在之前的报文拆解过程中，我们看到多了很多 %22，其实， `0x22`是单引号 `"`的ascii值，
 
 一方面，URL描述的资源为了能通过其他各种协议传送，但是有些协议在传输过程中会剥去一些特定的字符；另一方面，URL还是可读的，所以那些不可打印的字符就不能在URL中使用了，比如空格；最后，URL还得是完整的，它需要支持所有语言的字符。
 
 总之，基于很多原因，URL设计者将US-ASCII码和其转义序列集成到URL中，通过转义序列，就可以用US-ASCII字符集的有限子集对任意字符或数据进行编码了。
 
-转义的方法：百分号( `%`)后跟着两个表示ASCII码的十六进制数。比如：
+转义的方法：百分号( %)后跟着两个表示ASCII码的十六进制数。比如：
 
 ![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191229211413.png)
 
