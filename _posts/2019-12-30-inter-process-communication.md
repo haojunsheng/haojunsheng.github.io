@@ -524,3 +524,63 @@ Unix内核使用三种数据结构来表示打开的文件，描述符表指向�
 
 ## 2.3 全球IP因特网
 
+1. 主机集合是32位的IP地址的集合
+2. IP地址被映射成域名
+3. 机器之间可以通过connection 连接 来进行通信
+
+### 2.3.1 IP地址
+
+**IP地址**是一个32位无符号整数, 表示的时候用 x.x.x.x 来表示, 每个x都是一个8位二进制数的无符号十进制表示, 也就是从0-255.
+
+IP地址在系统里是一个结构:
+
+```
+struct in_addr {
+    uint32_t s_addr;
+}
+```
+
+由于主机可能有大端法或者小端法, TCP/IP规定了网络字节顺序按照大端字节顺序进行存放. 比如IP地址, 在网络传输的时候按照大端法排列. Unix有如下函数用于转换网络字节顺序和主机字节顺序:
+
+```c
+#include <netinet/inet.h>
+
+//主机转网络
+uint32_t htonl(uint32_t hostlong);
+uint16_t htonl(uint16_t hostlong);
+
+//网络转主机
+uint32_t ntohl(uint32_t netlong);
+uint16_t ntohs(uint16_t netshort);
+```
+
+这些函数没有处理64位的函数, 看来处理64位需要自己排布.
+
+还有两个函数可以用来转换IP地址和十进制表示的IP地址:
+
+```c
+#include <arpa/inet.h>
+
+//将src转换成IP地址放入dst指针指向的对象内. 如果成功返回1, 如果src非法返回0, 如果出错返回-1
+int inet_pton(AF_INET, const char *src, void *dst);
+
+//将IP地址转换成字符串, 返回指向字符串的指针, 出错就返回NULL
+const char *inet_ntop(AF_INET, const void *src, char *dst, socklen_t size);
+```
+
+这些函数一般用n表示网络, p表示字符串表示. AF_INET 表示32位 IPV4 地址, 其实还可以处理 128位的IPV6地址.
+
+### 2.3.2 域名
+
+### 2.3.3 因特网连接
+
+对于程序员来说, 关键就是要搞清楚连接的端点及套接字。（cliaddr:clipart, servaddr:servport）
+
+## 2.4 套接字接口
+
+套接字接口(socket interface)结合Unix I/O来创建网络应用的函数。
+
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191231222603.png" style="zoom:50%;" />
+
+### 2.4.1 套接字地址结构
+
