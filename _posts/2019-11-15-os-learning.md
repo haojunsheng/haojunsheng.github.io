@@ -292,7 +292,99 @@ _syscallN宏展开系统调用，提供用户态的系统调用接口（参数�
 
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191207231228.png)
 
+我们来区分下进程，线程和协程。进程和线程不在多说了，我们来看下协程。来看生产者消费者的场景，一个线程向队列中放数据，另外一个从队列中取数据，处理起两个线程的协作就显得很麻烦，不但需要加锁，还得做好线程的通知和等待。我们来看下这样的代码：
 
+```python
+# 生产者
+def producer(c):   
+    #其他代码  
+    while True:          
+        value = ...生成数据...
+        c.send(value)
+
+# 消费者
+def consumer():    
+    #其他代码      
+    while True:
+        value = yield 
+        print(value)
+
+c = consumer()
+producer(c)
+```
+
+1. 生产者发送数据，暂停运行，不进行下一轮循环
+2. 消费者其实一直在value = yield 那里等待，直到数据到来，现在数据来了，取出处理（value就是生产者发送过来的数据）。
+3. 消费者在循环中再次yield， 暂停执行。
+4. 生产者继续下一轮的循环，生成新的消息，发送给消费者。
+
+![img](https://mmbiz.qpic.cn/mmbiz_png/KyXfCrME6UK2jYy4icwjYbUQAazpQX3yDlBBc6rwlQOJT1TgGFulCzBibDsqfumnbfiabkhprhZm4LNDBpl5IOcwA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+
+注意，这个yield和Java的yield是不同的，前者是真的让程序暂停了。后者只是让出CPU进入了就绪状态。等待下次调度运行。干了操作系统的事情。这样的程序叫做协程，完全在用户态，**比线程更加轻量级**。协程是依赖于线程的。
+
+我们来研究下一个话题？为什么需要线程池？
+
+既然线程是属于进程的，可以共享进程的资源， 那创建一个线程应该很轻松啊，**为什么要有线程池这个东西呢**？
+
+虽然线程是个轻量级的东西， 但是对于互联网应用来说，如果每个用户的请求都创建一个线程，那会非常得多，服务器也是难于承受， 再说了，众多的线程去竞争CPU，不断切换，也会让CPU调度不堪重负，很多线程将不得不等待。所以前辈们的思路就是（1）用少量的线程 （2） 让线程保持忙碌。
+
+![img](https://mmbiz.qpic.cn/mmbiz_png/KyXfCrME6UK7lmln1L1OSlca8YeiaVJYZbnBqkwPv4w2zueVwcLGzmZE8PrQhuBHYvhDEgNoGRHfl2FHsjczO2A/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+
+只创建一定数量的线程，让这些线程去处理所有的任务，任务执行完了以后，线程并不结束，而是回到线程池中去，等待接受下一个任务。
+
+我们设置**可以预先创建线程**，任务来了就不用临时再创建了，立刻开始服务。**当线程池的线程刚创建时，让他们进入阻塞状态**：等待某个任务的到来。 如果任务来了，那就好办，唤醒其中一个线程，让它拿到任务去执行即可。
+
+我们可以借助于BlockingQueue技术：
+
+![img](https://mmbiz.qpic.cn/mmbiz_png/KyXfCrME6UK7lmln1L1OSlca8YeiaVJYZLZMmKRdsBGVXnessMvDQibPYwUs8UibhkEx3ARwDJCoxdKmib6bqngibKg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+
+BlockingQueue其实很简单，就是一个线程调用它的take()方法取数据时， 如果这个Queue中没有数据，该线程会阻塞；同样，一个线程调用它的put方法放数据时，如果Queue满了， 也会阻塞。
+
+线程池中每个线程的run（）方法中，要设置一个循环，每次都尝试从BlockingQueue中获取任务，如果Queue是空的，就阻塞等待， 如果有任务来了，就会通知到线程池的某一个线程去处理，处理完了以后，依然试图从BlockingQueue中获取任务，就这么依次循环下去。
+
+先简单的实现下：
+
+```java
+线程池中的Worker线程：
+public class WorkerThread extends Thread {
+
+    private BlockingQueue<Task> taskQueue = null;
+    private boolean       isStopped = false;
+    //持有一个BlockingQueue的实例
+    public WorkerThread(BlockingQueue<Task> queue){
+        taskQueue = queue;
+    }
+
+    public void run(){
+        while(!isStopped()){
+            try{
+                Task task = taskQueue.take();
+                task.execute();
+            } catch(Exception e){
+                //log or otherwise report exception,
+                //but keep pool thread alive.
+            }
+        }
+    }
+    ......略......
+}
+```
+
+事实上，Doug Lea大师写了ExecutorService，如下所示：
+
+```java
+ExecutorService executorService = Executors.newFixedThreadPool(10);
+
+executorService.execute(new Runnable() {
+    public void run() {
+        System.out.println("Asynchronous task");
+    }
+});
+
+executorService.shutdown();
+```
+
+下面我们来看ThreadLocal，
 
 ## 2.1 进程运行轨迹
 
