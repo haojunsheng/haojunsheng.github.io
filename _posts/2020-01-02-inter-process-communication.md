@@ -633,6 +633,8 @@ IP地址和域名之间的关系是多对多。
 
 套接字接口(socket interface)结合Unix I/O来创建网络应用的函数。
 
+https://static.app.yinxiang.com/embedded-web/profile/#/join?guid=bbe6aac8-f3de-4324-b4ad-791cb348034b&channel=copylink&shardId=s61&ownerId=21811079
+
 <img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191231222603.png" style="zoom:50%;" />
 
 我们先来看下addrinfo，用来准备之後要用的 socket 地址数据结构，也用在主机名（host name）及服务名（service name）的查询。
