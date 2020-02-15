@@ -3,8 +3,8 @@ layout: post
 title: "聊聊fabric的数据结构"
 date: 2020-01-20
 description: "2020-01-20-聊聊fabric的数据结构"
-categories: 计算机网络
-tag: 计算机网络
+categories: fabric
+tag: fabric
 
 ---
 
