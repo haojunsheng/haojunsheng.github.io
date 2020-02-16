@@ -97,11 +97,11 @@ RSA密码是1978年美国麻省理工学院三位密码学者R.L.Rivest、A.Sham
 
 若n是奇素数，则n-1是偶数。不妨令n=2^t*m+1（t≥1），则m为n-1的最大奇因子。根据上述两点，不难得出，对∀a∈[2,n-2]，∃τ∈[1,t]使得
 
-![image-20190329170125901](https://ws2.sinaimg.cn/large/006tKfTcly1g1jrtsu7ifj30a40280sr.jpg)
+![006tKfTcly1g1jrtsu7ifj30a40280sr](/images/posts/crypto/006tKfTcly1g1jrtsu7ifj30a40280sr.jpg)
 
 Miller算法正是通过上述的逆否命题而设计出来的，其原理是：对∀a∈[2,n-2]，n是一个合数的充要条件是对∀τ∈[1,t]使得
 
-![image-20190329170139452](https://ws4.sinaimg.cn/large/006tKfTcly1g1jru0kqp6j30a402igln.jpg)　　
+![006tKfTcly1g1jru0kqp6j30a402igln](/images/posts/crypto/006tKfTcly1g1jru0kqp6j30a402igln.jpg)　　
 
 Miller算法的设计思路：令b=a^m(mod n)，如果b=±1(mod n)则n可能是一个素数；否则，b=b^2(mod n)，并判断是否满足b=-1(mod n)（满足则n可能是一个素数），由此循环t-1次。如果都满足b≠-1(mod n)，则n一定是一个合数。
 
@@ -137,11 +137,11 @@ e.g.求243^-1(mod 325)
 
 **反复平方乘算法**
 
-![image-20190329170517221](https://ws1.sinaimg.cn/large/006tKfTcly1g1jrxs8al9j30nk03q3z2.jpg)
+![006tKfTcly1g1jrxs8al9j30nk03q3z2](/images/posts/crypto/006tKfTcly1g1jrxs8al9j30nk03q3z2.jpg)
 
 　　所以，反复平方乘算法的原理是将指数n转化为2的幂之和的形式，即n=2^kek+2^(k-1)ek-1+…+2e1+e0，然后根据l1=a^2(mod m)，l2=a^4(mod m)=l1^2(mod m)，...，
 
-![image-20190329170552605](https://ws3.sinaimg.cn/large/006tKfTcly1g1jryeco8ej308c0263yi.jpg)
+![006tKfTcly1g1jryeco8ej308c0263yi](/images/posts/crypto/006tKfTcly1g1jryeco8ej308c0263yi.jpg)
 
 最后根据a^n(mod m)=e0a·e1l1·...·eklk(mod m)求解。
 
@@ -345,7 +345,7 @@ public class RSA {
 
 代码执行结果如下所示：
 
-![image-20190329171739308](https://ws4.sinaimg.cn/large/006tKfTcly1g1jsanukgpj30m018knf5.jpg)
+![006tKfTcly1g1jsanukgpj30m018knf5](/images/posts/crypto/006tKfTcly1g1jsanukgpj30m018knf5.jpg)
 
 更多密码学源码请参考：
 

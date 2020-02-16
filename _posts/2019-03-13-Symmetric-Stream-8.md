@@ -23,9 +23,9 @@ tag: 密码学
 
 **流密码**：也称序列密码 (Stream Cipher) ,是指明文消息按**字符(如二元数字)逐位地、对应地加密**的一类密码算法。
 
-![image-20190328162428354](https://ws3.sinaimg.cn/large/006tKfTcly1g1il51nd1aj31fe08q421.jpg)
+![006tKfTcly1g1il51nd1aj31fe08q421](/images/posts/crypto/006tKfTcly1g1il51nd1aj31fe08q421.jpg)
 
-![image-20190328162714946](https://ws2.sinaimg.cn/large/006tKfTcly1g1il7wrl47j30os06ajt5.jpg)
+![006tKfTcly1g1il7wrl47j30os06ajt5](/images/posts/crypto/006tKfTcly1g1il7wrl47j30os06ajt5.jpg)
 
 
 
@@ -33,11 +33,9 @@ tag: 密码学
 
 随机，周期性大，统计特性良好。
 
-
-
 随机数的性质：
 
-![image-20190328163130126](https://ws2.sinaimg.cn/large/006tKfTcly1g1ilcerz4sj30ra0n0dp8.jpg)
+![006tKfTcly1g1ilcerz4sj30ra0n0dp8](/images/posts/crypto/006tKfTcly1g1ilcerz4sj30ra0n0dp8.jpg)
 
 
 
@@ -49,7 +47,7 @@ tag: 密码学
 
 **伪随机数生成器：**
 
-![image-20190328163351565](https://ws3.sinaimg.cn/large/006tKfTcly1g1ilesge66j30ow0e6wib.jpg)
+![006tKfTcly1g1ilesge66j30ow0e6wib](/images/posts/crypto/006tKfTcly1g1ilesge66j30ow0e6wib.jpg)
 
 # 3. **密钥流生成器**
 
@@ -72,7 +70,7 @@ A、C、M是常量， A和C小于M
 
 **3. 线性同余法伪随机数发生器**
 
-![image-20190328164141422](https://ws2.sinaimg.cn/large/006tKfTcly1g1ilmxjfi5j30ti0dwju7.jpg)
+![006tKfTcly1g1ilmxjfi5j30ti0dwju7](/images/posts/crypto/006tKfTcly1g1ilmxjfi5j30ti0dwju7.jpg)
 
 
 
@@ -86,11 +84,11 @@ R1=4,R2=5,R3=1,R4=3，周期6 谨慎选择A、C、M的值
 
 易于硬件实现，速度快，典型应用:A5,GSM语音加密标准。
 
-![image-20190328164356572](https://ws2.sinaimg.cn/large/006tKfTcly1g1ilpa97enj30r607o76r.jpg)
+![006tKfTcly1g1ilpa97enj30r607o76r](/images/posts/crypto/006tKfTcly1g1ilpa97enj30r607o76r.jpg)
 
 
 
-![image-20190328164429807](https://ws1.sinaimg.cn/large/006tKfTcly1g1ilpuk888j30v2092wik.jpg)
+![006tKfTcly1g1ilpuk888j30v2092wik](/images/posts/crypto/006tKfTcly1g1ilpuk888j30v2092wik.jpg)
 
 
 

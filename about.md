@@ -10,4 +10,3 @@ Github Repositories: https://github.com/haojunsheng
 
 <img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img20191121111043.png" style="zoom:50%;" />
 
-![image-20200216210158789](img/image-20200216210158789.png)

@@ -51,9 +51,7 @@ Feistel网络利用**乘积密码**实现关键密码模块。所谓乘积密码
 
 # 3. DES算法框架
 
-![image-20190328110912842](https://ws2.sinaimg.cn/large/006tKfTcly1g1ic109lzcj31220jcanq.jpg)
-
-
+![006tKfTcly1g1ic109lzcj31220jcanq](/images/posts/crypto/006tKfTcly1g1ic109lzcj31220jcanq.jpg)
 
 轮函数：
 
@@ -61,27 +59,25 @@ Li=Ri-1；
 
 Ri=Li-1⊕f(Ri-1, Ki)。
 
-![image-20190328110937512](https://ws2.sinaimg.cn/large/006tKfTcly1g1ic1f9pmlj30v70u0ard.jpg)
+<img src="/images/posts/crypto/006tKfTcly1g1ic1f9pmlj30v70u0ard.jpg" alt="006tKfTcly1g1ic1f9pmlj30v70u0ard" style="zoom:33%;" />
 
 # 4. DES加密模块
 
 ## 4.1 初始置换IP 
 
-![image-20190328111027579](https://ws2.sinaimg.cn/large/006tKfTcly1g1ic2edyk4j31140nsnl1.jpg)
+![006tKfTcly1g1ic2edyk4j31140nsnl1](/images/posts/crypto/006tKfTcly1g1ic2edyk4j31140nsnl1.jpg)
 
 ## 4.2 DES的轮结构
 
-
-
-![image-20190328111104819](https://ws3.sinaimg.cn/large/006tKfTcly1g1ic2xhmqoj311a0r8dw8.jpg)
+![006tKfTcly1g1ic2xhmqoj311a0r8dw8](/images/posts/crypto/006tKfTcly1g1ic2xhmqoj311a0r8dw8.jpg)
 
 
 
-![image-20190328111131605](https://ws1.sinaimg.cn/large/006tKfTcly1g1ic3ednqgj30z80p0199.jpg)
+![006tKfTcly1g1ic3ednqgj30z80p0199](/images/posts/crypto/006tKfTcly1g1ic3ednqgj30z80p0199.jpg)
 
 **扩充变换**：扩充变换E的作用是将32比特的明文扩充为48比特。设m=m1m2…m31m32; c=c1c2…c47c48。满足E(m)=c， c1=m32,c2=m1,…,c7=m4,…,c48=m1。
 
-![image-20190328111150410](https://ws2.sinaimg.cn/large/006tKfTcly1g1ic3q6trzj30oi0s8qjj.jpg)
+![006tKfTcly1g1ic3q6trzj30oi0s8qjj](/images/posts/crypto/006tKfTcly1g1ic3q6trzj30oi0s8qjj.jpg)
 
 **8个S盒：**
 
@@ -95,7 +91,7 @@ Ri=Li-1⊕f(Ri-1, Ki)。
 
 将m1m6, m2m3m4m5, c1c2c3c4都用10进制来表示，则在下表中位于m1m6 (0~3)行 m2m3m4m5 (0~15)列的数就是S盒的输出 c1c2c3c4(十进制转化成二进制)。
 
-![image-20190328111331991](https://ws4.sinaimg.cn/large/006tKfTcly1g1ic5h9wasj31160bwk3r.jpg)
+![006tKfTcly1g1ic5h9wasj31160bwk3r](/images/posts/crypto/006tKfTcly1g1ic5h9wasj31160bwk3r.jpg)
 
 例如若S1的输入为100110，则通过查表(S1)输出应该是表中的第2(10)行第3(0011)列的数字8，所以二进制输出为1000。
 
@@ -103,7 +99,7 @@ Ri=Li-1⊕f(Ri-1, Ki)。
 
 置换P将32比特的输入，改变位置顺序：输出的第1位为输入的第16位，输出的第2位为输入的第7位， …，输出的第32位为输入的第25位。
 
-![image-20190328111345990](https://ws3.sinaimg.cn/large/006tKfTcly1g1ic5q6u2nj30pu0r8467.jpg)
+<img src="/images/posts/crypto/006tKfTcly1g1ic5q6u2nj30pu0r8467.jpg" alt="006tKfTcly1g1ic5q6u2nj30pu0r8467" style="zoom:33%;" />
 
 ## 4.3 子密钥生成算法
 
@@ -117,7 +113,7 @@ Ri=Li-1⊕f(Ri-1, Ki)。
 
 置换选择1的矩阵如下：
 
-![image-20190328111501575](https://ws4.sinaimg.cn/large/006tKfTcly1g1ic71fo89j311g0cg0xj.jpg)
+![006tKfTcly1g1ic71fo89j311g0cg0xj](/images/posts/crypto/006tKfTcly1g1ic71fo89j311g0cg0xj.jpg)
 
 **循环左移：**
 
@@ -127,7 +123,7 @@ Ri=Li-1⊕f(Ri-1, Ki)。
 
 　　循环左移位数表如下：
 
-![image-20190328111514194](https://ws1.sinaimg.cn/large/006tKfTcly1g1ic79g4y5j311605ywh2.jpg)
+![006tKfTcly1g1ic79g4y5j311605ywh2](/images/posts/crypto/006tKfTcly1g1ic79g4y5j311605ywh2.jpg)
 
 
 
@@ -135,13 +131,13 @@ Ri=Li-1⊕f(Ri-1, Ki)。
 
 ​        将Ci和Di合并成一个56位的中间数据，置换选择2从中选择出一个48位的子密钥Ki。置换选择2的矩阵如下：
 
-![image-20190328111538528](https://ws3.sinaimg.cn/large/006tKfTcly1g1ic7peyasj30pg12udo9.jpg)
+<img src="/images/posts/crypto/006tKfTcly1g1ic7peyasj30pg12udo9.jpg" alt="006tKfTcly1g1ic7peyasj30pg12udo9" style="zoom:33%;" />
 
-![image-20190328111559764](https://ws1.sinaimg.cn/large/006tKfTcly1g1ic81ghy0j310s0n8e0a.jpg)
+<img src="/images/posts/crypto/006tKfTcly1g1ic81ghy0j310s0n8e0a.jpg" alt="006tKfTcly1g1ic81ghy0j310s0n8e0a" style="zoom:33%;" />
 
  缩减变换PC-1, PC-2 : PC-1将64比特串缩为56比特； PC-2将56比特长的串缩为48比特。两个变换的输出比特顺序如下：
 
-![image-20190328111639754](https://ws2.sinaimg.cn/large/006tKfTcly1g1ic8qwme8j31220jkkhp.jpg)
+<img src="/images/posts/crypto/006tKfTcly1g1ic8qwme8j31220jkkhp.jpg" alt="006tKfTcly1g1ic8qwme8j31220jkkhp" style="zoom:33%;" />
 
 # 5. DES的加解密过程
 
@@ -566,7 +562,7 @@ public class TestDES {
 
 测试结果：
 
-![image-20190328111852587](https://ws2.sinaimg.cn/large/006tKfTcly1g1icb1lvgtj311k0707cd.jpg)
+![006tKfTcly1g1icb1lvgtj311k0707cd](/images/posts/crypto/006tKfTcly1g1icb1lvgtj311k0707cd.jpg)
 
 # 9. 3DES
 

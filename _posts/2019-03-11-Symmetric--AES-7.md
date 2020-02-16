@@ -54,9 +54,7 @@ RINJDAEL算法仍然采用分组密码的一种通用结构：对轮函数实施
 
 首先取GF(p)上一个n次不可约多项式
 
-![image-20190328120104771](https://ws3.sinaimg.cn/large/006tKfTcly1g1idiya1kfj31040dowms.jpg)
-
-​    有限域的运算：
+![006tKfTcly1g1idiya1kfj31040dowms](/images/posts/crypto/006tKfTcly1g1idiya1kfj31040dowms.jpg)    有限域的运算：
 
 ​    有限域GF(pn) 中的加法运算：对应的多项式系数在GF(p)上相加。
 
@@ -152,9 +150,7 @@ c3=a3b0⊕a2b1⊕a1b2⊕a0b3
 
 上面的多项式可以用矩阵表示如下：
 
-![image-20190328120700752](https://ws4.sinaimg.cn/large/006tKfTcly1g1idp49k7tj30q60cu41w.jpg)
-
-###  
+<img src="/images/posts/crypto/006tKfTcly1g1idp49k7tj30q60cu41w.jpg" alt="006tKfTcly1g1idp49k7tj30q60cu41w" style="zoom:33%;" />
 
 （3）GF(28)上的多项式的倍乘
 
@@ -170,7 +166,7 @@ GF(28)上的多项式b(x)=b3x3+b2x2+b1x+b0的倍乘x·b(x)=b2x3+b1x2+b0x+b3。�
 
 # 3. AES的整体框架
 
-![image-20190328120745045](https://ws3.sinaimg.cn/large/006tKfTcly1g1idpvw8bjj30yw0iy498.jpg)
+<img src="/images/posts/crypto/006tKfTcly1g1idpvw8bjj30yw0iy498.jpg" alt="006tKfTcly1g1idpvw8bjj30yw0iy498" style="zoom:33%;" />
 
 密钥长度为128位，分组长度为128位，加密轮数为10轮。
 
@@ -182,7 +178,7 @@ GF(28)上的多项式b(x)=b3x3+b2x2+b1x+b0的倍乘x·b(x)=b2x3+b1x2+b0x+b3。�
 
 例如，对于长度为128的数据块B15B14...B1B0，Nb=128÷32=4，即该数据块可以表示为状态数组。
 
-![image-20190328120822825](https://ws2.sinaimg.cn/large/006tKfTcly1g1idqjs3x3j308m0a0jrr.jpg)
+<img src="/images/posts/crypto/006tKfTcly1g1idqjs3x3j308m0a0jrr.jpg" alt="006tKfTcly1g1idqjs3x3j308m0a0jrr" style="zoom:33%;" />
 
  AES算法中规定数据块长度为128位，即Nb=128÷32=4。
 
@@ -192,7 +188,7 @@ GF(28)上的多项式b(x)=b3x3+b2x2+b1x+b0的倍乘x·b(x)=b2x3+b1x2+b0x+b3。�
 
 例如，对于长度为128的密钥K15K14...K1K0，Nk=128÷32=4，即该密钥可以表示为密钥数组。
 
-![image-20190328120856569](https://ws3.sinaimg.cn/large/006tKfTcly1g1idr4pwmij308s0a8dg8.jpg)
+![006tKfTcly1g1idr4pwmij308s0a8dg8](/images/posts/crypto/006tKfTcly1g1idr4pwmij308s0a8dg8.jpg)
 
 AES算法中规定密钥长度为128位、192位或256位，即Nk取值为4、6或8。
 
@@ -200,7 +196,7 @@ AES算法中规定密钥长度为128位、192位或256位，即Nk取值为4、6�
 
 AES算法的迭代轮数Nr由Nb和Nk共同决定：
 
-![image-20190328120931392](https://ws2.sinaimg.cn/large/006tKfTcly1g1idrqus2zj30fe0a274v.jpg)
+![006tKfTcly1g1idrqus2zj30fe0a274v](/images/posts/crypto/006tKfTcly1g1idrqus2zj30fe0a274v.jpg)
 
 AES规定Nb=4，所以对应Nk取值4、6、8，Nr取值分别为10、12、14，即在Nb=4的情况下，Nr=Nk+6。
 
@@ -226,7 +222,7 @@ AES的轮函数由以下3层组成：
 
 　　3.密钥加层：进行轮密钥加变换，将轮密钥简单地异或到中间状态上。
 
-![image-20190328121009163](https://ws4.sinaimg.cn/large/006tKfTcly1g1idse4mcmj30ti0pytb2.jpg)
+![006tKfTcly1g1idse4mcmj30ti0pytb2](/images/posts/crypto/006tKfTcly1g1idse4mcmj30ti0pytb2.jpg)
 
 　无论是加密过程还是解密过程，都由以下部分组成：
 
@@ -250,9 +246,7 @@ S盒变换是按字节进行的代替变换，是作用在状态中每个字节�
 
 ​            y7y6y5y4y3y2y1y0=(x7'x6'x5'x4'x3'x2'x1'x0')⊕(01100011)
 
-![image-20190328121135405](https://ws1.sinaimg.cn/large/006tKfTcly1g1idtw00nnj30so0b80ul.jpg) 加密过程的S盒表如下：
-
-![image-20190328121156945](https://ws1.sinaimg.cn/large/006tKfTcly1g1idu9kc2mj30va0mo4b2.jpg)
+![image-20200216215751552](/images/posts/crypto/image-20200216215751552.png) 
 
 **解密过程：**解密过程中的S盒变换按以下2步进行：
 
@@ -262,19 +256,19 @@ xi'=xi+2⊕xi+5⊕xi+7
 
  y7y6y5y4y3y2y1y0=(x7'x6'x5'x4'x3'x2'x1'x0')⊕(00000101)
 
-![image-20190328121229296](https://ws1.sinaimg.cn/large/006tKfTcly1g1idutow4gj30sc0amgnh.jpg)
+![006tKfTcly1g1idutow4gj30sc0amgnh](/images/posts/crypto/006tKfTcly1g1idutow4gj30sc0amgnh.jpg)
 
 （2）把字节的值用它的乘法逆来代替。
 
  解密过程的S盒表如下：
 
-![image-20190328121320502](https://ws4.sinaimg.cn/large/006tKfTcly1g1idvpiy4oj30vk0ms4au.jpg)
+![006tKfTcly1g1idvpiy4oj30vk0ms4au](/images/posts/crypto/006tKfTcly1g1idvpiy4oj30vk0ms4au.jpg)
 
 ## 5.2 行移位变换
 
 行移位变换是对状态的行进行循环移位变换。移位值C1、C2、C3与Nb有关：
 
-![image-20190328121344664](https://ws1.sinaimg.cn/large/006tKfTcly1g1idw4ilv1j308m0a6dg7.jpg)
+![006tKfTcly1g1idw4ilv1j308m0a6dg7](/images/posts/crypto/006tKfTcly1g1idw4ilv1j308m0a6dg7.jpg)
 
 AES规定Nb=4，所以C1=1，C2=2，C3=3。
 
@@ -304,9 +298,7 @@ AES规定Nb=4，所以C1=1，C2=2，C3=3。
 
 ## 5.5 轮密钥产生算法
 
-![image-20190328152635300](https://ws4.sinaimg.cn/large/006tKfTcly1g1ijgtffupj30nm0pg44c.jpg)
-
-
+<img src="/images/posts/crypto/006tKfTcly1g1ijgtffupj30nm0pg44c.jpg" alt="006tKfTcly1g1ijgtffupj30nm0pg44c" style="zoom:33%;" />
 
 轮密钥根据轮密钥产生算法由主密钥产生得到。轮密钥产生分2步进行：密钥扩展和轮密钥选择，且遵循以下原则：
 
@@ -868,8 +860,6 @@ public class TestAES {
 
 **测试结果如下：**
 
-![image-20190328121644741](https://ws3.sinaimg.cn/large/006tKfTcly1g1idz9vmlzj310e06cgr6.jpg)
-
-
+![006tKfTcly1g1idz9vmlzj310e06cgr6](/images/posts/crypto/006tKfTcly1g1idz9vmlzj310e06cgr6.jpg)
 
 更多代码请参考：https://github.com/Anapodoton/Encryption/blob/master/AES/AES.java
