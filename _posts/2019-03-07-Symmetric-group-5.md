@@ -36,7 +36,7 @@ tag: 密码学
 
 # 2. 分组密码系统模型
 
-![image-20190328104636422](https://ws1.sinaimg.cn/large/006tKfTcly1g1ibdh4v6gj31200b60yp.jpg)
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/006tKfTcly1g1ibdh4v6gj31200b60yp.jpg)
 
    分组密码实质上是字长为m的数字序列的代换密码。注意，在一般情况下，n和m是相等的。
 
@@ -44,7 +44,7 @@ tag: 密码学
 
 <u>分组密码(块密码)，将明文消息编码表示后的数字序列，划分成固定大小的组(块)，各组分别在密钥的控制下变换成等长的输出数字序列。</u>
 
- ![image-20190327233147347](https://ws4.sinaimg.cn/large/006tKfTcly1g1hrvc1w19j30q60miq9u.jpg)
+ ![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/006tKfTcly1g1hrvc1w19j30q60miq9u.jpg)
 
 # 3. **分组密码的设计思想**
 
@@ -78,9 +78,7 @@ tag: 密码学
 
 **SP网络设计思想：**
 
-![image-20190327233545694](https://ws2.sinaimg.cn/large/006tKfTcly1g1hrzh233nj30e80m0gsx.jpg)
-
-
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/006tKfTcly1g1hrzh233nj30e80m0gsx.jpg)
 
 输入状态：W^r-1是r-1轮对s盒的输入。
 

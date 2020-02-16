@@ -4,6 +4,7 @@ title: "区块链中的密码学系列之对称密码概述(四）"
 date: 2019-03-05
 description: "2019-03-05-区块链中的密码学系列之对称密码概述(四）"
 categories: 密码学
+
 tag: 密码学
 ---   
 <!--ts-->
@@ -32,7 +33,7 @@ tag: 密码学
 
 对称密码概述：
 
-![image-20190327181957874](https://ws1.sinaimg.cn/large/006tKfTcly1g1hiuyxx7fj30xc0ecgpq.jpg)
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/006tKfTcly1g1hiuyxx7fj30xc0ecgpq.jpg)
 
 **P 明文空间 **
 
@@ -68,7 +69,7 @@ tag: 密码学
 
 栅栏数:2
 
-![image-20190327111625302](https://ws2.sinaimg.cn/large/006tKfTcly1g1h6m6oywoj311604kgnj.jpg)
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/006tKfTcly1g1h6m6oywoj311604kgnj.jpg)
 
 **密文:**MEATRHTGPRYETFETEOAAT
 
@@ -86,9 +87,9 @@ tag: 密码学
 
 **加密方法:** 将明文串P按固定长度m分组，然后对每组中的 子串按1，2，....m的某个置换重新排列得到密文。
 
- **加密密钥(置换)**![image-20190327112008009](https://ws1.sinaimg.cn/large/006tKfTcly1g1h6q1lgfuj30kg04kmy9.jpg)
+ **加密密钥(置换)**
 
-
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/006tKfTcly1g1h6q1lgfuj30kg04kmy9.jpg)
 
 **举例:** 
 
@@ -105,7 +106,7 @@ tag: 密码学
 
 解密方法：
 
-![image-20190327112136763](https://ws3.sinaimg.cn/large/006tKfTcly1g1h6rlz19oj317o0iyk40.jpg)
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/006tKfTcly1g1h6rlz19oj317o0iyk40.jpg)
 
 ## 2.3 列置换
 
@@ -119,7 +120,7 @@ tag: 密码学
 
 密文:ESLHH LSBEE SLHYA EASSR HSETS SELEO。 
 
-![image-20190327112450996](https://ws3.sinaimg.cn/large/006tKfTcly1g1h6uymng7j30ju0aswhs.jpg)
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/006tKfTcly1g1h6uymng7j30ju0aswhs.jpg)
 
 **解密方法:**
 
@@ -128,7 +129,7 @@ tag: 密码学
 密钥:351642
 明文:shesellsseashellsbytheseashore
 
-![image-20190327172250266](https://ws2.sinaimg.cn/large/006tKfTcly1g1hh7g1bacj30j40cygnr.jpg)
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/006tKfTcly1g1hh7g1bacj30j40cygnr.jpg)
 
 ## 2.4 多次列置换
 
@@ -144,9 +145,7 @@ tag: 密码学
 
 字母顺序更乱，增加破解难度、复杂度。
 
-![image-20190327173412934](https://ws4.sinaimg.cn/large/006tKfTcly1g1hhjbyn3aj31ca09itg4.jpg)
-
-
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/006tKfTcly1g1hhjbyn3aj31ca09itg4.jpg)
 
 # 3. 替换密码
 
@@ -169,7 +168,7 @@ Pi* *=(Ci* *–3)mod26*
 
 明文密文的一一对应   -》明文密文的多个对应
 
-![image-20190327180218654](https://ws3.sinaimg.cn/large/006tKfTcly1g1hicjnb9hj30qw0k47wh.jpg)
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/006tKfTcly1g1hicjnb9hj30qw0k47wh.jpg)
 
 它是基于串的替换密码，密钥是由多于一个的字符所组成的串。
 
@@ -180,7 +179,7 @@ P******i*** ***=(C******i*** ***–k******i*** ***)mod26***
 
 m的含义是：m为密钥的长度，在下面的例子中m=3。
 
-![image-20190327175545345](https://ws3.sinaimg.cn/large/006tKfTcly1g1hi5p6xs1j31hi0hyk5e.jpg)
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/006tKfTcly1g1hi5p6xs1j31hi0hyk5e.jpg)
 
 **密钥空间是多大呢?** *26^m*
 
@@ -198,15 +197,7 @@ m的含义是：m为密钥的长度，在下面的例子中m=3。
 
 原理：假定消息是长为 n的比特串，那么密钥也是长为 n 的比特串;
 
-![image-20190327181201401](https://ws1.sinaimg.cn/large/006tKfTcly1g1himng5xtj30f80a6gnt.jpg)
-
-![image-20190327181314133](https://ws1.sinaimg.cn/large/006tKfTcly1g1hinvyq6oj30rq0gq132.jpg)
-
-
-
-![image-20190327181350149](https://ws4.sinaimg.cn/large/006tKfTcly1g1hioifyakj30zk0gggpe.jpg)
-
-
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20200216194515.png)
 
 # 4. 乘积密码
 
@@ -248,13 +239,11 @@ R2=(P2，C2，K2，E2，D2)
 
 中间结果:FG GV XG XG AF VD AG VF 
 
-![image-20190327214034510](https://ws4.sinaimg.cn/large/006tKfTcly1g1honm2kekj30w20dggrv.jpg)
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/006tKfTcly1g1honm2kekj30w20dggrv.jpg)
 
 然后把中间结果按照行的形式进行排列，最后对中间结果进行置换，密钥为computer，即密钥的顺序为14358726，则密文为：FA XV GV GF VD GF GG XA。
 
-![image-20190327225929523](https://ws1.sinaimg.cn/large/006tKfTcly1g1hqxqcgfvj30wy08o0ux.jpg)
-
-
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/006tKfTcly1g1hqxqcgfvj30wy08o0ux.jpg)
 
 ## 4.1 迭代密码体制
 
