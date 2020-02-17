@@ -254,18 +254,116 @@ https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collecti
   - Hashmap：https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/Map/HashMap.md
   - Hashtable：https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/Map/HashTable.md
   - TreeMap：https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/Map/TreeMap.md
+  - hashmap初始化：https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/Map/HashMap-initialize.md
+  - Map中的hash：https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/Map/Map-hash().md
 
 #### 1.1.3.2 ArrayList和LinkedList和Vector的区别
 
 https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/ArrayList-LinkedList-Vector.md
 
+#### 1.1.3.3 SynchronizedList和Vector的区别
 
+[HashMap、HashTable、ConcurrentHashMap区别](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/HashMap-HashTable-ConcurrentHashMap.md)
+
+[Set和List区别？](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/set-vs-list.md)
+
+[Set如何保证元素不重复?](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/set-repetition.md)
+
+[Java 8中stream相关用法](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/stream.md)、
+
+apache集合处理工具类的使用、
+
+不同版本的JDK中HashMap的实现的区别以及原因
+
+[Collection和Collections区别](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/Collection-vs-Collections.md)
+
+[Arrays.asList获得的List使用时需要注意什么](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/Arrays-asList.md)
+
+[Enumeration和Iterator区别](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/Enumeration-vs-Iterator.md)
+
+[fail-fast 和 fail-safe](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/fail-fast-vs-fail-safe.md)
+
+[CopyOnWriteArrayList](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/CopyOnWriteArrayList.md)
+
+[ConcurrentSkipListMap](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/ConcurrentSkipListMap.md)
+
+### 1.1.4 枚举
+
+[枚举的用法](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-enum/Java-enum-use.md)
+
+[枚举的实现](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-enum/enum-impl.md)
+
+[枚举与单例](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-enum/seven-singleton-pattern.md)
+
+[Enum类:](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-source-code/Enum.md)
+
+**Java枚举如何比较:**
+
+java 枚举值比较用 == 和 equals 方法没啥区别，两个随便用都是一样的效果。
+
+因为枚举 Enum 类的 equals 方法默认实现就是通过 == 来比较的；
+
+类似的 Enum 的 compareTo 方法比较的是 Enum 的 ordinal 顺序大小；
+
+类似的还有 Enum 的 name 方法和 toString 方法一样都返回的是 Enum 的 name 值。
+
+**switch对枚举的支持**
+
+Java 1.7 之前 switch 参数可用类型为 short、byte、int、char，枚举类型之所以能使用其实是编译器层面实现的，编译器会将枚举 switch 转换为类似 switch(s.ordinal()) { case Status.START.ordinal() } 形式，所以实质还是 int 参数类型，感兴趣的可以自己写个使用枚举的 switch 代码然后通过 javap -v 去看下字节码就明白了。
+
+[枚举的序列化如何实现](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-enum/enum-serializable.md)
+
+[枚举的线程安全性问题](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-enum/deep-learning-java-enum-thread-safe.md)
+
+### 1.1.5 IO
+
+[java i/o完全解读](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-IO/Java-IO-all.md)
+
+字符流、字节流、输入流、输出流、
+
+同步、异步、阻塞、非阻塞、Linux 5种IO模型
+
+BIO、NIO和AIO的区别、三种IO的用法与原理、netty
+
+### 1.1.6 反射
+
+[反射与工厂模式](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-reflect/java-factory-union-reflect.md)
+
+**反射有什么作用**：
+
+在运行时判断任意一个对象所属的类。
+
+在运行时判断任意一个类所具有的成员变量和方法。
+
+在运行时任意调用一个对象的方法。
+
+在运行时构造任意一个类的对象。
+
+
+
+Class类
+
+java.lang.reflect.*
+
+动态代理
+
+静态代理、动态代理
+
+动态代理和反射的关系
+
+动态代理的几种实现方式
+
+AOP
 
 ## 1.2 并发编程
 
 
 
 ## 1.3 jvm
+
+
+
+# 2. 数据结构与算法
 
 
 
