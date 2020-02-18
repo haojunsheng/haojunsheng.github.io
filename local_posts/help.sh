@@ -4,9 +4,12 @@
 path=$1
 echo "path: "$path
 file=$(basename $path)
+md-toc --insert $file
+echo "generate md-toc success!"
 filename=$(basename $path -local.md)
 echo "old filename: "$filename
 newfile=$filename".md"
 echo "newfile: "$newfile
+rm -f $newfile
 sed 's#../images#/images#g' $file >> ../_posts/$newfile
-echo "generate web blog file succeed!"
+echo "generate web blog file success!"

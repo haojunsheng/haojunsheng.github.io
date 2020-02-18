@@ -8,17 +8,50 @@ tag: fabric
 
 ---
 
-
-
 <!--ts-->
+   * [前言](#前言)
+   * [1. 智能合约的去中心化管理](#1-智能合约的去中心化管理)
+      * [1.1 链码新的生命周期](#11-链码新的生命周期)
+         * [1.1.1 链码的安装和定义](#111-链码的安装和定义)
+            * [1.1.1.1 打包链码](#1111-打包链码)
+            * [1.1.1.2 安装链码](#1112-安装链码)
+            * [1.1.1.3 同意链码的定义](#1113-同意链码的定义)
+            * [1.1.1.4 提交链码的定义](#1114-提交链码的定义)
+         * [1.1.2 链码的升级](#112-链码的升级)
+         * [1.1.3 完整的demo](#113-完整的demo)
+         * [1.1.4 比较](#114-比较)
+   * [2. private data增强](#2-private-data增强)
+      * [2.1 什么是private data 集合？](#21-什么是private-data-集合)
+      * [2.2 一个demo](#22-一个demo)
+      * [2.3 private交易流程](#23-private交易流程)
+      * [2.4 私有数据的共享](#24-私有数据的共享)
+         * [2.4.1 私有数据共享模型](#241-私有数据共享模型)
+         * [2.4.2 私有数据实例](#242-私有数据实例)
+      * [2.5 删除私有数据](#25-删除私有数据)
+      * [2.6 私有数据集合的定义](#26-私有数据集合的定义)
+   * [3. 外部链码启动器](#3-外部链码启动器)
+      * [3.1 外部构建模型](#31-外部构建模型)
+            * [detect：](#detect)
+            * [build](#build)
+            * [release](#release)
+            * [run](#run)
+      * [3.2 配置外部的构建器和运行器](#32-配置外部的构建器和运行器)
+   * [4. CouchDB中使用了状态数据库缓存来提高性能](#4-couchdb中使用了状态数据库缓存来提高性能)
+   * [5. 基于Alpine来打包docker镜像](#5-基于alpine来打包docker镜像)
+   * [6. Release notes](#6-release-notes)
+      * [新特性](#新特性)
+      * [重要变化](#重要变化)
+   * [废除](#废除)
+
+<!-- Added by: anapodoton, at: Tue Feb 18 16:20:51 CST 2020 -->
 
 <!--te-->
 
-[toc]
-
 # 前言
 
-> 链码不需要“实例化”，可以同时运行java和go链码，同一个链码多次实例化，
+> 链码不需要“实例化”，可以同时运行java和go链码，同一个链码多次实例化。
+
+想要了解上面的特性，请看下面的分解。
 
 Fabric 2.0 在2020年1月29号终于release了，我们来看下有哪些新的变化。
 
@@ -258,6 +291,118 @@ Fabric 2.0增强了private data，我们不需要创建私有数据集合即可�
 - 集合级别的背书策略。我们可以使用背书策略来定义私有数据集合。
 - 每个组织都有暗含的私有数据集合。
 
+## 2.1 什么是private data 集合？
+
+在同一个channel中，A组织的数据不想给其他的组织看的数据。从v1.2开始，创造了**private data collections**,我们可以背书，提交和查询私有数据，在不创建一个独立channel的情况下。
+
+private data collections由两部分组成：
+
+- 实际的私有数据。在不同的节点间通过gossip协议来发送。私有数据存储在授权的peer节点上的**sidedb**数据库中，可以通过Chaincode来访问。**order节点无法看到private data**。注意，必须配置锚节点信息，设置CORE_PEER_GOSSIP_EXTERNALENDPOINT变量。
+- 私有数据的hash，会写入到区块链网络中，其他人可以进行审计。
+
+<img src="../images/posts/fabric/PrivateDataConcept-2.png" alt="private-data.private-data" style="zoom:33%;" />
+
+当集合中的成员需要把该私有数据向第三方共享时，第三方可以通过比较该数据的hash和链上保存的hash，看是否一致。
+
+还有一些特殊情况，每个组织都可以创建一个私有数据集合，之后可以共享给其他成员。
+
+我们把private data和channel进行一个比较。
+
+- channel：所有的交易和账本都是私密的。
+- 私有数据集合：通道中组织的子集共享数据时。直接通过p2p来传播每条具体的交易，而不是区块，order节点无法看到真实的交易。
+
+## 2.2 一个demo
+
+有下面5个角色:
+
+Farmer出售商品，Distributor分销商负责把商品运到海外，Shipper负责在两个角色之间运货，Wholesaler批发商从distributors批发商品，Retailer零售商从shippers和wholesaler购买商品。
+
+场景是：
+
+- Distributor想和Farmer，Shipper共享数据，但是不想让Retailer和wholesaler看到数据；
+- Distributor卖给Retailer和wholesaler的价格不同；
+- wholesaler和Retailer，Shipper之间也需要共享数据；
+
+为了满足上面的场景，我们不需要建立这么多的channel，可以使用PDC。
+
+- PDC1: **Distributor**, **Farmer** and **Shipper**
+- PDC2: **Distributor** and **Wholesaler**
+- PDC3: **Wholesaler**, **Retailer** and **Shipper**
+
+![private-data.private-data](../images/posts/fabric/PrivateDataConcept-1.png)
+
+上面场景下，peer节点的账本如下，也称为SideDB。
+
+![private-data.private-data](../images/posts/fabric/PrivateDataConcept-3.png)
+
+## 2.3 private交易流程
+
+1. 客户端发送提案给授权的背书节点，提案中加入transient 字段；
+2. 私有数据存储在transient data store（临时的存储在peer节点）；
+3. 背书节点发送提案响应到客户端，响应的内容是private data的hash值；
+4. 客户端节点把hash值发送给order节点；
+5. 在提交阶段，授权的节点将会检查策略，自己是否有权限访问private data，如果有的话，将会检查transient data store 字段，看看是否在背书阶段拿到了private data。没有的话，会从其他节点去拉取。在验证和提交阶段，private data将会被存储到数据库中，同时把transient data store 删除。
+
+## 2.4 私有数据的共享
+
+我们可能会有把私有数据向其他组织或者其他集合共享的需求，接受方需要验证hash：
+
+- 只要满足背书策略(fabric 2.0中，我们可以定义链码级别，键和集合级别的背书策略)，不需要是集合中的成员，即可访问私有数据的键
+- 我们可以使用GetPrivateDataHash()来验证hash
+
+在实际中，我们可能会创建大量的私有数据集合，这个不利于我们的维护。更好的情况是每个组织都是一个集合，然后共享就可以了。更好的是我们不必为此进行定义，因为在2.0中默认设置了。
+
+### 2.4.1 私有数据共享模型
+
+下面这个是每个组织一个集合的模型：
+
+- 使用相应的公钥来追踪公共状态的变化：
+- 链码访问控制：我们可以在链码实现访问控制，指定哪些客户端可以查看私有数据。
+- 共享私有数据：通过hash来确认；
+- 和其他集合共享私有数据：
+- 可以把私有数据转移到其他的集合。这个时候会删除原来的集合。
+- 在交易达成之前，可以使用私有数据进行预请求；
+- 保护交易者的隐私
+
+### 2.4.2 私有数据实例
+
+把私有数据模型和链码结合可以发挥出很大的作用，具体如下所示：
+
+- 可以通过处于公共链码状态的UUID密钥来跟踪资产。仅记录资产的所有权，关于资产的其他信息一无所知。
+- 链码将要求任何转移请求都必须来自拥有权限的客户，并且密钥受基于状态的认可约束，要求所有者组织和监管机构的同级必须认可任何转移请求。
+- 资产的所有者可以看到该资产的所有交易详情，其他的组织只可以看到hash。
+- 监管者可以保留私有数据。
+
+具体的交易流如下所示：
+
+1. 资产所有者和买家在线下达成交易价格；
+2. 卖家需要证明资产的所有权。既可以线下提供私有数据的细节，也可以提供线上的凭证；
+3. 卖家线上验证hash；
+4. 买家调用链码记录出价的细节到自己的private data中。监管者可能也需要记录。
+5. 卖家调用链码转移资产，需要资产和出价细节的隐私数据，需要卖家，买家，监管者参与，除此之外，还需要满足背书策略；
+6. 链码会对上述信息进行验证；
+7. 卖家把公开的数据和私有数据的hash提交给order节点，打包成区块；
+8. 其他节点将会验证是否满足背书策略，私有数据的状态是否被其他的交易更改；
+9. 所有节点会进行记账；
+10. 至此交易完成，其他的节点可以查询这笔资产的公开的信息，但无法获取私有信息。
+
+## 2.5 删除私有数据
+
+对于非常敏感的数据，比如政府要求的。我们可以从peer节点上彻底的删除，只留下hash来证明该数据确实存在过。数据删除后，无法从链码进行查询，其他的peer节点也不可查询。
+
+## 2.6 私有数据集合的定义
+
+从fabric 2.0开始，在chaincode定义阶段来进行定义：
+
+- name：集合的名字；
+- policy：private data的policy必须比链码的背书策略更加广泛，因为背书节点必须有private data才可以进行背书。比如一个channel里面包含了10个组织，5个组织需要有private data的权限，背书策略可以指定为5个中的三个；
+- requiredPeerCount：在背书节点把提案响应返回到客户端之前，最少把private data传递到其他节点的数量。不建议写0，因为这样的话，将会导致private data的丢失。
+- maxPeerCount：如果设置为0，在背书阶段，private data将不会传播，在commit阶段，数据才会传播；
+- blockToLive：私有数据的存活时间，到期自动删除。设为0表示，永不删除；
+- memberOnlyRead：表示只有授权的人可以读。
+- memberOnlyWrite：
+- endorsementPolicy：
+
 # 3. 外部链码启动器
 
 我们可以使用自己喜欢的方式来构建和启动链码，不必使用docker。
@@ -265,6 +410,135 @@ Fabric 2.0增强了private data，我们不需要创建私有数据集合即可�
 - 解除了对docker daemon的依赖。之前的fabric要求peer节点可以访问到docker daemon，而这在生产环境不一定是现实的。
 - 容器的替代品：我们不一定在使用容器了。
 - 链码作为外部的服务。之前链码是被peer启动的，现在链码可以作为单独的外部服务。
+
+在Hyperledger Fabric 2.0之前，用于构建和启动链码的过程是peer节点实现的一部分，无法轻松自定义。必须使用特定的语言。这种方法限制了链码的语言，必须依赖容器，chaincode无法作为单独运行的服务。
+
+从2.0开始，我们在peer的core.yaml中，加入了一个externalBuilder的配置来自定义自己的服务。
+
+```yaml
+   # List of directories to treat as external builders and launchers for
+    # chaincode. The external builder detection processing will iterate over the
+    # builders in the order specified below.
+    externalBuilders: []
+        # - path: /path/to/directory
+        #   name: descriptive-builder-name
+        #   environmentWhitelist:
+        #      - ENVVAR_NAME_TO_PROPAGATE_FROM_PEER
+        #      - GOPROXY
+```
+
+## 3.1 外部构建模型
+
+fabric的构建器使用了[Heroku Buildpacks](https://devcenter.heroku.com/articles/buildpack-api)。
+
+外部构建和运行期由下面四个部分组成：
+
+- `bin/detect`: 判断是否由我们自定义的模型来运行。
+- `bin/build`: 把打包后的链码变为可执行版本。用来构建，编译链码。
+- `bin/release` (optional): 提供chaincode的元数据。
+- `bin/run` (optional): 运行链码。
+
+下面分别是四个脚本的内容：
+
+#### `detect`：
+
+```shell
+#!/bin/bash
+
+CHAINCODE_METADATA_DIR="$2"
+
+# use jq to extract the chaincode type from metadata.json and exit with
+# success if the chaincode type is golang
+if [ "$(jq -r .type "$CHAINCODE_METADATA_DIR/metadata.json" | tr '[:upper:]' '[:lower:]')" = "golang" ]; then
+    exit 0
+fi
+
+exit 1
+```
+
+#### `build`
+
+```shell
+#!/bin/bash
+
+CHAINCODE_SOURCE_DIR="$1"
+CHAINCODE_METADATA_DIR="$2"
+BUILD_OUTPUT_DIR="$3"
+
+# extract package path from metadata.json
+GO_PACKAGE_PATH="$(jq -r .path "$CHAINCODE_METADATA_DIR/metadata.json")"
+if [ -f "$CHAINCODE_SOURCE_DIR/src/go.mod" ]; then
+    cd "$CHAINCODE_SOURCE_DIR/src"
+    go build -v -mod=readonly -o "$BUILD_OUTPUT_DIR/chaincode" "$GO_PACKAGE_PATH"
+else
+    GO111MODULE=off go build -v  -o "$BUILD_OUTPUT_DIR/chaincode" "$GO_PACKAGE_PATH"
+fi
+
+# save statedb index metadata to provide at release
+if [ -d "$CHAINCODE_SOURCE_DIR/META-INF" ]; then
+    cp -a "$CHAINCODE_SOURCE_DIR/META-INF" "$BUILD_OUTPUT_DIR/"
+fi
+```
+
+#### `release`
+
+```shell
+#!/bin/bash
+
+BUILD_OUTPUT_DIR="$1"
+RELEASE_OUTPUT_DIR="$2"
+
+# copy indexes from META-INF/* to the output directory
+if [ -d "$BUILD_OUTPUT_DIR/META-INF" ] ; then
+   cp -a "$BUILD_OUTPUT_DIR/META-INF/"* "$RELEASE_OUTPUT_DIR/"
+fi
+```
+
+#### `run`
+
+```shell
+BUILD_OUTPUT_DIR="$1"
+RUN_METADATA_DIR="$2"
+
+# setup the environment expected by the go chaincode shim
+export CORE_CHAINCODE_ID_NAME="$(jq -r .chaincode_id "$RUN_METADATA_DIR/chaincode.json")"
+export CORE_PEER_TLS_ENABLED="true"
+export CORE_TLS_CLIENT_CERT_FILE="$RUN_METADATA_DIR/client.crt"
+export CORE_TLS_CLIENT_KEY_FILE="$RUN_METADATA_DIR/client.key"
+export CORE_PEER_TLS_ROOTCERT_FILE="$RUN_METADATA_DIR/root.crt"
+export CORE_PEER_LOCALMSPID="$(jq -r .mspid "$RUN_METADATA_DIR/chaincode.json")"
+
+# populate the key and certificate material used by the go chaincode shim
+jq -r .client_cert "$RUN_METADATA_DIR/chaincode.json" > "$CORE_TLS_CLIENT_CERT_FILE"
+jq -r .client_key  "$RUN_METADATA_DIR/chaincode.json" > "$CORE_TLS_CLIENT_KEY_FILE"
+jq -r .root_cert   "$RUN_METADATA_DIR/chaincode.json" > "$CORE_PEER_TLS_ROOTCERT_FILE"
+if [ -z "$(jq -r .client_cert "$RUN_METADATA_DIR/chaincode.json")" ]; then
+    export CORE_PEER_TLS_ENABLED="false"
+fi
+
+# exec the chaincode to replace the script with the chaincode process
+exec "$BUILD_OUTPUT_DIR/chaincode" -peer.address="$(jq -r .peer_address "$ARTIFACTS/chaincode.json")"
+```
+
+## 3.2 配置外部的构建器和运行器
+
+上面说了，这个是在core.yaml中配置的，一个demo如下所示：
+
+```yaml
+chaincode:
+  externalBuilders:
+  - name: my-golang-builder
+    path: /builders/golang
+    environmentWhitelist:
+    - GOPROXY
+    - GONOPROXY
+    - GOSUMDB
+    - GONOSUMDB
+  - name: noop-builder
+    path: /builders/binary
+```
+
+
 
 # 4. CouchDB中使用了状态数据库缓存来提高性能
 
@@ -325,24 +599,3 @@ Fabric 2.0增强了private data，我们不需要创建私有数据集合即可�
 - **FAB-7559: Support for specifying orderer endpoints at the global level
   in channel configuration is deprecated.**
 - **FAB-17428: Support for configtxgen flag `--outputAnchorPeersUpdate` is deprecated.**
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
