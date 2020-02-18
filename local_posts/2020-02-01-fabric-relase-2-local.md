@@ -159,7 +159,7 @@ Channel/Application/LifecycleEndorsement来管理认可的组织的数量，默�
 
 3. 链码定义投票。**sequence**将会自增1。
 
-   ![Approve a new chaincode definition](https://hyperledger-fabric.readthedocs.io/en/release-2.0/_images/Lifecycle-upgrade-approve.png)
+   ![Approve a new chaincode definition](../images/posts/fabric/Lifecycle-upgrade-approve-20200218163958279.png)
 
 4. 提交定义。
 
