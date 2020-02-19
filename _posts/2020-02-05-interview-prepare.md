@@ -355,11 +355,137 @@ java.lang.reflect.*
 
 AOP
 
+### 1.1.7 序列化
+
+什么是序列化与反序列化、为什么序列化、序列化底层原理、序列化与单例模式、protobuf、为什么说序列化并不安全
+
+### 1.1.8 注解
+
+元注解、自定义注解、Java中常用注解使用、注解与反射的结合
+
+[如何自定义一个注解？](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/create-annotation.md)
+
+[Spring常用注解](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/annotation-in-spring.md)
+
+### 1.1.9 泛型
+
+泛型与继承、类型擦除、[泛型中K T V E ？ object等的含义](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/k-t-v-e.md)、泛型各种用法
+
+限定通配符和非限定通配符、上下界限定符extends 和 super
+
+[List和原始类型List之间的区别?](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/genericity-list.md)
+
+[List和List之间的区别是什么?](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/genericity-list-wildcard.md)
+
+## 1.1.10 异常
+
+异常类型、正确处理异常、自定义异常
+
+Error和Exception
+
+异常链、try-with-resources
+
+finally和return的执行顺序
+
+### 1.1.11 语法糖
+
+[Java中语法糖原理、解语法糖](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/syntactic-sugar.md)
+
+[语法糖：switch 支持 String 与枚举、泛型、自动装箱与拆箱、方法变长参数、枚举、内部类、条件编译、 断言、数值字面量、for-each、try-with-resource、Lambda表达式](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/syntactic-sugar.md)
+
 ## 1.2 并发编程
 
+### 1.2.1 并发与并行
 
+什么是并发
+
+什么是并行
+
+并发与并行的区别
+
+### 1.2.2 线程
+
+线程的实现、线程的状态、优先级、线程调度、创建线程的多种方式、守护线程
+
+线程与进程的区别
 
 ## 1.3 jvm
+
+### 1.3.1 jvm内存结构
+
+掌握：[class文件格式](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/jvm-subsystem/CLass-strcture.md)、运行时数据区：堆、栈、方法区、直接内存、[运行时常量池](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/method-area-constants-pool.md)、[堆和栈区别](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/heap-vs-stack.md)
+
+https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/jvm-memory-component-heap.md
+
+[Java中的对象一定在堆上分配吗？](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/jvm/stack-alloc.md)
+
+[内存结构vs内存模型vs对象模型](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/jvm-memoryStrcture-vs-memoryModel-vs-objectModel.md)
+
+### 1.3.2 Java内存模型
+
+计算机内存模型、缓存一致性、MESI协议
+
+可见性、原子性、顺序性、happens-before、
+
+内存屏障、synchronized、volatile、final、锁
+
+[java内存模型](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md)
+
+[The Java Community Process(SM) Program - JSRs: Jav...](https://www.jcp.org/en/jsr/detail?id=133)
+
+[Java内存模型FAQ | 并发编程网 – ifeve.com](http://ifeve.com/jmm-faq/)
+
+[Java 理论与实践: 修复 Java 内存模型，第 2 部分](https://www.ibm.com/developerworks/cn/java/j-jtp03304/)
+
+### 1.3.3 Java对象模型
+
+[对象模型](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/deep-understand-multi-thread.md#21-java的对象模型)
+
+[深入理解多线程（二）—— Java的对象模型-HollisChuang's Blog](http://www.hollischuang.com/archives/1910)
+
+[深入理解多线程（三）—— Java的对象头-HollisChuang's Blog](http://www.hollischuang.com/archives/1953)
+
+### 1.3.4 Java的垃圾回收机制
+
+GC算法：标记清除、引用计数、复制、标记压缩、分代回收、增量式回收
+
+GC参数、对象存活的判定、垃圾收集器（CMS、G1、ZGC、Epsilon）
+
+[垃圾回收](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/garbage-collection.md)
+
+[Java之美从菜鸟到高手演变\]之JVM内存管理及垃圾回收 - CSDN博客](https://blog.csdn.net/zhangerqing/article/details/8214365)
+
+[JVM 自动内存管理：对象判定和回收算法-极客学院](http://www.jikexueyuan.com/course/2098.html)
+
+[Java 技术，IBM 风格: 垃圾收集策略，第 1 部分](https://www.ibm.com/developerworks/cn/java/j-ibmjava2/)
+
+[JVM 垃圾回收器工作原理及使用实例介绍](https://www.ibm.com/developerworks/cn/java/j-lo-JVMGarbageCollection/)
+
+### 1.3.5 HotSpot虚拟机
+
+即时编译器、编译优化等相关知识。
+
+[深入浅出 JIT 编译器](https://www.ibm.com/developerworks/cn/java/j-lo-just-in-time/index.html)
+
+[什么是即时编译（JIT）！？OpenJDK HotSpot VM剖析](http://www.infoq.com/cn/articles/OpenJDK-HotSpot-What-the-JIT)
+
+[深入分析Java的编译原理-HollisChuang's Blog](http://www.hollischuang.com/archives/2322)（密码：Hollis和他的朋友们）
+
+[对象和数组并不是都在堆上分配内存的。-HollisChuang's Blog](http://www.hollischuang.com/archives/2398)
+
+### 1.3.6 类加载机制
+
+双亲委派，破坏双亲委派。
+
+参考资料：
+
+[Java类的加载、链接和初始化-HollisChuang's Blog](http://www.hollischuang.com/archives/201)
+
+[深度分析Java的ClassLoader机制（源码级别）-HollisChuang's Blog](http://www.hollischuang.com/archives/199)
+
+[双亲委派模型与自定义类加载器 - ImportNew](http://www.importnew.com/24036.html)
+
+[Java双亲委派模型及破坏 - CSDN博客](https://blog.csdn.net/zhangcanyan/article/details/78993959)
 
 
 
