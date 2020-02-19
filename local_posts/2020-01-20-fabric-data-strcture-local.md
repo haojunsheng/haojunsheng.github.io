@@ -9,7 +9,6 @@ tag: fabric
 ---
 
 <!--ts-->
-
    * [前言](#前言)
    * [Block](#block)
       * [BlockData](#blockdata)
@@ -23,7 +22,7 @@ tag: fabric
                   * [ChaincodeEndorsedAction](#chaincodeendorsedaction)
       * [BlockMetadata](#blockmetadata)
 
-<!-- Added by: anapodoton, at: Sun Jan 19 19:12:44 CST 2020 -->
+<!-- Added by: anapodoton, at: Wed Feb 19 23:50:05 CST 2020 -->
 
 <!--te-->
 
@@ -35,9 +34,9 @@ tag: fabric
 
 我们先来看2张图，第一张图是区块的结构，第二张图是数据结构的定义图，两张图配合着看，我会对字段进行解释。给出这2个图的意义在于我们分析的时候，不会迷失方向。
 
-![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20200119111251.png)
+![](../images/posts/fabric/20200119111251.png)
 
-![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20200119111459.png)
+![](../images/posts/fabric/20200119111459.png)
 
 # Block
 
@@ -564,6 +563,6 @@ type Endorsement struct {
 
 上面已经分析。
 
-![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20200119192734.png)
+![](../images/posts/fabric/20200119192734.png)
 
 原文链接是在这里：https://docs.qq.com/sheet/DVlVna3dDdnFkbG1i?tab=BB08J2&c=M3A0K0

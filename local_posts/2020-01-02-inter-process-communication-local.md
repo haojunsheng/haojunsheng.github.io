@@ -39,10 +39,24 @@ tag: 计算机网络
          * [2.4.6 listen函数，有人会调用我吗？](#246-listen函数有人会调用我吗)
          * [2.4.7 open_listenfd函数](#247-open_listenfd函数)
          * [2.4.8 accept函数](#248-accept函数)
-         * [2.4.9 echo客户端和服务端](#249-echo客户端和服务端)
+         * [2.4.9 send() 与 recv()](#249-send-与-recv)
+         * [2.4.10 close() 与 shutdown()](#2410-close-与-shutdown)
+         * [2.4.11 echo客户端和服务端](#2411-echo客户端和服务端)
       * [2.5 web服务器](#25-web服务器)
+      * [2.6 socket高级编程](#26-socket高级编程)
+         * [2.6.1 Blocking（阻塞）](#261-blocking阻塞)
+         * [2.6.2  select()－同步 I/O 多工](#262--select同步-io-多工)
+   * [3. 并发编程](#3-并发编程)
+      * [3.1 基于进程的并发编程](#31-基于进程的并发编程)
+      * [3.2 基于I/O多路复用的并发编程](#32-基于io多路复用的并发编程)
+      * [3.3 基于线程的并发编程](#33-基于线程的并发编程)
+      * [3.4 多线程程序中的共享变量](#34-多线程程序中的共享变量)
+      * [3.5 用信号量同步线程](#35-用信号量同步线程)
+      * [3.6 综合：基于预线程化的并发服务器](#36-综合基于预线程化的并发服务器)
+      * [3.7 其他并发性问题](#37-其他并发性问题)
+      * [3.8 小结](#38-小结)
 
-<!-- Added by: anapodoton, at: Thu Jan  2 23:40:01 CST 2020 -->
+<!-- Added by: anapodoton, at: Thu Feb 20 00:00:56 CST 2020 -->
 
 <!--te-->
 
@@ -76,7 +90,7 @@ flag是进程如何去访文件，只读，只写，可读可写。
 
 mod是新文件的访问权限位，如下所示：
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191230222716.png" style="zoom:50%;" />
+<img src="../images/posts/network/20191230222716.png" style="zoom:50%;" />
 
 通过close来关闭一个已打开的文件。需要注意的是关闭一个已关闭的文件描述符会报错。
 
@@ -384,13 +398,13 @@ int stat(const char *filename, struct stat *buf)
 int fstat(int fd, struct stat *buf)
 ```
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191230232700.png" style="zoom:50%;" />
+<img src="../images/posts/network/20191230232700.png" style="zoom:50%;" />
 
 st_size是文件的字节数大小，st_mode是文件类型。
 
-![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191230232823.png)
+![](../images/posts/network/20191230232823.png)
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191230232932.png" style="zoom:25%;" />
+<img src="../images/posts/network/20191230232932.png" style="zoom:25%;" />
 
 ## 1.6 共享文件
 
@@ -429,7 +443,7 @@ struct files_struct {
 };
 ```
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20200102195821.png" style="zoom: 33%;" />
+<img src="../images/posts/network/20200102195821.png" style="zoom: 33%;" />
 
 内核用三种数据结构来表示打开的文件：
 
@@ -437,13 +451,13 @@ struct files_struct {
 2. 文件表（file table）:打开的文件集合是由一张文件表来表示的，所有进程共享这张表.，每个文件表的表项组成包括有当前的文件位置，引用计数（reference count）即当前指向该表项的描述符表项数，以及一个指向v-node表对应的表针，关闭一个描述符会减少相应的文件表表项的引用计数，内核不会删除文件表表项，直到他的引用计数为0。
 3. v-node表. v节点包含了文件类型和对此文件进行各种操作的函数的指针信息。所有进程也共享这个表, 每个表项包含stat结构中的大部分成员内容。
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191231110930.png" style="zoom:50%;" />
+<img src="../images/posts/network/20191231110930.png" style="zoom:50%;" />
 
 
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191231111047.png" style="zoom:50%;" />
+<img src="../images/posts/network/20191231111047.png" style="zoom:50%;" />
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191231111157.png" style="zoom:50%;" />
+<img src="../images/posts/network/20191231111157.png" style="zoom:50%;" />
 
 练习 10.2 下列程序的输出是什么
 
@@ -499,7 +513,7 @@ int dup2(int oldfd, int newfd);
 
 dup2拷贝oldfd到newfd, 覆盖newfd之前的内容，如果newfd已经被打开, 在重定向之前, dup2 会先关闭 newfd。
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191231113431.png" style="zoom:50%;" />
+<img src="../images/posts/network/20191231113431.png" style="zoom:50%;" />
 
 ## 1.8 标准I/O
 
@@ -515,7 +529,7 @@ dup2拷贝oldfd到newfd, 覆盖newfd之前的内容，如果newfd已经被打开
 
 在程序中应该使用哪一个I/O函数？
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191231113812.png" style="zoom:50%;" />
+<img src="../images/posts/network/20191231113812.png" style="zoom:50%;" />
 
 - 优先使用标准I/O函数（用于磁盘和终端设备）
 - scanf 和rio_readlineb是专门设计用来读文本的，不要读二进制
@@ -545,7 +559,7 @@ Unix内核使用三种数据结构来表示打开的文件，描述符表指向�
 3. 操作完成后发送一个响应, 并等待下一个请求
 4. 客户端收到响应并处理
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191231121130.png" style="zoom:50%;" />
+<img src="../images/posts/network/20191231121130.png" style="zoom:50%;" />
 
  要认识到客户端和服务器并不是主机, 而是一个一个进程. 因此一台机器上可以有很多服务器和客户端.
 
@@ -567,11 +581,11 @@ Unix内核使用三种数据结构来表示打开的文件，描述符表指向�
 
 
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1gafvq6szd0j30ps0m6jwd.jpg" alt="image-20191231122201541" style="zoom:50%;" />
+<img src="../images/posts/network/006tNbRwly1gafvq6szd0j30ps0m6jwd.jpg" alt="image-20191231122201541" style="zoom:50%;" />
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1gafvq7xczgj30w60jwq5r.jpg" alt="image-20191231122511074" style="zoom:50%;" />
+<img src="../images/posts/network/006tNbRwly1gafvq7xczgj30w60jwq5r.jpg" alt="image-20191231122511074" style="zoom:50%;" />
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191231144215.png" style="zoom:50%;" />
+<img src="../images/posts/network/20191231144215.png" style="zoom:50%;" />
 
 ## 2.3 全球IP因特网
 
@@ -635,7 +649,7 @@ IP地址和域名之间的关系是多对多。
 
 https://static.app.yinxiang.com/embedded-web/profile/#/join?guid=bbe6aac8-f3de-4324-b4ad-791cb348034b&channel=copylink&shardId=s61&ownerId=21811079
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191231222603.png" style="zoom:50%;" />
+<img src="../images/posts/network/20191231222603.png" style="zoom:50%;" />
 
 我们先来看下addrinfo，用来准备之後要用的 socket 地址数据结构，也用在主机名（host name）及服务名（service name）的查询。
 
@@ -750,7 +764,7 @@ int main(int argc, char *argv[])
 
 运行结果如下：
 
-![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20200102222007.png)
+![](../images/posts/network/20200102222007.png)
 
 ### 2.4.2 socket函数，取得文件描述符
 
@@ -1052,7 +1066,7 @@ int main(void)
 
 我们再次来区分下监听描述符和连接描述符：前者是作为客户端连接请求的一个端点，被创建一次，服务于整个生命周期。后者每次请求都会创建。区分的目的是用来建立并发服务器，同时与很多客户端连接。
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gain6bbladj30wc0k043d.jpg" alt="image-20200102233736238" style="zoom:50%;" />
+<img src="../images/posts/network/006tNbRwgy1gain6bbladj30wc0k043d.jpg" alt="image-20200102233736238" style="zoom:50%;" />
 
 ### 2.4.9 send() 与 recv()
 
