@@ -391,11 +391,17 @@ finally和return的执行顺序
 
 [Java中语法糖原理、解语法糖](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/syntactic-sugar.md)
 
+[自动拆箱与装箱](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-auto-unbox.md)
+
 [语法糖：switch 支持 String 与枚举、泛型、自动装箱与拆箱、方法变长参数、枚举、内部类、条件编译、 断言、数值字面量、for-each、try-with-resource、Lambda表达式](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/syntactic-sugar.md)
 
 ## 1.2 并发编程
 
+这个玩意和java的内存模型是息息相关的，二者可以结合着看。
+
 ### 1.2.1 并发与并行
+
+[并发与并行的区别](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-Concurrent-programming/1-what-is-thread-safe.md)
 
 什么是并发
 
@@ -409,17 +415,102 @@ finally和return的执行顺序
 
 线程与进程的区别
 
+#### 线程池
+
+自己设计线程池、submit() 和 execute()、线程池原理
+
+为什么不允许使用Executors创建线程池
+
+#### 线程安全
+
+[死锁？](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/deadlock-java-level.md)、死锁如何排查、线程安全和内存模型的关系
+
+#### 锁
+
+CAS、乐观锁与悲观锁、数据库相关锁机制、分布式锁、偏向锁、轻量级锁、重量级锁、monitor、
+
+锁优化、锁消除、锁粗化、自旋锁、可重入锁、阻塞锁、死锁
+
+#### 死锁
+
+死锁的原因
+
+死锁的解决办法
+
+#### synchronized
+
+[synchronized是如何实现的？](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/synchronized.md)
+
+synchronized和lock之间关系、不使用synchronized如何实现一个线程安全的单例
+
+synchronized和原子性、可见性和有序性之间的关系
+
+#### volatile
+
+happens-before、内存屏障、编译器指令重排和CPU指令重排
+
+volatile的实现原理
+
+volatile和原子性、可见性和有序性之间的关系
+
+有了symchronized为什么还需要volatile
+
+#### sleep 和 wait
+
+#### wait 和 notify
+
+#### notify 和 notifyAll
+
+#### ThreadLocal
+
+#### 写一个死锁的程序
+
+#### 写代码来解决生产者消费者问题
+
+### 并发包
+
+#### 阅读源代码，并学会使用
+
+Thread、Runnable、Callable、ReentrantLock、ReentrantReadWriteLock、Atomic*、Semaphore、CountDownLatch、、ConcurrentHashMap、Executors
+
 ## 1.3 jvm
 
 ### 1.3.1 jvm内存结构
 
-掌握：[class文件格式](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/jvm-subsystem/CLass-strcture.md)、运行时数据区：堆、栈、方法区、直接内存、[运行时常量池](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/method-area-constants-pool.md)、[堆和栈区别](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/heap-vs-stack.md)
+掌握：
 
-https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/jvm-memory-component-heap.md
+- [class文件格式](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Class-strcture.md)
+
+这个玩意可以帮我们看懂字节码，如果有增强字节码的需求也是看这里。主要是搞明白字节码结构图。java字节码是按照一定的规则来组成的，这样jvm才可以进行解释。
+
+- [运行时数据区：堆、栈、方法区、直接内存](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/jvm-memory-component-heap.md)
+
+这个玩意必须得区分清楚，尤其是堆栈方法区这三个。我们的关键是整明白，为什么要分这三个区？我的理解是：
+
+其中，在c语言的世界里，是没有方法区的概念的，是java引入的，所以大胆猜测，方法区的引入和2个因素有关系：
+
+1. java是解释性的语言，字节码在被jvm加载后，必须要有个地方来存储。存放在堆和栈里又不合适。
+2. 为了支持面向对象的特性:在面向过程中，都是函数，所以用栈和堆足够了。
+
+所以我们把**类的信息，以及一些实例无关的信息(即编译器被确定的值)**放到了方法区。
+
+在来看堆与栈，**栈是用来存储局部变量和计算的过程，堆用来存储实例**。
+
+这些的区分一定是为了效率。需要考虑变量的生命周期，访问的速度，空间大小，使用过程中是否保持有序。
+
+- [方法区和运行时常量池](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/method-area-constants-pool.md)
+
+常量池分为class常量池，运行时常量池，字符串常量池。
+
+class常量池中的字面量和符号引号（**符号引用主要是用来重定位的**）的概念很重要，需要掌握。这两个玩意都是编译原理里面的。常量是怎么存储的，也很重要，和数据类型是息息相关的。
+
+运行时常量池里保存了符号引用，进而解析为直接引用。
+
+字符串常量池则比较复杂，在不同版本的虚拟机中是不同的，最开始在方法区中，后来移入到了堆中，在后来移动到了本地内存中。
+
+- [堆和栈区别](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/heap-vs-stack.md)
 
 [Java中的对象一定在堆上分配吗？](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/jvm/stack-alloc.md)
-
-[内存结构vs内存模型vs对象模型](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/jvm-memoryStrcture-vs-memoryModel-vs-objectModel.md)
 
 ### 1.3.2 Java内存模型
 
@@ -431,19 +522,57 @@ https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/jvm-memory-c
 
 [java内存模型](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md)
 
-[The Java Community Process(SM) Program - JSRs: Jav...](https://www.jcp.org/en/jsr/detail?id=133)
+这个玩意需要我们好好去学，学好了这个也就入门了并发编程，这个复杂的问题，而这个问题，在面试中也是要必考的。我们需要回答：**Java内存模型是什么，为什么要有Java内存模型，Java内存模型解决了什么问题？**
 
-[Java内存模型FAQ | 并发编程网 – ifeve.com](http://ifeve.com/jmm-faq/)
+由于我们抽象了计算机的硬件,在多线程的情况下,会带来**缓存一致性问题**。为了使处理器内部的运算单元能够尽量的被充分利用，处理器可能会对输入代码进行乱序执行处理。这就是**处理器优化**，会进一步带来指令重排的问题。
 
-[Java 理论与实践: 修复 Java 内存模型，第 2 部分](https://www.ibm.com/developerworks/cn/java/j-jtp03304/)
+这三个问题对应了我们讲的**原子性，可见性和有序性**问题。这三个问题是核心的问题，我做了一系列的工作就是为了解决这三个问题。
+
+**原子性**是指在一个操作中就是cpu不可以在中途暂停然后再调度，既不被中断操作，要不执行完成，要不就不执行。
+
+**可见性**是指当多个线程访问同一个变量时，一个线程修改了这个变量的值，其他线程能够立即看得到修改的值。
+
+**有序性**即程序执行的顺序按照代码的先后顺序执行。
+
+我们对此进行对应，**缓存一致性问题**其实就是**可见性问题**，而**处理器优化**是可以导致**原子性问题**的，**指令重排**即会导致**有序性问题**。
+
+所以我们定义了内存模型，来解决上面的问题，主要是**限制处理器优化**和**使用内存屏障**。
+
+那么我们比较关注的是java内存模型究竟是怎么实现的？
+
+我们可以看到的是java为我们提供了这些关键字`volatile`、`synchronized`、`final`、`concurren`来封装了java内存模型底层的实现了。
+
+原子性主要依靠：两个高级的字节码指令`monitorenter`和`monitorexit`，对应java中的`synchronized`。
+
+可见性是指每次修改完立即同步到主存，读取前从主存刷新，依靠`volatile`。
+
+我们使用`synchronized`和`volatile`来保证有序性，区别是`synchronized`关键字保证同一时刻只允许一条线程操作，`volatile`关键字会禁止指令重排。
+
+我们好奇的是java的内存模型解决了缓存一致性问题，那么到底是怎么解决的呢？
+
+在最开始，我们是通过在总线上加锁来实现的，但是导致效率低下的问题，后来我们采用缓存一致性协议来解决。
+
+其中，最著名的协议是Intel 的MESI协议。MESI协议保证了**每个缓存中使用的共享变量的副本是一致的。**核心思想是：当CPU写数据时，如果发现操作的变量是共享变量，即在其他CPU中也存在该变量的副本，会发出信号通知其他CPU将该变量的缓存行置为无效状态，因此当其他CPU需要读取这个变量时，发现自己缓存中缓存该变量的缓存行是无效的，那么它就会从内存重新读取。
+
+我们需要了解[synchronized](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/deep-understand-multi-thread.md#1synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86)和volatile究竟是怎么实现的。
+
+- 其中Synchronized对原子性的保证是通过（monitorenter和monitorexit）来实现的，对可见性是通过(加锁来实现的），对有序性是通过（as-if-serial）语义来实现的。Synchronized能修饰变量，方法和代码块。
+
+- Volatile对可见性是通过（强制刷新内存，强制从内存读进行实现的），对有序性是通过禁止指令重排实现的(增加了内存屏障)。但是不能保证原子性，因为并没有加锁。Volatile只能修饰变量，不能修饰方法和代码块。
 
 ### 1.3.3 Java对象模型
 
 [对象模型](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/deep-understand-multi-thread.md#21-java的对象模型)
 
-[深入理解多线程（二）—— Java的对象模型-HollisChuang's Blog](http://www.hollischuang.com/archives/1910)
+java的对象模型主要包含对象头，实例数据和对齐填充，主要是研究java的对象是怎么存储的。其中对象头是很重要的。
 
-[深入理解多线程（三）—— Java的对象头-HollisChuang's Blog](http://www.hollischuang.com/archives/1953)
+到这里，我们需要对内存结构，内存模型和对象模型做一个区分：
+
+[内存结构vs内存模型vs对象模型](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/jvm-memoryStrcture-vs-memoryModel-vs-objectModel.md)
+
+内存结构讲的是java内存的划分，和运行时区域有关系；
+
+内存模型用来解决java的并发编程问题的，和原子性，有序性，可见性有关。
 
 ### 1.3.4 Java的垃圾回收机制
 
@@ -463,7 +592,9 @@ GC参数、对象存活的判定、垃圾收集器（CMS、G1、ZGC、Epsilon）
 
 ### 1.3.5 HotSpot虚拟机
 
-即时编译器、编译优化等相关知识。
+[即时编译器、编译优化](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/HotSpot.md)等相关知识。
+
+优化对现阶段的我不是很重要。
 
 [深入浅出 JIT 编译器](https://www.ibm.com/developerworks/cn/java/j-lo-just-in-time/index.html)
 
@@ -473,7 +604,7 @@ GC参数、对象存活的判定、垃圾收集器（CMS、G1、ZGC、Epsilon）
 
 [对象和数组并不是都在堆上分配内存的。-HollisChuang's Blog](http://www.hollischuang.com/archives/2398)
 
-### 1.3.6 类加载机制
+### 1.3.6 [类加载机制](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/class-loader.md)
 
 双亲委派，破坏双亲委派。
 
@@ -487,7 +618,23 @@ GC参数、对象存活的判定、垃圾收集器（CMS、G1、ZGC、Epsilon）
 
 [Java双亲委派模型及破坏 - CSDN博客](https://blog.csdn.net/zhangcanyan/article/details/78993959)
 
+### 1.3.7 [常用Java命令](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/java-command.md)
 
+javac 、javap 、jps、jstack,jinfo、jstat 、jmap 、jhat
+
+### 1.3.8 编译与反编译
+
+Java中的编译与反编译。什么是编译？什么是反编译？Java如何编译代码，如何反编译代码？尝试反编译switch、String的“+”、lambda表达式、java 10的本地变量推断等。
+
+[深入分析Java的编译原理-HollisChuang's Blog](http://www.hollischuang.com/archives/2322)
+
+[Java代码的编译与反编译那些事儿-HollisChuang's Blog](http://www.hollischuang.com/archives/58)
+
+[我反编译了Java 10的本地变量类型推断-HollisChuang's Blog](http://www.hollischuang.com/archives/2187)
+
+[Java命令学习系列（七）——javap-HollisChuang's Blog](http://www.hollischuang.com/archives/1107)
+
+[Java中的Switch对整型、字符型、字符串型的具体实现细节-HollisChuang's Blo...](http://www.hollischuang.com/archives/61)
 
 # 2. 数据结构与算法
 
