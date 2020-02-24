@@ -9,6 +9,63 @@ tag: 面试
 ---
 
 <!--ts-->
+   * [1. Java](#1-java)
+      * [1.1 java基础](#11-java基础)
+         * [1.1.1 面向对象](#111-面向对象)
+            * [1.1.1.1 什么是面向对象？](#1111-什么是面向对象)
+            * [1.1.1.2 平台无关性](#1112-平台无关性)
+            * [1.1.1.3 值传递](#1113-值传递)
+            * [1.1.1.4 重载（Overloading）和重写（Overriding）](#1114-重载overloading和重写overriding)
+            * [1.1.1.5 组合和继承](#1115-组合和继承)
+            * [1.1.1.6成员变量和方法的作用域](#1116成员变量和方法的作用域)
+            * [1.1.1.7 抽象类和接口](#1117-抽象类和接口)
+            * [1.1.1.8 内部类](#1118-内部类)
+         * [1.1.2 基础知识](#112-基础知识)
+            * [1.1.2.1 基本数据类型](#1121-基本数据类型)
+            * [1.1.2.2 自动拆装箱](#1122-自动拆装箱)
+            * [1.1.2.3 String相关](#1123-string相关)
+            * [1.1.2.4 java关键字](#1124-java关键字)
+               * [1.1.2.4.1 transient](#11241-transient)
+               * [1.1.2.4.2 instanceof](#11242-instanceof)
+               * [1.1.2.4.3 volatile](#11243-volatile)
+               * [1.1.2.4.4 synchronized](#11244-synchronized)
+               * [1.1.2.4.5 final](#11245-final)
+               * [1.1.2.4.6 staic](#11246-staic)
+               * [1.1.2.4.7 const](#11247-const)
+               * [1.1.2.4.8 length vs length()](#11248-length-vs-length)
+               * [1.1.2.4.9 Comparable vs Comparator](#11249-comparable-vs-comparator)
+               * [1.1.2.4.10 ktve](#112410-ktve)
+               * [1.1.2.4.11 重载与重写](#112411-重载与重写)
+               * [1.1.2.4.12 equals和hashcode的协同工作](#112412-equals和hashcode的协同工作)
+               * [1.1.2.4.13 迭代和递归](#112413-迭代和递归)
+               * [1.1.2.4.14 swith](#112414-swith)
+         * [1.1.3 集合](#113-集合)
+            * [1.1.3.1 常用集合类的使用](#1131-常用集合类的使用)
+            * [1.1.3.2 ArrayList和LinkedList和Vector的区别](#1132-arraylist和linkedlist和vector的区别)
+            * [1.1.3.3 SynchronizedList和Vector的区别](#1133-synchronizedlist和vector的区别)
+         * [1.1.4 枚举](#114-枚举)
+         * [1.1.5 IO](#115-io)
+         * [1.1.6 反射](#116-反射)
+         * [1.1.7 序列化](#117-序列化)
+         * [1.1.8 注解](#118-注解)
+         * [1.1.9 泛型](#119-泛型)
+      * [1.1.10 异常](#1110-异常)
+         * [1.1.11 语法糖](#1111-语法糖)
+      * [1.2 并发编程](#12-并发编程)
+         * [1.2.1 并发与并行](#121-并发与并行)
+         * [1.2.2 线程](#122-线程)
+      * [1.3 jvm](#13-jvm)
+         * [1.3.1 jvm内存结构](#131-jvm内存结构)
+         * [1.3.2 Java内存模型](#132-java内存模型)
+         * [1.3.3 Java对象模型](#133-java对象模型)
+         * [1.3.4 Java的垃圾回收机制](#134-java的垃圾回收机制)
+         * [1.3.5 HotSpot虚拟机](#135-hotspot虚拟机)
+         * [1.3.6 类加载机制](#136-类加载机制)
+         * [1.3.7 常用Java命令](#137-常用java命令)
+         * [1.3.8 编译与反编译](#138-编译与反编译)
+   * [2. 数据结构与算法](#2-数据结构与算法)
+
+<!-- Added by: anapodoton, at: Mon Feb 24 16:38:02 CST 2020 -->
 
 <!--te-->
 
@@ -92,7 +149,7 @@ https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-orient
 
 #### 1.1.2.3 String相关
 
-https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md
+[String详细学习](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md)
 
 - 字符串的不可变性（String是用final数组实现的）
 
@@ -401,77 +458,106 @@ finally和return的执行顺序
 
 ### 1.2.1 并发与并行
 
-[并发与并行的区别](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-Concurrent-programming/1-what-is-thread-safe.md)
-
 什么是并发
 
 什么是并行
 
 并发与并行的区别
 
+[并发与并行](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-Concurrent-programming/1-what-is-thread-safe.md)
+
+并行是指有2个及以上CPU。
+
 ### 1.2.2 线程
 
-线程的实现、线程的状态、优先级、线程调度、创建线程的多种方式、守护线程
+- [线程的实现](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#2-%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%AE%9E%E7%8E%B0)
+  - 内核线程
+    - 特点：内核完成线程的切换，1:1
+    - 优点：
+    - 缺点
+      - 系统调用的代价相对较高，需要在用户态（User Mode）和内核态（Kernel Mode）中来回切换。
+      - 要消耗一定的内核资源（如内核线程的栈空间),因此一个系统支持轻量级进程的数量是有限的。
+  - 用户线程实现
+    - 特点：用户线程的建立、同步、销毁和调度完全在用户态中完成。1:N
+    - 优点：操作可以是非常快速且低消耗的，也可以支持规模更大的线程数量。
+    - 缺点：用户完成进程的切换，调度很困难.进程可能完全被阻塞
+  - 使用用户线程加轻量级进程混合实现（GO里面叫做协程）
+    - 特点：N:M
+    - 优点：**用户线程还是完全建立在用户空间中，因此用户线程的创建、切换、析构等操作依然廉价，并且可以支持大规模的用户线程并发。**
 
-线程与进程的区别
+- [线程与进程的区别](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/1-what-is-thread-safe.md#3-%E5%A4%9A%E7%BA%BF%E7%A8%8B)
+  - **进程是资源分配的基本单元，线程是执行的基本单元，同一个进程的多个线程之间共享资源。**
+- [线程的状态](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#3-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81)
+  - 新建，就绪，运行，阻塞，等待，终止
+  - sleep 和 wait
+  - wait 和 notify
+  - notify 和 notifyAll
 
-#### 线程池
+- [优先级](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#5-%E7%BA%BF%E7%A8%8B%E4%BC%98%E5%85%88%E7%BA%A7)
+  - 最小是1，最大是10，正常是5
 
-自己设计线程池、submit() 和 execute()、线程池原理
+- [线程调度](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#4-%E7%BA%BF%E7%A8%8B%E7%9A%84%E8%B0%83%E5%BA%A6)
+  - 一个线程想要从就绪状态变成运行中状态，这个过程需要系统调度，即给线程分配CPU的使用权，获得CPU使用权的线程才会从就绪状态变成运行状态。给多个线程按照特定的机制分配CPU的使用权的过程就叫做线程调度。
+  - 协同式调度(自己工作完了,把CPU交给其他的线程)
+  - 抢占式调度(java默认模型)
 
-为什么不允许使用Executors创建线程池
+- [创建线程的多种方式](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/3-java-thread-create-four-way.md)
+  - 继承Thread类创建线程
+  - 实现Runnable接口创建线程
+    - 二者之间的区别是，一旦java是单继承的，所以最好使用Runnable
+    - 二者共同的缺点是：在执行完任务之后无法获取执行结果。
+  - 通过Callable和FutureTask创建线程
+  - 通过线程池创建线程
+- [守护线程](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#6-%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B)
+  - 常见的是GC线程
+  - 通过setDaemon()可以设置守护线程
+  - 只有守护线程的情况下，jvm将退出
+- [ThreadLocal](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#7-threadlocal)
+- [线程池](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/4-java-thread-pool.md)
+  - 池化技术：提前保存大量的资源。
+    - 线程池、连接池、内存池、对象池等。
+  - 线程池原理：预先创建好多个线程，放在池中，这样可以在需要使用线程的时候直接获取，避免多次重复创建、销毁带来的开销。
+  - 自己设计线程池
+  - submit() 
+  - execute()
+  - 为什么不允许使用Executors创建线程池
 
-#### 线程安全
-
-[死锁？](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/deadlock-java-level.md)、死锁如何排查、线程安全和内存模型的关系
-
-#### 锁
-
-CAS、乐观锁与悲观锁、数据库相关锁机制、分布式锁、偏向锁、轻量级锁、重量级锁、monitor、
-
-锁优化、锁消除、锁粗化、自旋锁、可重入锁、阻塞锁、死锁
-
-#### 死锁
-
-死锁的原因
-
-死锁的解决办法
-
-#### synchronized
-
-[synchronized是如何实现的？](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/synchronized.md)
-
-synchronized和lock之间关系、不使用synchronized如何实现一个线程安全的单例
-
-synchronized和原子性、可见性和有序性之间的关系
-
-#### volatile
-
-happens-before、内存屏障、编译器指令重排和CPU指令重排
-
-volatile的实现原理
-
-volatile和原子性、可见性和有序性之间的关系
-
-有了symchronized为什么还需要volatile
-
-#### sleep 和 wait
-
-#### wait 和 notify
-
-#### notify 和 notifyAll
-
-#### ThreadLocal
-
-#### 写一个死锁的程序
-
-#### 写代码来解决生产者消费者问题
-
-### 并发包
-
-#### 阅读源代码，并学会使用
-
-Thread、Runnable、Callable、ReentrantLock、ReentrantReadWriteLock、Atomic*、Semaphore、CountDownLatch、、ConcurrentHashMap、Executors
+- [锁](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md)
+  - [数据库相关锁机制](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#11-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E9%94%81%E6%9C%BA%E5%88%B6)
+  - [乐观锁与悲观锁](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#1-%E4%B9%90%E8%A7%82%E9%94%81-vs-%E6%82%B2%E8%A7%82%E9%94%81)：线程要不要锁住同步资源
+    - 悲观锁是一定使用了锁机制的，乐观锁则并未真正加锁。实现方式有版本号和CAS
+    - [CAS](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#3-%E4%B9%90%E8%A7%82%E9%94%81%E7%9A%84%E4%B8%80%E7%A7%8D%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8Fcas)
+      - **Compare and Swap**(`CAS`)
+  - [自旋锁vs阻塞锁](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#2-%E8%87%AA%E6%97%8B%E9%94%81-vs-%E9%80%82%E5%BA%94%E6%80%A7%E8%87%AA%E6%97%8B%E9%94%81)：到底要不要放弃处理器的执行时间。阻塞锁是放弃了CPU时间，进入了等待区，等待被唤醒。而自旋锁是一直“自旋”在那里，时刻的检查共享资源是否可以被访问。
+  - [偏向锁vs轻量级锁vs重量级锁](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#3-%E6%97%A0%E9%94%81-vs-%E5%81%8F%E5%90%91%E9%94%81-vs-%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81-vs-%E9%87%8D%E9%87%8F%E7%BA%A7%E9%94%81)：对性能影响的大小
+    - 偏向锁：一段同步代码一直被一个线程所访问，那么该线程会自动获取锁，降低获取锁的代价。
+    - 轻量级锁：
+    - 重量级锁：使用`Monitor`进行加锁，这是一种互斥锁，称做重量级锁
+  - [可重入锁 vs 非可重入锁：](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#5-%E5%8F%AF%E9%87%8D%E5%85%A5%E9%94%81-vs-%E9%9D%9E%E5%8F%AF%E9%87%8D%E5%85%A5%E9%94%81)
+    - 可重入锁又名递归锁，是指在同一个线程在外层方法获取锁的时候，再进入该线程的内层方法会自动获取锁
+  - 锁消除：即无锁。
+  - 锁粗化：锁变大。
+  - [monitor](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/deep-understand-multi-thread.md#4-moniter%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86)
+  - [死锁？](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#6-java%E7%BA%A7%E5%88%AB%E7%9A%84%E6%AD%BB%E9%94%81)
+    - 死锁如何排查
+    - 死锁的原因
+    - 死锁的解决办法
+  - 分布式锁
+- synchronized
+  - [synchronized是如何实现的？](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md#71-synchronized)
+  - synchronized和lock之间关系
+  - 不使用synchronized如何实现一个线程安全的单例
+  - [synchronized和原子性、可见性和有序性之间的关系](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md#713-synchronized%E4%B8%8E%E5%8E%9F%E5%AD%90%E6%80%A7)
+- [volatile](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md#72-volatile)
+  - happens-before
+  - 内存屏障
+  - 编译器指令重排和CPU指令重排
+  - volatile的实现原理
+  - volatile和原子性、可见性和有序性之间的关系
+  - [有了symchronized为什么还需要volatile](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md#727-%E6%97%A2%E7%94%9Fsynchronized%E4%BD%95%E7%94%9Fvolatile)
+- 写代码来解决生产者消费者问题
+- 并发包
+  - Thread、Runnable、Callable、ReentrantLock、ReentrantReadWriteLock、Atomic*、Semaphore、CountDownLatch、、ConcurrentHashMap、Executors
 
 ## 1.3 jvm
 
@@ -582,13 +668,40 @@ GC参数、对象存活的判定、垃圾收集器（CMS、G1、ZGC、Epsilon）
 
 [垃圾回收](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/garbage-collection.md)
 
-[Java之美从菜鸟到高手演变\]之JVM内存管理及垃圾回收 - CSDN博客](https://blog.csdn.net/zhangerqing/article/details/8214365)
+我们的学习思路是哪些内存需要回收？什么时候回收？如何回收？这几个问题。
 
-[JVM 自动内存管理：对象判定和回收算法-极客学院](http://www.jikexueyuan.com/course/2098.html)
-
-[Java 技术，IBM 风格: 垃圾收集策略，第 1 部分](https://www.ibm.com/developerworks/cn/java/j-ibmjava2/)
-
-[JVM 垃圾回收器工作原理及使用实例介绍](https://www.ibm.com/developerworks/cn/java/j-lo-JVMGarbageCollection/)
+- [哪些内存需要回收](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/garbage-collection.md#12-%E5%93%AA%E4%BA%9B%E5%9E%83%E5%9C%BE%E9%9C%80%E8%A6%81%E5%9B%9E%E6%94%B6)
+  - 主要回收堆内存，方法区或者堆中的永久代（不同的jdk版本不同）也有可能回收。
+- [什么时候回收](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/garbage-collection.md#13-%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E8%BF%9B%E8%A1%8C%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6)：
+  - 我们需要先判断一个对象有没有存活？
+    - 引用计数法：
+    - 可达性分析算法
+  - 四种引用
+    - 强引用
+    - 软引用
+    - 弱引用
+    - 虚引用
+  - finalize()可以起死回生
+- 如何回收
+  - 垃圾回收算法
+    - 标记清除算法
+    - 复制算法：解决了标记-清除算法的效率问题。解决了内存碎片的问题，缺陷是可以使用的内存变成了原来的一半。
+    - 标记-压缩算法：针对老年代。
+    - 分代收集算法：根据对象的存活特性。
+  - 垃圾回收器
+    - Serial收集器：单线程回收，stop the world
+    - ParNew：Serial收集器的多线程版本
+    - Parallel Scavenge：关注吞吐量
+    - Serial old：
+    - Parallel old：Parallel Scavenge的老年代版本
+    - Concurrent Mark Sweep:cms，基于标记-清除算法
+      - 初始标记
+      - 并发标记
+      - 重新标记
+      - 并发清除和并发重置
+    - G1:Garbage First，基于标记-压缩算法
+      - **初始标记，并发标记，最终标记，筛选回收。**
+  - 可以阅读垃圾回收日志
 
 ### 1.3.5 HotSpot虚拟机
 
@@ -604,9 +717,11 @@ GC参数、对象存活的判定、垃圾收集器（CMS、G1、ZGC、Epsilon）
 
 [对象和数组并不是都在堆上分配内存的。-HollisChuang's Blog](http://www.hollischuang.com/archives/2398)
 
-### 1.3.6 [类加载机制](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/class-loader.md)
+### 1.3.6 类加载机制
 
 双亲委派，破坏双亲委派。
+
+[类加载机制](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/class-loader.md)
 
 参考资料：
 
@@ -618,25 +733,30 @@ GC参数、对象存活的判定、垃圾收集器（CMS、G1、ZGC、Epsilon）
 
 [Java双亲委派模型及破坏 - CSDN博客](https://blog.csdn.net/zhangcanyan/article/details/78993959)
 
-### 1.3.7 [常用Java命令](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/java-command.md)
+### 1.3.7 常用Java命令
+
+ [常用Java命令](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/java-command.md)
 
 javac 、javap 、jps、jstack,jinfo、jstat 、jmap 、jhat
 
+[jps](http://www.hollischuang.com/archives/105):查看本机的Java中进程信息。
+
+[jstack](http://www.hollischuang.com/archives/110):打印线程的栈信息,制作线程Dump。
+
+[jmap](http://www.hollischuang.com/archives/303):打印内存映射,制作堆Dump。
+
+[jstat](http://www.hollischuang.com/archives/481):性能监控工具。
+
+[jhat](http://www.hollischuang.com/archives/1047):内存分析工具。
+
+jconsole:简易的可视化控制台。
+
+jvisualvm:功能强大的控制台。
+
 ### 1.3.8 编译与反编译
 
-Java中的编译与反编译。什么是编译？什么是反编译？Java如何编译代码，如何反编译代码？尝试反编译switch、String的“+”、lambda表达式、java 10的本地变量推断等。
+[Java中的编译与反编译](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/compile-decompile.md)
 
-[深入分析Java的编译原理-HollisChuang's Blog](http://www.hollischuang.com/archives/2322)
-
-[Java代码的编译与反编译那些事儿-HollisChuang's Blog](http://www.hollischuang.com/archives/58)
-
-[我反编译了Java 10的本地变量类型推断-HollisChuang's Blog](http://www.hollischuang.com/archives/2187)
-
-[Java命令学习系列（七）——javap-HollisChuang's Blog](http://www.hollischuang.com/archives/1107)
-
-[Java中的Switch对整型、字符型、字符串型的具体实现细节-HollisChuang's Blo...](http://www.hollischuang.com/archives/61)
+什么是编译？什么是反编译？Java如何编译代码，如何反编译代码？尝试反编译switch、String的“+”、lambda表达式、java 10的本地变量推断等。
 
 # 2. 数据结构与算法
-
-
-
