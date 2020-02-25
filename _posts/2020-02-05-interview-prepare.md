@@ -151,19 +151,41 @@ https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-orient
 
 [String详细学习](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md)
 
-- 字符串的不可变性（String是用final数组实现的）
+- [字符串的不可变性](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#41-%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2)（String是用final数组实现的）
 
-- JDK 6和JDK 7中substring的原理及区别、
+- [JDK 6和JDK 7中substring的原理及区别](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#71-substring-%E7%9A%84%E4%BD%9C%E7%94%A8)
 
-- replaceFirst、replaceAll、replace区别、
+  - jdk6仍然指向原字符串，会造成内存泄露的问题
+  - jdk7会创建一个新的字符串
 
-- String对“+”的重载、字符串拼接的几种方式和区别
+- [replaceFirst、replaceAll、replace区别](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#155-replacefirstreplaceallreplace%E5%8C%BA%E5%88%AB)
 
-- String.valueOf和Integer.toString的区别、
+- [String对“+”的重载](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#158-string%E5%AF%B9%E7%9A%84%E9%87%8D%E8%BD%BD)、字符串拼接的几种方式和区别
 
-- switch对String的支持
+  - +是唯一重载的运算符。使用了StringBuilder以及他的append、toString两个方法。
+  - "a"+"b"是在编译期完成的，s1+"b"和s1+s2是在运行期完成的。
+  - [字符串拼接方式](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#115-%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%8B%BC%E6%8E%A5%E6%96%B9%E5%BC%8F)
+
+- [String.valueOf和Integer.toString的区别](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#159-stringvalueof%E5%92%8Cintegertostring%E7%9A%84%E5%8C%BA%E5%88%AB)
+
+  - `String.valueOf(i)`也是调用`Integer.toString(i)`来实现的
 
 - 字符串池、常量池（运行时常量池、Class常量池）、intern
+
+  - class常量池是编译期生成的，"a"+"b"这种会在编译期直接优化为"ab"，但是s1+s2在运行期才知道
+  - 运行时常量池:class常量池在运行期的应，不同的jdk位置也不同
+  - 字符串常量池：1.6之后，只存储字面量的引用
+  - intern：使用intern后直接指向字面量所在的位置
+
+- [String、StringBuffer、StringBuilder区别](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#114-%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8stringstringbufferstringbuilder)
+
+  - |                | String       | StringBuffer | StringBuilder |
+    | -------------- | ------------ | ------------ | ------------- |
+    | 可变           | 否,final数组 | 是           | 是            |
+    | 线程安全       | 否           | 是           | 否            |
+    | 修改创建新对象 | 是           | 否           | 否            |
+
+- [switch对String的支持](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#103-switch%E5%AF%B9%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%94%AF%E6%8C%81%E7%9A%84%E5%AE%9E%E7%8E%B0)
 
 #### 1.1.2.4 java关键字
 
@@ -484,7 +506,6 @@ finally和return的执行顺序
   - 使用用户线程加轻量级进程混合实现（GO里面叫做协程）
     - 特点：N:M
     - 优点：**用户线程还是完全建立在用户空间中，因此用户线程的创建、切换、析构等操作依然廉价，并且可以支持大规模的用户线程并发。**
-
 - [线程与进程的区别](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/1-what-is-thread-safe.md#3-%E5%A4%9A%E7%BA%BF%E7%A8%8B)
   - **进程是资源分配的基本单元，线程是执行的基本单元，同一个进程的多个线程之间共享资源。**
 - [线程的状态](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#3-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81)
@@ -492,15 +513,12 @@ finally和return的执行顺序
   - sleep 和 wait
   - wait 和 notify
   - notify 和 notifyAll
-
 - [优先级](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#5-%E7%BA%BF%E7%A8%8B%E4%BC%98%E5%85%88%E7%BA%A7)
   - 最小是1，最大是10，正常是5
-
 - [线程调度](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#4-%E7%BA%BF%E7%A8%8B%E7%9A%84%E8%B0%83%E5%BA%A6)
   - 一个线程想要从就绪状态变成运行中状态，这个过程需要系统调度，即给线程分配CPU的使用权，获得CPU使用权的线程才会从就绪状态变成运行状态。给多个线程按照特定的机制分配CPU的使用权的过程就叫做线程调度。
   - 协同式调度(自己工作完了,把CPU交给其他的线程)
   - 抢占式调度(java默认模型)
-
 - [创建线程的多种方式](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/3-java-thread-create-four-way.md)
   - 继承Thread类创建线程
   - 实现Runnable接口创建线程
@@ -521,7 +539,6 @@ finally和return的执行顺序
   - submit() 
   - execute()
   - 为什么不允许使用Executors创建线程池
-
 - [锁](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md)
   - [数据库相关锁机制](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#11-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E9%94%81%E6%9C%BA%E5%88%B6)
   - [乐观锁与悲观锁](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#1-%E4%B9%90%E8%A7%82%E9%94%81-vs-%E6%82%B2%E8%A7%82%E9%94%81)：线程要不要锁住同步资源
@@ -557,7 +574,13 @@ finally和return的执行顺序
   - [有了symchronized为什么还需要volatile](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md#727-%E6%97%A2%E7%94%9Fsynchronized%E4%BD%95%E7%94%9Fvolatile)
 - 写代码来解决生产者消费者问题
 - 并发包
+  - https://www.hollischuang.com/archives/3912
   - Thread、Runnable、Callable、ReentrantLock、ReentrantReadWriteLock、Atomic*、Semaphore、CountDownLatch、、ConcurrentHashMap、Executors
+  - locks部分：包含在java.util.concurrent.locks包中，提供显式锁(互斥锁和速写锁)相关功能；
+  - atomic部分：包含在java.util.concurrent.atomic包中，提供原子变量类相关的功能，是构建非阻塞算法的基础；
+  - executor部分：散落在java.util.concurrent包中，提供线程池相关的功能；
+  - collections部分：散落在java.util.concurrent包中，提供并发容器相关功能；
+  - tools部分：散落在java.util.concurrent包中，提供同步工具类，如信号量、闭锁、栅栏等功能；
 
 ## 1.3 jvm
 

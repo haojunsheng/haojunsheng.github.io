@@ -10,6 +10,6 @@ filename=$(basename $path -local.md)
 echo "old filename: "$filename
 newfile=$filename".md"
 echo "newfile: "$newfile
-rm -f $newfile
+rm -f ../_posts/$newfile
 sed 's#../images#/images#g' $file >> ../_posts/$newfile
 echo "generate web blog file success!"
