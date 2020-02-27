@@ -12,8 +12,23 @@ tag: docker
    * [2. Docker初体验](#2-docker初体验)
       * [Overview](#overview)
       * [Play With Docker](#play-with-docker)
-   * [3. Docker底层核心技术](#3-docker底层核心技术)
-      * [3.1 NAMESPACE](#31-namespace)
+   * [3. Dockerfile](#3-dockerfile)
+      * [3.1 常见指令](#31-常见指令)
+         * [<strong>FROM</strong>](#from)
+         * [<strong>MAINTAINER</strong>](#maintainer)
+         * [<strong>RUN</strong>](#run)
+         * [<strong>EXPOSE</strong>](#expose)
+         * [<strong>CMD</strong>](#cmd)
+         * [<strong>ENTRYPOINT</strong>](#entrypoint)
+         * [<strong>ADD和COPY</strong>](#add和copy)
+         * [<strong>VOLUME</strong>](#volume)
+         * [<strong>WORKDIR</strong>](#workdir)
+         * [<strong>ENV</strong>](#env)
+         * [<strong>USER</strong>](#user)
+         * [<strong>ONBUILD</strong>](#onbuild)
+      * [3.2 <strong>Dockerfile的构建过程</strong>](#32-dockerfile的构建过程)
+   * [4. Docker底层核心技术](#4-docker底层核心技术)
+      * [4.1 NAMESPACE](#41-namespace)
          * [简介](#简介)
          * [clone()系统调用](#clone系统调用)
          * [UTS Namespace](#uts-namespace)
@@ -25,7 +40,7 @@ tag: docker
          * [Network Namespace](#network-namespace)
          * [Namespace文件](#namespace文件)
          * [参考文档](#参考文档)
-      * [3.2 LINUX CGROUP](#32-linux-cgroup)
+      * [4.2 LINUX CGROUP](#42-linux-cgroup)
          * [CPU 限制](#cpu-限制)
          * [内存使用限制](#内存使用限制)
          * [磁盘I/O限制](#磁盘io限制)
@@ -33,20 +48,20 @@ tag: docker
          * [CGroup的术语](#cgroup的术语)
          * [下一代的CGroup](#下一代的cgroup)
          * [参考](#参考)
-      * [3.3 AUFS](#33-aufs)
+      * [4.3 AUFS](#43-aufs)
          * [AUFS的一些特性](#aufs的一些特性)
             * [相关术语](#相关术语)
             * [相关问题](#相关问题)
          * [AUFS的性能](#aufs的性能)
             * [延伸阅读](#延伸阅读)
-      * [3.4 DEVICEMAPPER](#34-devicemapper)
+      * [4.4 DEVICEMAPPER](#44-devicemapper)
          * [Device Mapper 简介](#device-mapper-简介)
          * [<strong>Thin Provisioning 简介</strong>](#thin-provisioning-简介)
          * [Thin Provisioning Snapshot 演示](#thin-provisioning-snapshot-演示)
          * [Docker的DeviceMapper](#docker的devicemapper)
          * [Device Mapper 行不行？](#device-mapper-行不行)
 
-<!-- Added by: anapodoton, at: 2019年12月10日 星期二 17时28分48秒 CST -->
+<!-- Added by: anapodoton, at: Thu Feb 27 17:36:56 CST 2020 -->
 
 <!--te-->
 
@@ -84,7 +99,7 @@ Docker提供了在隔离的环境（称为容器）中打包和运行应用程�
 - REST API是客服端和服务端交互的接口
 - docker命令是CLI客户端，当然可以使用API
 
-![Docker Engine Components Flow](https://docs.docker.com/engine/images/engine-components-flow.png)
+![Docker Engine Components Flow](/images/posts/docker/engine-components-flow.png)
 
 接下来我们来看下**Docker的使用场景**：
 
@@ -92,7 +107,7 @@ CI/CD,快速部署和扩展，在同一台计算机上运行多个Docker容器�
 
 然后我们来看下**Docker技术的组成部分和关键点**：这部分是比较核心的。
 
-![Docker Architecture Diagram](https://docs.docker.com/engine/images/architecture.svg)
+![Docker Architecture Diagram](/images/posts/docker/architecture.svg)
 
 我们来看下：
 
@@ -136,11 +151,172 @@ https://docker-curriculum.com/
 
 当然，更全的教程当然是官网了。https://docs.docker.com/
 
-# 3. Docker底层核心技术
+# 3. Dockerfile
+
+在前面我们学会使用了docker，那么我们如何构建自己的docker呢。
+
+主要参考这两篇文章：[构建并运行镜像](https://docs.docker.com/get-started/part2/)，[Dockerfile的最佳实践](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)。
+
+## 3.1 常见指令
+
+### **FROM**
+
+两种形式如下：
+
+```text
+FROM <IMAGE>
+FROM <IMAGE>:<TAG>
+```
+
+> 通过FROM指定的镜像名称必须是一个已经存在的镜像，这个镜像称之为基础镜像，必须位于第一条非注释指令
+
+### **MAINTAINER**
+
+```text
+MAINTAINER <NAME>
+```
+
+> 指定镜像的作者信息，包含镜像的所有者和联系人信息
+
+### **RUN**
+
+用于指定构建镜像时运行的命令，两种模式：
+
+```text
+RUN <command> (shell模式)
+RUN [ "executable", "param1", "param2" ] (exec模式)
+```
+
+> 在shell模式下，是使用/bin/sh -c COMMAND来运行命令的
+> 在exec模式下可以指定其他的shell来运行命令RUN [“/bin/bash”, “-c”, “echo hello”]
+
+多条RUN指令可以合并为一条：
+
+```text
+RUN yum install httpd && yum install ftp
+```
+
+> 这样在构建的时候会减少产生中间层镜像
+
+### **EXPOSE**
+
+指定运行该镜像的容器使用的端口，可以是多个。
+
+```text
+EXPOSE <PORT>
+```
+
+使用这个指令的目的是告诉应用程序容器内应用程序会使用的端口，在运行时还需要使用-p参数指定映射端口。这是docker处于安全的目的，不会自动打开端口。
+
+```text
+docker run -p 80 -d dockertest/dockerfile_build nginx -g "daemon off"
+```
+
+### **CMD**
+
+用于提供容器运行的默认命令，如果在`docker run`时指定了运行的命令，则CMD命令不会执行。CMD有三种模式：
+
+```text
+CMD <command> (shell模式)
+CMD [ "executable", "param1", "param2" ] (exec模式)
+CMD [ 'param1', 'param2'] (通常与ENTRYPOINT搭配指定ENTRYPOINT的默认参数)
+```
+
+### **ENTRYPOINT**
+
+与CMD类似，ENTRYPOINT不会被`docker run`中指定的命令覆盖，如果想覆盖ENTRYPOINT，则需要在`docker run`中指定`--entrypoint`选项
+
+它有两种模式：
+
+```text
+ENTRYPOINT <command> (shell模式)
+ENTRYPOINT [ "executable", "param1", "param2" ] (exec模式)
+```
+
+### **ADD和COPY**
+
+作用都是将文件或目录复制到Dockerfile构建的镜像中
+
+```text
+ADD <src> <dest>
+ADD ["<src>" "<dest>"] (适用于文件路径包含空格的情况)
+
+COPY <src> <dest>
+ADD ["<src>" "<dest>"] (适用于文件路径包含空格的情况)
+```
+
+> ADD包含了类似tar的解压功能，如果只是单纯复制文件，建议使用COPY，而且，两者的源文件路径使用Dockerfile相对路径，目标路径使用绝对路径。
+
+```text
+COPY index.html /var/www/html
+```
+
+### **VOLUME**
+
+用于向容器添加卷，可以提供共享存储等功能
+
+```text
+VOLUME ['/data']
+```
+
+### **WORKDIR**
+
+在容器内部设置工作目录，这样ENTRYPOINT和CMD指定的命令都会在容器中这个目录下进行。
+
+```text
+WORKDIR /path/to/workdir
+```
+
+### **ENV**
+
+用于设置环境变量
+
+```text
+ENV <KEY> <VALUE>
+ENV <KEY>=<VALUE>
+```
+
+### **USER**
+
+用于指定镜像为什么用户去运行
+
+```text
+USER nginx
+```
+
+> 镜像就会以nginx身份运行，可以使用uid，gid等各种组合使用
+
+### **ONBUILD**
+
+为镜像创建触发器，当一个镜像被用作其他镜像的基础镜像时，这个触发器会被执行。当子镜像被构建时会插入触发器中的指令。
+
+```text
+ONBUILD COPY index.html /var/www/html
+```
+
+## 3.2 **Dockerfile的构建过程**
+
+1. docker会从Dockerfile文件头FROM指定的基础镜像运行一个容器
+2. 然后执行一条指令，对容器修改
+3. 接着执行类似docker commit的操作，创建新的镜像层
+4. 在基于刚创建的镜像运行一个新的容器
+5. 执行Dockerfile下一条指令，直到所有指令执行完毕
+
+> docker会删除中间层创建的容器，但不会删除中间层镜像，所以可以使用docker run运行一个中间层容器，从而查看每一步构建后的镜像状态，这样就可以进行调试。
+
+```
+docker build [OPTIONS] -f- PATH
+```
+
+Docker在构建镜像时候有一个 build context 概念，build context 在 docker build 指定一个目录，docker 会将 build context 目录内所有文件加载到内存，作为build context。然后开始执行构建的具体过程。
+
+然后在构建的过程中每一步都会生成一个临时的容器，执行相应的指令，进行commit,然后再把临时的容器给删除。
+
+# 4. Docker底层核心技术
 
 内容来自左耳朵耗子。
 
-## 3.1 NAMESPACE
+## 4.1 NAMESPACE
 
 ### 简介
 
@@ -243,7 +419,7 @@ int main()
 
 运行上面的程序你会发现（需要root权限），子进程的hostname变成了 container。
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191210152327.png" style="zoom:50%;" />
+<img src="/images/posts/docker/20191210152327.png" style="zoom:50%;" />
 
 ### IPC Namespace
 
@@ -272,7 +448,7 @@ key        msqid      owner      perms      used-bytes   messages
 
 但是，如果我们运行加上了CLONE_NEWIPC的程序，我们就会下面的结果：
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191210153253.png)
+![](/images/posts/docker/20191210153253.png)
 
 我们可以看到IPC已经被隔离了。
 
@@ -305,7 +481,7 @@ int main()
 
 运行结果如下（我们可以看到，子进程的pid是1了）：
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191210153727.png" style="zoom:50%;" />
+<img src="/images/posts/docker/20191210153727.png" style="zoom:50%;" />
 
 你可能会问，PID为1有个毛用啊？我们知道，在传统的UNIX系统中，PID为1的进程是init，地位非常特殊。他作为所有进程的父进程，有很多特权（比如：屏蔽信号等），另外，其还会为检查所有进程的状态，我们知道，如果某个子进程脱离了父进程（父进程没有wait它），那么init就会负责回收资源并结束这个子进程。所以，要做到进程空间的隔离，首先要创建出PID为1的进程，最好就像chroot那样，把子进程的PID在容器内变成1。
 
@@ -343,7 +519,7 @@ int main()
 
 运行结果如下,我们可以看到只有两个进程 ，而且pid=1的进程是我们的/bin/bash。我们还可以看到/proc目录下也干净了很多：下图，我们也可以看到在子进程中的top命令只看得到两个进程了。
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191210154321.png)
+![](/images/posts/docker/20191210154321.png)
 
 这里，多说一下。在通过CLONE_NEWNS创建mount namespace后，父进程会把自己的文件结构复制给子进程中。而子进程中新的namespace中的所有mount操作都只影响自身的文件系统，而不对外界产生任何影响。这样可以做到比较严格地隔离。
 
@@ -723,7 +899,7 @@ Network的Namespace比较啰嗦。在Linux下，我们一般用ip命令创建Net
 
 首先，我们先看个图，下面这个图基本上就是Docker在宿主机上的网络示意图（其中的物理网卡并不准确，因为docker可能会运行在一个VM中，所以，这里所谓的“物理网卡”其实也就是一个有可以路由的IP的网卡）
 
-![network.namespace](https://coolshell.cn/wp-content/uploads/2015/04/network.namespace.jpg)
+![network.namespace](/images/posts/docker/network.namespace.png)
 
 上图中，Docker使用了一个私有网段，172.40.1.0，docker还可能会使用10.0.0.0和192.168.0.0这两个私有网段，关键看你的路由表中是否配置了，如果没有配置，就会使用，如果你的路由表配置了所有私有网段，那么docker启动时就会出错了。
 
@@ -880,7 +1056,7 @@ setns(fd, 0); // 加入新的namespace
 - [Creat Containers – Part 1](http://crosbymichael.com/creating-containers-part-1.html)
 - [Introduction to Linux namespaces](https://blog.jtlebi.fr/2013/12/22/introduction-to-linux-namespaces-part-1-uts/)
 
-## 3.2 LINUX CGROUP
+## 4.2 LINUX CGROUP
 
 前面，我们介绍了[Linux Namespace](https://coolshell.cn/articles/17010.html)，但是Namespace解决的问题主要是环境隔离的问题，这只是虚拟化中最最基础的一步，我们还需要解决对计算机资源使用上的隔离。也就是说，虽然你通过Namespace把我Jail到一个特定的环境中去了，但是我在其中的进程使用用CPU、内存、磁盘等这些计算资源其实还是可以随心所欲的。所以，我们希望对进程进行资源利用上的限制或控制。这就是Linux CGroup出来了的原因。
 
@@ -1281,7 +1457,7 @@ cpuset cpu cpuacct memory devices freezer net_cls blkio perf_event net_prio huge
 - [The unified control group hierarchy in 3.16](http://lwn.net/Articles/601840/)
 - [Cgroup v2(PDF)](http://events.linuxfoundation.org/sites/events/files/slides/2014-KLF.pdf)
 
-## 3.3 AUFS
+## 4.3 AUFS
 
 AUFS是一种Union File System，所谓UnionFS就是把不同物理位置的目录合并mount到同一个目录中。UnionFS的一个最主要的应用是，把一张CD/DVD和一个硬盘目录给联合 mount在一起，然后，你就可以对这个只读的CD/DVD上的文件进行修改（当然，修改的文件存于硬盘上的目录里）。
 
@@ -1387,7 +1563,7 @@ Docker把UnionFS的想像力发挥到了容器的镜像。你是否还记得我�
 
 下图来自Docker的官方文档[Layer](http://docs.docker.com/terms/layer/)，其很好的展示了Docker用UnionFS搭建的分层镜像。
 
-![docker-filesystems-multilayer](https://coolshell.cn/wp-content/uploads/2015/04/docker-filesystems-multilayer.png)
+![docker-filesystems-multilayer](/images/posts/docker/docker-filesystems-multilayer.png)
 
 关于docker的分层镜像，除了aufs，docker还支持btrfs, devicemapper和vfs，你可以使用 -s 或 –storage-driver= 选项来指定相关的镜像存储。在Ubuntu 14.04下，docker默认Ubuntu的 aufs（在CentOS7下，用的是devicemapper，关于devicemapper，我会以以后的文章中讲解）你可以在下面的目录中查看相关的每个层的镜像：
 
@@ -1538,13 +1714,13 @@ IBM的研究中心对Docker的性能给了一份非常不错的性能报告（PD
 
 我截了两张图出来，第一张是顺序读写，第二张是随机读写。基本没有什么性能损失的问题。而KVM在随机读写的情况也就有点慢了（但是，如果硬盘是SSD的呢？）
 
-[![img](https://coolshell.cn/wp-content/uploads/2015/08/docker.seq_.jpg)](https://coolshell.cn/wp-content/uploads/2015/08/docker.seq_.jpg)
+![img](/images/posts/docker/docker.seq_.png)
 
  
 
 **顺序读写**
 
-[![img](https://coolshell.cn/wp-content/uploads/2015/08/docker.rand_.jpg)](https://coolshell.cn/wp-content/uploads/2015/08/docker.rand_.jpg)
+![img](/images/posts/docker/docker.rand_.png)
 
  
 
@@ -1558,11 +1734,11 @@ IBM的研究中心对Docker的性能给了一份非常不错的性能报告（PD
 - [Another union filesystem approach](http://lwn.net/Articles/403012/)
 - [Unioning file systems: Architecture, features, and design choices](http://lwn.net/Articles/324291/)
 
-## 3.4 DEVICEMAPPER
+## 4.4 DEVICEMAPPER
 
 在上一篇[介绍AUFS的文章](https://coolshell.cn/articles/17061.html)中，大家可以看到，Docker的分层镜像是怎么通过UnionFS这种文件系统做到的，但是，因为Docker首选的AUFS并不在Linux的内核主干里，所以，对于非Ubuntu的Linux分发包，比如CentOS，就无法使用AUFS作为Docker的文件系统了。于是作为第二优先级的DeviceMapper就被拿出来做分层镜像的一个实现。
 
-![how_to_set_up_an_iSCSI_LUN_with_thin](https://coolshell.cn/wp-content/uploads/2015/08/how_to_set_up_an_iSCSI_LUN_with_thin-300x150.jpg)
+![how_to_set_up_an_iSCSI_LUN_with_thin](/images/posts/docker/how_to_set_up_an_iSCSI_LUN_with_thin-300x150.png)
 
 ### Device Mapper 简介
 
@@ -1578,7 +1754,7 @@ DeviceMapper 中的逻辑设备Mapped Device不但可以映射一个或多个物
 
 DeviceMapper在内核中通过一个一个模块化的 Target Driver 插件实现对 IO 请求的过滤或者重新定向等工作，当前已经实现的插件包括软 Raid、加密、多路径、镜像、快照等，这体现了在 Linux 内核设计中策略和机制分离的原则。如下图所示。从图中，我们可以**看到DeviceMapper只是一个框架，在这个框架上，我们可以插入各种各样的策略**（让我不自然地想到了面向对象中的策略模式），在这诸多“插件”中，**有一个东西叫Thin Provisioning Snapshot，这是Docker使用DeviceMapper中最重要的模块**。
 
-![图片来源：http://people.redhat.com/agk/talks/FOSDEM_2005/](https://coolshell.cn/wp-content/uploads/2015/08/device.mapper.2.gif)图片来源：http://people.redhat.com/agk/talks/FOSDEM_2005/
+![图片来源：http://people.redhat.com/agk/talks/FOSDEM_2005/](/images/posts/docker/device.mapper.2.png)图片来源：http://people.redhat.com/agk/talks/FOSDEM_2005/
 
 ### **Thin Provisioning 简介**
 
@@ -1588,7 +1764,7 @@ Thin Provisioning要怎么翻译成中文，真是一件令人头痛的事，我
 
 好了，话题拉回来，我们这里说的是存储。看下面两个图（[图片来源](http://www.architecting.it/2009/06/04/enterprise-computing-why-thin-provisioning-is-not-the-holy-grail-for-utilisation/)），第一个是Fat Provisioning，第二个是Thin Provisioning，其很好的说明了是个怎么一回事（和虚拟内存是一个概念）
 
-![thin-provisioning-1](https://coolshell.cn/wp-content/uploads/2015/08/thin-provisioning-1.jpg)![thin-provisioning-2](https://coolshell.cn/wp-content/uploads/2015/08/thin-provisioning-2.jpg)
+![thin-provisioning-1](/images/posts/docker/thin-provisioning-1.png)![thin-provisioning-2](/images/posts/docker/thin-provisioning-2.png)
 
 那么，Docker是怎么使用Thin Provisioning这个技术做到像UnionFS那样的分层镜像的呢？答案是，Docker使用了Thin Provisioning的Snapshot的技术。下面我们来介绍一下Thin Provisioning的Snapshot。
 
@@ -1859,11 +2035,11 @@ Thin Provisioning的文档中说，这还处理实验阶段，不要上Productio
 
 另外，Jeff Atwood在Twitter上发过这样的一推
 
-[![Jeff.Atwood.DeviceMapper](https://coolshell.cn/wp-content/uploads/2015/08/Jeff.Atwood.DeviceMapper.png)](https://twitter.com/codinghorror/status/604096348682485760)
+![Jeff.Atwood.DeviceMapper](/images/posts/docker/Jeff.Atwood.DeviceMapper.png)
 
 这个推指向的[这个讨论](https://forums.docker.com/t/rmi-not-freeing-disk-space-in-devicemapper-sparse-file-centos-6-6/1640/3)中，其中指向了这个[code diff](https://github.com/discourse/discourse_docker/commit/48f22d14f39496c8df446cbc65ee04b258c5a1a0)，基本上就是说，DeviceMapper这种东西问题太多了，我们应该把其加入黑名单。Doker的Founder也这样回复到：
 
-[![img](https://coolshell.cn/wp-content/uploads/2015/08/Solomon.Hykeys.DeviceMapper.png)](https://twitter.com/solomonstre/status/604055267303636992)
+![img](/images/posts/docker/Solomon.Hykeys.DeviceMapper.png)
 
 所以，如果你在使用loopback的devicemapper的话，当你的存储出现了问题后，正确的解决方案是：
 
