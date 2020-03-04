@@ -9,6 +9,7 @@ tag: 面试
 ---
 
 <!--ts-->
+
    * [1. Java](#1-java)
       * [1.1 java基础](#11-java基础)
          * [1.1.1 面向对象](#111-面向对象)
@@ -79,11 +80,12 @@ tag: 面试
 
 - 什么是面向过程：把问题分解成一个一个步骤，每个步骤都是函数或者表达式，这样的编程思想就是面向过程。
 - 什么是面向对象:对象是属性和行为的集合体。把问题分解成一个一个步骤，每个步骤都是对象及对象的行为调用，这样的编程思想就是面向对象。
+- 二者区别：面向过程以过程为中心，关注问题的解决过程顺序，而面向对象以对象为中心，将问题分解并抽象成多个对象，关注对象及对象之间的关系。
 - 三大基本特征：
-  - [封装](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/java-encapsulation.md)：所谓封装，也就是把客观事物封装成抽象的类，并且类可以把自己的数据和方法只让可信的类或者对象操作，对不可信的进行信息隐藏。封装是面向对象的特征之一，是对象和类概念的主要特性。简单的说，一个类就是一个封装了数据以及操作这些数据的代码的逻辑实体。在一个对象内部，某些代码或某些数据可以是私有的，不能被外界访问。通过这种方式，对象对内部数据提供了不同级别的保护，以防止程序中无关的部分意外的改变或错误的使用了对象的私有部分。
-  - [继承](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/java-extend.md):继承是指这样一种能力：它可以使用现有类的所有功能，并在无需重新编写原来的类的情况下对这些功能进行扩展。通过继承创建的新类称为“子类”或“派生类”，被继承的类称为“基类”、“父类”或“超类”。继承的过程，就是从一般到特殊的过程。要实现继承，可以通过“继承”（Inheritance）和“组合”（Composition）来实现。继承概念的实现方式有二类：实现继承与接口继承。实现继承是指直接使用基类的属性和方法而无需额外编码的能力；接口继承是指仅使用属性和方法的名称、但是子类必须提供实现的能力；
-  - [多态](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/polymorphic.md):所谓多态就是指一个类实例的相同方法在不同情形有不同表现形式。多态机制使具有不同内部结构的对象可以共享相同的外部接口。这意味着，虽然针对不同对象的具体操作不同，但通过一个公共的类，它们（那些操作）可以通过相同的方式予以调用。最常见的多态就是将子类传入父类参数中，运行时调用父类方法时通过传入的子类决定具体的内部结构或行为。
-- [五大原则](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/five-basic-for-object-oriented.md):
+  - [封装](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#21-%E5%B0%81%E8%A3%85)：所谓封装，也就是把客观事物封装成抽象的类，并且类可以把自己的数据和方法只让可信的类或者对象操作，对不可信的进行信息隐藏。封装是面向对象的特征之一，是对象和类概念的主要特性。简单的说，一个类就是一个封装了数据以及操作这些数据的代码的逻辑实体。在一个对象内部，某些代码或某些数据可以是私有的，不能被外界访问。通过这种方式，对象对内部数据提供了不同级别的保护，以防止程序中无关的部分意外的改变或错误的使用了对象的私有部分。
+  - [继承](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#22-%E7%BB%A7%E6%89%BF):继承是指这样一种能力：它可以使用现有类的所有功能，并在无需重新编写原来的类的情况下对这些功能进行扩展。通过继承创建的新类称为“子类”或“派生类”，被继承的类称为“基类”、“父类”或“超类”。继承的过程，就是从一般到特殊的过程。要实现继承，可以通过“继承”（Inheritance）和“组合”（Composition）来实现。继承概念的实现方式有二类：实现继承与接口继承。实现继承是指直接使用基类的属性和方法而无需额外编码的能力；接口继承是指仅使用属性和方法的名称、但是子类必须提供实现的能力；
+  - [多态](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#23-%E5%A4%9A%E6%80%81):所谓多态就是指一个类实例的相同方法在不同情形有不同表现形式。多态机制使具有不同内部结构的对象可以共享相同的外部接口。这意味着，虽然针对不同对象的具体操作不同，但通过一个公共的类，它们（那些操作）可以通过相同的方式予以调用。最常见的多态就是将子类传入父类参数中，运行时调用父类方法时通过传入的子类决定具体的内部结构或行为。
+- [五大原则](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#3-%E4%BA%94%E5%A4%A7%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99):
   - S：单一职责原则:一个类，最好只做一件事，只有一个引起它的变化。
   - O：开放封闭原则:软件实体应该是可扩展的，而不可修改的。也就是，对扩展开放，对修改封闭的。
   - L：里氏替换原则:子类必须能够替换其基类。
@@ -92,7 +94,9 @@ tag: 面试
 
 #### 1.1.1.2 平台无关性
 
-[平台无关性](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/what-is-platform-independent.md)。
+[平台无关性](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/what-is-platform-independent.md)
+
+平台无关性就是一种语言在计算机上的运行不受平台的约束，一次编译，到处执行（Write Once ,Run Anywhere）。主要是jvm的原因。
 
 #### 1.1.1.3 值传递
 
@@ -105,42 +109,71 @@ Java中只有[值传递](https://github.com/haojunsheng/JavaLearning/blob/master
 
 [重载与重写](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/deep-analyze-override-overloading.md)
 
-- 重载：签名不一样。
-- 重写：子类重写父类，签名一样。
+- 重载：签名不一样，编译器。
+- 重写：子类重写父类，签名一样，运行期。
+
+函数的返回值不同不可以构成重载。
 
 #### 1.1.1.5 组合和继承
 
-[组合和继承](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/deep-analyze-override-overloading.md)
+[组合和继承](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/combination-vs-inheritance.md)
 
+- 组合是has-a，继承是is-a
 - 多用组合，少用继承。
 - 只有需要从新类向基类进行向上转型的时候，才使用继承。
 
+| 组 合 关 系                                                  | 继 承 关 系                                                  |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 优点：不破坏封装，整体类与局部类之间松耦合，彼此相对独立     | 缺点：破坏封装，子类与父类之间紧密耦合，子类依赖于父类的实现，子类缺乏独立性 |
+| 优点：具有较好的可扩展性                                     | 缺点：支持扩展，但是往往以增加系统结构的复杂度为代价         |
+| 优点：支持动态组合。在运行时，整体对象可以选择不同类型的局部对象 | 缺点：不支持动态继承。在运行时，子类无法选择不同的父类       |
+| 优点：整体类可以对局部类进行包装，封装局部类的接口，提供新的接口 | 缺点：子类不能改变父类的接口                                 |
+| 缺点：整体类不能自动获得和局部类同样的接口                   | 优点：子类能自动继承父类的接口                               |
+| 缺点：创建整体类的对象时，需要创建所有局部类的对象           | 优点：创建子类的对象时，无须创建父类的对象                   |
+
 #### 1.1.1.6成员变量和方法的作用域
 
+[参考](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#4-%E5%9B%9B%E7%A7%8D%E8%AE%BF%E9%97%AE%E7%BA%A7%E5%88%AB)
+
 - public :表明该成员变量或者方法是对所有类或者对象都是可见的,所有类或者对象都可以直接访问
-- private:表明该成员变量或者方法是私有的,只有当前类对其具有访问权限,除此之外其他类或者对象都没有访问权限.子类也没有访问权限.
 - protected:表明成员变量或者方法对类自身,与同在一个包中的其他类可见,其他包下的类不可访问,除非是他的子类
-- default:表明该成员变量或者方法只有自己和其位于同一个包的内可见,其他包内的类不能访问,即便是它的子类
-- 值得注意的是，外部类的作用域只有public和default。因为如果是private，那么别的类就无法对其进行实例化，毫无意义。对于protected，类B继承类A的前提又是类B可以访问到类A。继承的核心是继承属性和方法，在说一句，只有可以访问到，才有继承。所以类的修饰符只有public和default。
+- default:表明该成员变量或者方法只有自己和其位于同一个包的内可见,其他包内的类不能访问,即便是它的子类。
+- private:表明该成员变量或者方法是私有的,只有当前类对其具有访问权限,除此之外其他类或者对象都没有访问权限.子类也没有访问权限.
+
+值得注意的是，外部类的作用域只有public和default。因为如果是private，那么别的类就无法对其进行实例化，毫无意义。对于protected，**类B继承类A的前提又是类B可以访问到类A**。继承的核心是继承属性和方法，在说一句，只有可以访问到，才有继承。所以类的修饰符只有public和default。
 
 #### 1.1.1.7 抽象类和接口
 
 [抽象类和接口](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/abstract-class-vs-interface.md)
 
-- 抽象类：对类整个整体抽象
-- 接口：对行为进行抽象
+- 抽象类：对类整个整体抽象。
+- 接口：对行为进行抽象。
+
+<img src="img/image-20200304191253320.png" alt="image-20200304191253320" style="zoom:33%;" />
+
+如何选择：
+
+1. 如果要创建不带任何方法定义和成员变量的基类，那么就应该选择接口而不是抽象类。
+2. 如果知道某个类应该是基类，那么第一个选择的应该是让它成为一个接口，只有在必须要有方法定义和成员变量的时候，才应该选择抽象类。因为抽象类中允许存在一个或多个被具体实现的方法，只要方法没有被全部实现该类就仍是抽象类。
 
 #### 1.1.1.8 内部类
 
 [内部类](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/inner-class.md)
 
-- 解决多重继承问题。
+- 每个内部类都能独立地继承一个（接口的）实现，所以无论外围类是否已经继承了某个（接口的）实现，对于内部类都没有影响，**解决多重继承问题**。
+- 内部类可以用多个实例，每个实例都有自己的状态信息，并且与其他外围对象的信息相互独立。
+- 在单个外围类中，可以让多个内部类以不同的方式实现同一个接口，或者继承同一个类。
+- 创建内部类对象的时刻并不依赖于外围类对象的创建。
+- 内部类并没有令人迷惑的“is-a”关系，他就是一个独立的实体。
+- 内部类提供了更好的封装，除了该外围类，其他类都不能访问。
 
 ### 1.1.2 基础知识
 
 #### 1.1.2.1 基本数据类型
 
-[7种基本类型](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-basic-data-type.md)：
+[7种基本类型](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-basic-data-type.md)
+
+**区别：占用字节和表示方式的不同。**
 
 #### 1.1.2.2 自动拆装箱
 
@@ -148,26 +181,23 @@ Java中只有[值传递](https://github.com/haojunsheng/JavaLearning/blob/master
 
 - WHY:为什么需要自动拆装箱。
   - 因为需要在基本数据类型和包装类之类进行转换。为了减少开发人员的工作。
-
 - WHAT:什么是自动拆装箱。
-
+- 就是将包装类自动转换成对应的基本数据类型。
 - HOW:自动拆装箱是如何实现的。
-  - 
-
+  - 自动装箱：`***.valueOf()`
+- 自动拆箱：xxxValue()
 - WHEN:什么时候会用到自动拆装箱
-
 - WHERE:什么地方可能会自动进行自动拆装箱，如三目运算符
   - 基本数据类型放到集合类
   - 包装类型和基本类型的大小比较
   - 包装类型的运算
   - 三目运算符的使用
   - 函数参数与返回值
-
 - OTHER:自动拆装箱可能会带来那些问题？
   - Interger的缓存问题：**缓存支持-128到127之间的自动装箱过程**
   - 包装对象的数值比较，不能简单的使用`==`，虽然-128到127之间的数字可以，但是这个范围之外还是需要使用`equals`比较。
   - 由于自动拆箱，如果包装类对象为null，那么自动拆箱时就有可能抛出NPE。
-  - 如果一个for循环中有大量拆装箱操作，会浪费很多资源。
+  - 如果一个增强for循环中有大量拆装箱操作，会浪费很多资源。
 
 #### 1.1.2.3 String相关
 
@@ -223,21 +253,25 @@ Java中只有[值传递](https://github.com/haojunsheng/JavaLearning/blob/master
 
 3）被transient关键字修饰的变量不再能被序列化，一个静态变量不管是否被transient修饰，均不能被序列化。
 
-##### 1.1.2.4.2 instanceof
+**序列化的本质是序列化对象，而不是类相关的信息。**  
 
+##### 1.1.2.4.2 staic
 
+[static](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/static-detail.md)
 
-##### 1.1.2.4.3 volatile
+- static变量
+  - 静态变量是随着类加载时被完成初始化的，它在内存中仅有一个，且JVM也只会为它分配一次内存，同时类所有的实例都共享静态变量，可以直接通过类名来访问它。
+  - 实例变量则不同，它是伴随着实例的，每创建一个实例就会产生一个实例变量，它与该实例同生共死。
+- static方法
+  - 通过类名对其进行直接调用
+- static代码块
+  - 被static修饰的代码块，我们称之为静态代码块，**静态代码块会随着类的加载一块执行**，而且他可以随意放，可以存在于该了的任何地方。
+- 执行顺序
+  - 静态代码块 > 构造代码块(指的是{}括起来的代码块) > 构造函数
 
-[volatile](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/deep-understand-Java-volatile.md)
+##### 1.1.2.4.3 final
 
-##### 1.1.2.4.4 synchronized
-
-[synchronized](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/deep-undaunted-synchronized.md)
-
-##### 1.1.2.4.5 final
-
-[final](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/final-principle-use.md)
+[final](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/final-detail.md)
 
 不想被改变的原因有两个：**效率、设计**。
 
@@ -256,20 +290,6 @@ Java中只有[值传递](https://github.com/haojunsheng/JavaLearning/blob/master
   - 可修饰成员方法。是不可继承和改变。可以通过类名直接访问。  
   - final强调的是常量
   - static强调的生命周期
-
-##### 1.1.2.4.6 staic
-
-[static](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/static-principle-use.md)
-
-- static变量
-  - 静态变量是随着类加载时被完成初始化的，它在内存中仅有一个，且JVM也只会为它分配一次内存，同时类所有的实例都共享静态变量，可以直接通过类名来访问它。
-  - 实例变量则不同，它是伴随着实例的，每创建一个实例就会产生一个实例变量，它与该实例同生共死。
-- static方法
-  - 通过类名对其进行直接调用
-- static代码块
-  - 被static修饰的代码块，我们称之为静态代码块，静态代码块会随着类的加载一块执行，而且他可以随意放，可以存在于该了的任何地方。
-- 执行顺序
-  - 静态代码块 > 构造代码块 > 构造函数
 
 ##### 1.1.2.4.7 const
 
@@ -305,10 +325,6 @@ N – Number（数值类型）
 S、U、V – 2nd、3rd、4th types
 
 Object – 是所有类的根类，任何类的对象都可以设置给该Object引用变量，使用的时候可能需要类型强制转换，但是用使用了泛型T、E等这些标识符后，在实际用之前类型就已经确定了，不需要再进行类型强制转换。
-
-##### 1.1.2.4.11 重载与重写
-
-[重载与重写](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/deep-analyze-override-overloading.md)
 
 ##### 1.1.2.4.12 equals和hashcode的协同工作
 
@@ -539,25 +555,15 @@ Java 1.7 之前 switch 参数可用类型为 short、byte、int、char，枚举�
 
 [java i/o完全解读](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-IO/Java-IO-all.md)
 
-字符流、字节流、输入流、输出流、
+[什么是比特？什么是字节？什么是字符？它们长度是多少？各有什么区别？](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-io-detail.md#1-%E4%BB%80%E4%B9%88%E6%98%AF-io)
 
-同步、异步、阻塞、非阻塞、Linux 5种IO模型
+[什么是流？Java IO中包含哪几种流，之间的关系是怎样的？字节流和字符流的区别? 什么是输入流和输出流，如何区分？字节流和字符流之间如何相互转换。](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-io-detail.md#2-%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3java-%E6%B5%81stream)
 
-BIO、NIO和AIO的区别、三种IO的用法与原理
+[同步、异步、阻塞、非阻塞、Linux 5种IO模型](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-io-detail.md#7-%E4%BA%94%E7%A7%8Dio%E6%A8%A1%E5%9E%8B)
 
-
-
-
-
-第017期。 学习Java中的IO知识，学习时间两周，学习完请写下你的学习笔记。 参考资料： 什么是比特？什么是字节？什么是字符？它们长度是多少？各有什么区别？https://t.zsxq.com/ZzfyVvV 什么是流？Java IO中包含哪几种流，之间的关系是怎样的？https://t.zsxq.com/jMJEEyb 字节流和字符流的区别。https://t.zsxq.com/R37yZJq 什么是输入流和输出流，如何区分？https://t.zsxq.com/RbQRf6y 字节流和字符流之间如何相互转换。https://t.zsxq.com/B2Je2N7 什么是NIO？https://t.zsxq.com/j6QFunI 什么是AIO？https://t.zsxq.com/mYZznYB 什么是BIO? https://t.zsxq.com/mIaq3fq IO流需不需要关闭,如果关闭的话应该如何关闭。需要注意什么。https://t.zsxq.com/RZBmuZN Java 7 中关闭IO的更优雅的方式是什么？https://t.zsxq.com/ubYZzna BIO、NIO及AIO三者之间的区别和联系有哪些？https://t.zsxq.com/jEQNj2V 请使用BIO实现文件的读取和写入。 https://t.zsxq.com/EuJiEMr 请使用NIO实现文件的读取和写入。 https://t.zsxq.com/rnmyvr7 请使用AIO实现文件的读取和写入。 https://t.zsxq.com/uZnIYzf 请将以下代码，改成使用try-with-resources的形式。 https://t.zsxq.com/2vnEQ3b Java中BIO、NIO、AIO分别适用哪些场景？ https://t.zsxq.com/unujIYb 什么是同步？什么是异步？ https://t.zsxq.com/qJaMFIU 什么是阻塞？什么是非阻塞？ https://t.zsxq.com/UJAmIuf 同步，异步 和 阻塞，非阻塞之间的区别？ https://t.zsxq.com/3J27Ey7 IO模型有哪5种？ https://t.zsxq.com/AmYFyVn 请简答介绍下阻塞IO模型。 https://t.zsxq.com/E2FYrVR 请简单回答下什么是非阻塞IO模型 https://t.zsxq.com/2bqFae6 请简单回答下什么是多路复用IO模型？ https://t.zsxq.com/iuNFeUn 请简答回答一下什么是信号驱动IO模型？ https://t.zsxq.com/AAyf6qv 请简答回答一下什么是异步IO模型 https://t.zsxq.com/RJmqf66 请使用BIO实现文件的读取和写入。 https://t.zsxq.com/EuJiEMr 请使用NIO实现文件的读取和写入。 https://t.zsxq.com/rnmyvr7 请使用AIO实现文件的读取和写入。 https://t.zsxq.com/uZnIYzf 请将以下代码，改成使用try-with-resources的形式。 https://t.zsxq.com/2vnEQ3b Java中BIO、NIO、AIO分别适用哪些场景？ https://t.zsxq.com/unujIYb 什么是同步？什么是异步？ https://t.zsxq.com/qJaMFIU 什么是阻塞？什么是非阻塞？ https://t.zsxq.com/UJAmIuf 同步，异步 和 阻塞，非阻塞之间的区别？ https://t.zsxq.com/3J27Ey7 IO模型有哪5种？ https://t.zsxq.com/AmYFyVn 请简答介绍下阻塞IO模型。 https://t.zsxq.com/E2FYrVR 请简单回答下什么是非阻塞IO模型 https://t.zsxq.com/2bqFae6 请简单回答下什么是多路复用IO模型？ https://t.zsxq.com/iuNFeUn 请简答回答一下什么是信号驱动IO模型？ https://t.zsxq.com/AAyf6qv 请简答回答一下什么是异步IO模型 https://t.zsxq.com/RJmqf66
-
-
+[BIO、NIO和AIO的区别、三种IO的用法与原理](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-io-detail.md#6-bio-vs-nio-vs-aio)
 
 ### 1.1.6 反射
-
-学习Java中的枚举知识，学习时间两周，学习完请写下你的学习笔记。 参考资料： 什么是枚举？ https://t.zsxq.com/RFeeqvv 枚举是如何实现的？ https://t.zsxq.com/JynYJYN Java 枚举类比较用 == 还是 equals，有哪些区别？ https://t.zsxq.com/EiQBu3R Java 枚举类可以继承其他类（或实现其他接口）或者被其他类继承吗，为什么？ https://t.zsxq.com/nU7myz7 Java中的switch是如何对枚举进行支持的？ https://t.zsxq.com/eeImMfm 请使用枚举实现一个单例。 https://t.zsxq.com/FQvnQNB 为什么枚举实现的单例比较受推崇？有哪些好处？https://t.zsxq.com/rZBay7M 枚举的序列化是如何实现的？为什么枚举实现的单例不存在可能序列化破坏的问题。https://t.zsxq.com/vJmiemy Java 枚举是如何保证线程安全的？https://t.zsxq.com/qBqNBaU
-
-
 
 [反射与工厂模式](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-reflect/java-factory-union-reflect.md)
 
