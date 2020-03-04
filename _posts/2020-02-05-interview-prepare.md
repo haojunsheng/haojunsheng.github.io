@@ -9,7 +9,6 @@ tag: 面试
 ---
 
 <!--ts-->
-
    * [1. Java](#1-java)
       * [1.1 java基础](#11-java基础)
          * [1.1.1 面向对象](#111-面向对象)
@@ -27,30 +26,32 @@ tag: 面试
             * [1.1.2.3 String相关](#1123-string相关)
             * [1.1.2.4 java关键字](#1124-java关键字)
                * [1.1.2.4.1 transient](#11241-transient)
-               * [1.1.2.4.2 instanceof](#11242-instanceof)
-               * [1.1.2.4.3 volatile](#11243-volatile)
-               * [1.1.2.4.4 synchronized](#11244-synchronized)
-               * [1.1.2.4.5 final](#11245-final)
-               * [1.1.2.4.6 staic](#11246-staic)
-               * [1.1.2.4.7 const](#11247-const)
-               * [1.1.2.4.8 length vs length()](#11248-length-vs-length)
-               * [1.1.2.4.9 Comparable vs Comparator](#11249-comparable-vs-comparator)
-               * [1.1.2.4.10 ktve](#112410-ktve)
-               * [1.1.2.4.11 重载与重写](#112411-重载与重写)
-               * [1.1.2.4.12 equals和hashcode的协同工作](#112412-equals和hashcode的协同工作)
-               * [1.1.2.4.13 迭代和递归](#112413-迭代和递归)
-               * [1.1.2.4.14 swith](#112414-swith)
+               * [1.1.2.4.2 staic](#11242-staic)
+               * [1.1.2.4.3 final](#11243-final)
+               * [1.1.2.4.4 length vs length()](#11244-length-vs-length)
+               * [1.1.2.4.5 Comparable vs Comparator](#11245-comparable-vs-comparator)
+               * [1.1.2.4.6 ktve](#11246-ktve)
+               * [1.1.2.4.7 equals和hashcode的协同工作](#11247-equals和hashcode的协同工作)
+               * [1.1.2.4.8 迭代和递归](#11248-迭代和递归)
+               * [1.1.2.4.9 swith](#11249-swith)
          * [1.1.3 集合](#113-集合)
             * [1.1.3.1 常用集合类的使用](#1131-常用集合类的使用)
             * [1.1.3.2 ArrayList和LinkedList和Vector的区别](#1132-arraylist和linkedlist和vector的区别)
             * [1.1.3.3 SynchronizedList和Vector的区别](#1133-synchronizedlist和vector的区别)
+            * [1.1.3.4 ArrayList是怎么实现序列化和反序列化的](#1134-arraylist是怎么实现序列化和反序列化的)
+            * [1.1.3.5 Array.asList 特性](#1135-arrayaslist-特性)
+            * [1.1.3.6 fail-fast vs fail-safe](#1136-fail-fast-vs-fail-safe)
+            * [1.1.3.7 ConcurrentSkipList](#1137-concurrentskiplist)
+            * [1.1.3.8 set vs list](#1138-set-vs-list)
+            * [1.1.3.9 set如何保证元素不重复](#1139-set如何保证元素不重复)
+            * [1.1.3.10 Collection和Collections区别](#11310-collection和collections区别)
          * [1.1.4 枚举](#114-枚举)
          * [1.1.5 IO](#115-io)
          * [1.1.6 反射](#116-反射)
          * [1.1.7 序列化](#117-序列化)
          * [1.1.8 注解](#118-注解)
          * [1.1.9 泛型](#119-泛型)
-      * [1.1.10 异常](#1110-异常)
+         * [1.1.10 异常](#1110-异常)
          * [1.1.11 语法糖](#1111-语法糖)
       * [1.2 并发编程](#12-并发编程)
          * [1.2.1 并发与并行](#121-并发与并行)
@@ -66,7 +67,7 @@ tag: 面试
          * [1.3.8 编译与反编译](#138-编译与反编译)
    * [2. 数据结构与算法](#2-数据结构与算法)
 
-<!-- Added by: anapodoton, at: Mon Feb 24 16:38:02 CST 2020 -->
+<!-- Added by: anapodoton, at: Thu Mar  5 00:28:09 CST 2020 -->
 
 <!--te-->
 
@@ -149,7 +150,7 @@ Java中只有[值传递](https://github.com/haojunsheng/JavaLearning/blob/master
 - 抽象类：对类整个整体抽象。
 - 接口：对行为进行抽象。
 
-<img src="img/image-20200304191253320.png" alt="image-20200304191253320" style="zoom:33%;" />
+<img src="/images/posts/java/image-20200305002345628.png" alt="image-20200305002345628" style="zoom: 50%;" />
 
 如何选择：
 
@@ -276,37 +277,35 @@ Java中只有[值传递](https://github.com/haojunsheng/JavaLearning/blob/master
 不想被改变的原因有两个：**效率、设计**。
 
 - final常量
-  - 编译期常量，永远不可改变。只能使用基本类型，而且必须要在定义时进行初始化。
-  - 运行期初始化时，我们希望它不会被改变。希望它可以根据对象的不同而表现不同，但同时又不希望它被改变，这个时候我们就可以使用运行期常量。对于运行期常量，它既可是基本数据类型，也可是引用数据类型。**基本数据类型不可变的是其内容，而引用数据类型不可变的是其引用，引用所指定的对象内容是可变的。**
+  - **编译期常量**，永远不可改变。只能使用基本类型，而且必须要在定义时进行初始化。
+  - **运行期初始化时，我们希望它不会被改变**。希望它可以根据对象的不同而表现不同，但同时又不希望它被改变，这个时候我们就可以使用运行期常量。对于运行期常量，它既可是基本数据类型，也可是引用数据类型。**基本数据类型不可变的是其内容，而引用数据类型不可变的是其引用，引用所指定的对象内容是可变的。**
 - final方法
   - 所有被final标注的方法都是不能被继承、更改的
   - 方法锁定，以防止任何子类来对它的修改
 - final类
   - 该类是最终类，它不希望也不允许其他来继承它
 - final参数
-  - 代表了该参数是不可改变的
+  - 代表了该参数是不可改变的(指向不变，但指向的内容本身可以变化)
 - final & static
   - 同时使用时即可修饰成员变量，该变量一旦赋值就不能改变，我们称它为“全局常量”。可以通过类名直接访问。
   - 可修饰成员方法。是不可继承和改变。可以通过类名直接访问。  
-  - final强调的是常量
-  - static强调的生命周期
+  - **final强调的是不可改变的量**
+  - **static强调的生命周期**
 
-##### 1.1.2.4.7 const
-
-
-
-##### 1.1.2.4.8 length vs length()
+##### 1.1.2.4.4 length vs length()
 
  [length vs length()](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/deep-analyze-java-length-length().md)
 
 - 数组有length属性，数组的长度可以作为`final`实例变量的长度。因此，长度可以被视为一个数组的属性。
 - String有length()方法。String背后的数据结构是一个char数组,所以没有必要来定义一个不必要的属性。
 
-##### 1.1.2.4.9 Comparable vs Comparator
+##### 1.1.2.4.5 Comparable vs Comparator
 
 [Comparable vs Comparator](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/Java-Comparable-Comparator.md)
 
-##### 1.1.2.4.10 ktve
+
+
+##### 1.1.2.4.6 ktve
 
 [ktve](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/Java-K-T-V-E.md)
 
@@ -326,17 +325,27 @@ S、U、V – 2nd、3rd、4th types
 
 Object – 是所有类的根类，任何类的对象都可以设置给该Object引用变量，使用的时候可能需要类型强制转换，但是用使用了泛型T、E等这些标识符后，在实际用之前类型就已经确定了，不需要再进行类型强制转换。
 
-##### 1.1.2.4.12 equals和hashcode的协同工作
+##### 1.1.2.4.7 equals和hashcode的协同工作
 
-[equals和hashcode的协同工作](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/Java-equals-hashcode.md)
+[equals和hashcode的协同工作](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/Java-equals-hashcode.md)
 
-##### 1.1.2.4.13 迭代和递归
+1、如果两个对象相等，那么他们一定有相同的哈希值（hash code）。
+
+2、如果两个对象的哈希值相等，那么这两个对象有可能相等也有可能不相等。（需要再通过equals来判断）
+
+**==是对象比较，equals是内容比较。**
+
+##### 1.1.2.4.8 迭代和递归
 
 [迭代和递归](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/Java-iteration-recursion.md)
 
-##### 1.1.2.4.14 swith
+##### 1.1.2.4.9 swith
 
-[switch](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/Java-Switch.md)
+[switch](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/Java-Switch.md)：**其实swich只支持一种数据类型，那就是整型，其他数据类型都是转换成整型之后在使用switch的。**
+
+- 整型：直接比较整数的值
+- 字符：比较ASCII码
+- 字符串：equals和hashcode
 
 ### 1.1.3 集合
 
@@ -450,8 +459,6 @@ Object – 是所有类的根类，任何类的对象都可以设置给该Object
 3.通过普通的for删除删除符合条件的多个元素
 
 4.通过Iterator进行遍历删除符合条件的多个元素
-
-
 
 **安全失败：**
 
