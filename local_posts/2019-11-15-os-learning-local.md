@@ -525,9 +525,9 @@ This is only half true. Yes, you can easily cause problems if you call the OS yo
 
 ### 2.2.3 内核级线程的实现
 
-<img src="https://i.loli.net/2019/12/11/8PjDQ5TVEyldAts.png" style="zoom:50%;" />
+<img src="../images/posts/os/8PjDQ5TVEyldAts-1583677109006.png" style="zoom:50%;" />
 
-<img src="https://i.loli.net/2019/12/11/wZ2SG6R3xqp9ujb.png" style="zoom:50%;" />
+<img src="../images/posts/os/wZ2SG6R3xqp9ujb.png" style="zoom:50%;" />
 
 我们来看下中断过程调用。
 
@@ -537,25 +537,25 @@ This is only half true. Yes, you can easily cause problems if you call the OS yo
 
 
 
-<img src="https://i.loli.net/2019/12/11/DZrzSAYnhEIFMVX.png" style="zoom:50%;" />
+<img src="../images/posts/os/DZrzSAYnhEIFMVX-1583677093728.png" style="zoom:50%;" />
 
-<img src="https://i.loli.net/2019/12/11/SOGU3zcliTvNAbJ.png" style="zoom:50%;" />
+<img src="../images/posts/os/SOGU3zcliTvNAbJ.png" style="zoom:50%;" />
 
-<img src="https://i.loli.net/2019/12/11/SAtNu8qBMseVw7L.png" style="zoom:50%;" />
+<img src="../images/posts/os/SAtNu8qBMseVw7L.png" style="zoom:50%;" />
 
-<img src="https://i.loli.net/2019/12/11/9PZfNECjhoDgBuT.png" style="zoom:50%;" />
+<img src="../images/posts/os/9PZfNECjhoDgBuT.png" style="zoom:50%;" />
 
 
 
-<img src="https://i.loli.net/2019/12/11/VirPey1TlK4kng3.png" style="zoom:50%;" />
+<img src="../images/posts/os/VirPey1TlK4kng3.png" style="zoom:50%;" />
 
-![](https://i.loli.net/2019/12/11/gd38lwFOroyJ7qN.png)
+![](../images/posts/os/gd38lwFOroyJ7qN-1583676961458.png)
 
-![](https://i.loli.net/2019/12/11/tBuDMKspkzVP2Tn.png)
+![](../images/posts/os/tBuDMKspkzVP2Tn-1583676954963.png)
 
-![](https://i.loli.net/2019/12/11/Bo6XbTJ5favYiEH.png)
+![](../images/posts/os/Bo6XbTJ5favYiEH.png)
 
-![](https://i.loli.net/2019/12/11/3WmT9hOlHP2QZ1R.png)
+![](../images/posts/os/3WmT9hOlHP2QZ1R-1583676930391.png)
 
 到这里，我们来总结下，CPU运转后，由于有些进程比较耗时，所以我们引入了多进程。如果我们只用一个栈来处理进程的切换，将会造成混乱，所以我们引入了2个栈。有些调用是在内核态的，所以我们必须考虑用户态和内核态的切换，我们引入了切换的5段论。
 
@@ -577,21 +577,21 @@ wait();
 
 **Processes Synchronization and** **Semaphore** 
 
-![](https://i.loli.net/2019/12/12/UBbxaHkZQ3NVXny.png)
+![](../images/posts/os/UBbxaHkZQ3NVXny.png)
 
 注意，这个程序是有问题的，如果，在生产者访问的时候，别切走了，切回来之后，counter被修改了，但是生产者还不知道。
 
-![image-20191212194535873](https://tva1.sinaimg.cn/large/006tNbRwly1g9u6g4o6t0j311g0nggru.jpg)
+![image-20191212194535873](../images/posts/os/006tNbRwly1g9u6g4o6t0j311g0nggru-1583676917011.jpg)
 
-![image-20191212194939432](https://tva1.sinaimg.cn/large/006tNbRwly1g9u6kbw0ooj312g0ssait.jpg)
+![image-20191212194939432](../images/posts/os/006tNbRwly1g9u6kbw0ooj312g0ssait-1583676911610.jpg)
 
-![image-20191212195510782](https://tva1.sinaimg.cn/large/006tNbRwly1g9u6q2qzk4j310w0nswkl.jpg)
+![image-20191212195510782](../images/posts/os/006tNbRwly1g9u6q2qzk4j310w0nswkl.jpg)
 
-![image-20191212195730028](https://tva1.sinaimg.cn/large/006tNbRwly1g9u6sii3amj31cs0oy4ny.jpg)
+![image-20191212195730028](../images/posts/os/006tNbRwly1g9u6sii3amj31cs0oy4ny.jpg)
 
 **empty表示空闲缓冲区的个数，full表示已经生产的个数,multx表示互斥信号：**
 
-![image-20191212200905562](https://tva1.sinaimg.cn/large/006tNbRwly1g9u74k1x6yj311e0neafj.jpg)
+![image-20191212200905562](../images/posts/os/006tNbRwly1g9u74k1x6yj311e0neafj-1583676896325.jpg)
 
 ### 2.2.2 信号量临界区保护
 
@@ -603,61 +603,61 @@ wait();
 
 empty=-1，表示已经有一个进程在睡眠了。
 
-![image-20191212202434812](https://tva1.sinaimg.cn/large/006tNbRwly1g9u7kop889j30po0jowi6.jpg)
+![image-20191212202434812](../images/posts/os/006tNbRwly1g9u7kop889j30po0jowi6-1583676890057.jpg)
 
-![image-20191212202747672](https://tva1.sinaimg.cn/large/006tNbRwly1g9u7o0vh87j30ti0nidkp.jpg)
+![image-20191212202747672](../images/posts/os/006tNbRwly1g9u7o0vh87j30ti0nidkp-1583676882740.jpg)
 
-![image-20191212202829655](https://tva1.sinaimg.cn/large/006tNbRwly1g9u7orriy2j31480n8grz.jpg)
+![image-20191212202829655](../images/posts/os/006tNbRwly1g9u7orriy2j31480n8grz-1583676875449.jpg)
 
-![](https://tva1.sinaimg.cn/large/006tNbRwly1g9u7rrexoaj30xo0jy0xd.jpg)
+![](../images/posts/os/006tNbRwly1g9u7rrexoaj30xo0jy0xd-1583676867484.jpg)
 
 **进入临界区的方法：**
 
 轮换法(也称值日法)，满足互斥，但是不满足有空让进，比如，P0进入后，turn=1，然后由于某种原因，一直在等待，这个时候，P2也无法进入。
 
-![image-20191212203347425](https://tva1.sinaimg.cn/large/006tNbRwly1g9u7u9mh5kj30zy0g6whg.jpg)
+![image-20191212203347425](../images/posts/os/006tNbRwly1g9u7u9mh5kj30zy0g6whg-1583676862506.jpg)
 
 然后我们引入了标记法，发现虽然满足了，互斥，有空让进，但是不满足有限等待。
 
-![image-20191212205222610](https://tva1.sinaimg.cn/large/006tNbRwly1g9u8dlhh1dj30ho0usdjv.jpg)
+![image-20191212205222610](../images/posts/os/006tNbRwly1g9u8dlhh1dj30ho0usdjv.jpg)
 
 然后我们又引入了非对称标记：
 
-![image-20191212205535763](https://tva1.sinaimg.cn/large/006tNbRwly1g9u8gxtc4ej30ny0hygp8.jpg)
+![](../images/posts/os/image-20200308221406608.png)
 
 flag[1]=true,turn=1,表示1要进入临界区，并且轮到1进入。
 
-![image-20191212205649568](https://tva1.sinaimg.cn/large/006tNbRwly1g9u8i7pb1dj30k00u242h.jpg)
+![image-20191212205649568](../images/posts/os/006tNbRwly1g9u8i7pb1dj30k00u242h.jpg)
 
 下面我们只是讨论了2个进程，那么多个进程怎么办呢？
 
-![image-20191213105159256](https://tva1.sinaimg.cn/large/006tNbRwly1g9uwn7i9v5j31640qctvv.jpg)
+![image-20191213105159256](../images/posts/os/006tNbRwly1g9uwn7i9v5j31640qctvv.jpg)
 
 
 
-![image-20191213105357556](https://tva1.sinaimg.cn/large/006tNbRwly1g9uwp94lelj31bc0qenho.jpg)
+![image-20191213105357556](../images/posts/os/006tNbRwly1g9uwp94lelj31bc0qenho-1583676791845.jpg)
 
 面包店算法是在是太复杂了，我们尝试另外的解法，回想一下，我们只允许一个进程进入，这句话意味着什么呢？意味着另一个进程只有被调度才可以进入临界区，那么我们只要阻止时钟中断就好了。即CPU不会在调度。
 
-![image-20191213111729120](https://tva1.sinaimg.cn/large/006tNbRwly1g9uxdquz7aj31a00q6wzf.jpg)
+![image-20191213111729120](../images/posts/os/006tNbRwly1g9uxdquz7aj31a00q6wzf.jpg)
 
 但是多CPU不行，因为我们没法关掉所有CPU的中断。
 
 接下来我们引入了硬件原子指令法：
 
-![image-20191213111052435](https://tva1.sinaimg.cn/large/006tNbRwly1g9ux6v8u7dj314e0rm79r.jpg)
+![image-20191213111052435](../images/posts/os/006tNbRwly1g9ux6v8u7dj314e0rm79r-1583676777982.jpg)
 
 ### 2.2.3 信号量的代码实现 
 
 **Coding Semaphore** 
 
-![image-20191213113025775](https://tva1.sinaimg.cn/large/006tNbRwly1g9uxr7xl8uj31aa0pqtxo.jpg)
+![image-20191213113025775](../images/posts/os/006tNbRwly1g9uxr7xl8uj31aa0pqtxo-1583676772345.jpg)
 
-![image-20191213113358605](https://tva1.sinaimg.cn/large/006tNbRwly1g9uxuwbkp0j31920qynp1.jpg)
+![image-20191213113358605](../images/posts/os/006tNbRwly1g9uxuwbkp0j31920qynp1-1583676766829.jpg)
 
-![image-20191213113605982](https://tva1.sinaimg.cn/large/006tNbRwly1g9uxx3iru3j31240qcdtz.jpg)
+![image-20191213113605982](../images/posts/os/006tNbRwly1g9uxx3iru3j31240qcdtz-1583676761499.jpg)
 
-![image-20191213113450967](https://tva1.sinaimg.cn/large/006tNbRwly1g9uxvu4nzpj31ca0q4kd4.jpg)
+![image-20191213113450967](../images/posts/os/006tNbRwly1g9uxvu4nzpj31ca0q4kd4-1583676755278.jpg)
 
 ### 2.2.4 死锁处理
 
@@ -673,10 +673,10 @@ flag[1]=true,turn=1,表示1要进入临界区，并且轮到1进入。
 
 这两个方法都是存在缺点的，那么我们能不能在**运行时**进行重定位呢？
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9v9lee0rjj31600newkg.jpg" alt="image-20191213181959924" style="zoom:50%;" />
+<img src="../images/posts/os/006tNbRwly1g9v9lee0rjj31600newkg-1583676748787.jpg" alt="image-20191213181959924" style="zoom:50%;" />
 
 我们来总结下：
-![image-20191213182208538](https://tva1.sinaimg.cn/large/006tNbRwly1g9v9nlevqrj316c0n8wjf.jpg)
+![image-20191213182208538](../images/posts/os/006tNbRwly1g9v9nlevqrj316c0n8wjf.jpg)
 
 事情到这里。好像问题得到了完美的解决。但是没有这么简单，难道我们需要把程序都装到内存中吗？当然不是啦。
 
@@ -684,7 +684,7 @@ flag[1]=true,turn=1,表示1要进入临界区，并且轮到1进入。
 
 真正的故事是从GDT和LDT开始的（全局符号描述表和局部符号描述表）
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9vi12ze11j31480nowic.jpg" alt="image-20191213231152911" style="zoom:50%;" />
+<img src="../images/posts/os/006tNbRwly1g9vi12ze11j31480nowic-1583676738458.jpg" alt="image-20191213231152911" style="zoom:50%;" />
 
 ## 3.2 内存分区与分页
 
@@ -698,7 +698,7 @@ flag[1]=true,turn=1,表示1要进入临界区，并且轮到1进入。
 
 **此时不再需要内存紧缩了，我们最大仅浪费4k的内存**。
 
-![image-20191214231357628](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wnpluigrj31ce0r64qp.jpg)
+![image-20191214231357628](../images/posts/os/006tNbRwgy1g9wnpluigrj31ce0r64qp-1583676732498.jpg)
 
 ## 3.3 多级页表与快表 
 
@@ -706,21 +706,21 @@ flag[1]=true,turn=1,表示1要进入临界区，并且轮到1进入。
 
 我们为了提高空间利用率，每个页应该尽可能的小，但是页小了，页表就会变大，进而导致页表的放置成问题。哎，难搞啊。
 
-![image-20191214232426948](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wo0hpwayj316k0ncatq.jpg)
+![image-20191214232426948](../images/posts/os/006tNbRwgy1g9wo0hpwayj316k0ncatq-1583676726594.jpg)
 
 但是在实际中，不是所有的逻辑地址都会使用的，比如，32位的操作系统，逻辑地址空间是4G，那么我们可不可以只存放用到的页。
 
 但是引出了新的问题，页号不再连续，我们在访问指令之前，需要先查找页，无论是采用顺序查找，还是折半查找，都是很费劲的。需要增加访问内存的次数。哎，解决了旧的问题，还有新的问题。
 
-![image-20191214233037480](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wo6wa7g8j31ao0like2.jpg)
+![image-20191214233037480](../images/posts/os/006tNbRwgy1g9wo6wa7g8j31ao0like2-1583676720906.jpg)
 
 我们开始新的尝试，我们既要满足页表的连续性，又要满足尽量少放入内存的需求，哈哈，既要，又要，是不是很难搞，但是总是有办法的，我们可以引入多级列表，**即页目录+页表**。
 
-![image-20191215000836006](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wpaf7c7qj313m0o0zp6.jpg)
+![image-20191215000836006](../images/posts/os/006tNbRwgy1g9wpaf7c7qj313m0o0zp6-1583676716265.jpg)
 
-![image-20191215000911340](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wpazymgcj30zq0osafg.jpg)
+![image-20191215000911340](../images/posts/os/006tNbRwgy1g9wpazymgcj30zq0osafg-1583676710945.jpg)
 
-![image-20191215001319496](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wpfb63qaj30n80vugry.jpg)
+![image-20191215001319496](../images/posts/os/006tNbRwgy1g9wpfb63qaj30n80vugry.jpg)
 
 ## 3.4 段页结合的实际内存管理 
 
@@ -730,41 +730,41 @@ flag[1]=true,turn=1,表示1要进入临界区，并且轮到1进入。
 
 注意：
 
-![image-20191215002558974](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wpshmnp8j31ag0qi1ce.jpg)
+![image-20191215002558974](../images/posts/os/006tNbRwgy1g9wpshmnp8j31ag0qi1ce-1583676694242.jpg)
 
 
 
-![image-20191215003210854](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wpyy375sj30x40kg42z.jpg)
+![image-20191215003210854](../images/posts/os/006tNbRwgy1g9wpyy375sj30x40kg42z-1583676689155.jpg)
 
-![image-20191215003309395](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wpzyaa6vj30xu0ii78q.jpg)
+![image-20191215003309395](../images/posts/os/006tNbRwgy1g9wpzyaa6vj30xu0ii78q.jpg)
 
-![image-20191215003818811](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wq5cs0loj316k0rqazc.jpg)
+![image-20191215003818811](../images/posts/os/006tNbRwgy1g9wq5cs0loj316k0rqazc.jpg)
 
 下面我们的任务是讲清楚这5步：
 
 **分配虚存，建段表，分配内存，建页表，地址重定位。**
 
-![image-20191215004109589](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wq8aeohaj315a0q6qq0.jpg)
+![image-20191215004109589](../images/posts/os/006tNbRwgy1g9wq8aeohaj315a0q6qq0-1583676655086.jpg)
 
-![image-20191215004303769](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wqa8sdr7j31ao0q6aqh.jpg)
+![image-20191215004303769](../images/posts/os/006tNbRwgy1g9wqa8sdr7j31ao0q6aqh-1583676642050.jpg)
 
-![image-20191215004526129](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wqcr1djtj317a0lakaf.jpg)
+![image-20191215004526129](../images/posts/os/006tNbRwgy1g9wqcr1djtj317a0lakaf.jpg)
 
-![image-20191215004652761](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wqe9ast9j312u0pkqk0.jpg)
+![](../images/posts/os/image-20200308221015372.png)
 
-![image-20191215004816231](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wqfpjo4wj31a60p0ni6.jpg)
+![image-20191215004816231](../images/posts/os/006tNbRwgy1g9wqfpjo4wj31a60p0ni6.jpg)
 
-![image-20191215005054084](https://tva1.sinaimg.cn/large/006tNbRwgy1g9wqininjej30ku0f8mzh.jpg)
+![image-20191215005054084](../images/posts/os/006tNbRwgy1g9wqininjej30ku0f8mzh.jpg)
 
 ## 3.5 内存换入-请求调页 
 
 **Swap in** 
 
-![image-20191215160450587](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xgxe2iqqj30xi0qi0x8.jpg)
+![image-20191215160450587](../images/posts/os/006tNbRwgy1g9xgxe2iqqj30xi0qi0x8.jpg)
 
-![image-20191215160707941](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xgzq7obwj30ly0xe0y6.jpg)
+![image-20191215160707941](../images/posts/os/006tNbRwgy1g9xgzq7obwj30ly0xe0y6.jpg)
 
-![image-20191215160742141](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xh0j1pdnj30xo0n241y.jpg)
+![image-20191215160742141](../images/posts/os/006tNbRwgy1g9xh0j1pdnj30xo0n241y.jpg)
 
 ## 3.6 内存换出 
 
@@ -772,9 +772,9 @@ flag[1]=true,turn=1,表示1要进入临界区，并且轮到1进入。
 
 各种置换算法没有赘述。
 
-![image-20191215161637007](https://tva1.sinaimg.cn/large/006tNbRwly1g9xh9sur45j319e0p41dm.jpg)
+![image-20191215161637007](../images/posts/os/006tNbRwly1g9xh9sur45j319e0p41dm.jpg)
 
-![image-20191215162030980](https://tva1.sinaimg.cn/large/006tNbRwly1g9xhdoy916j314i0qyaz4.jpg)
+![image-20191215162030980](../images/posts/os/006tNbRwly1g9xhdoy916j314i0qyaz4.jpg)
 
 
 
@@ -788,7 +788,7 @@ Linux内存翻译的细节：
 
 为了有效地使用机器中的物理内存，在系统初始化阶段内存被划分成几个功 能区域 ：
 
-![image-20191215172608160](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xj9zjbxnj31460hmq4p.jpg)
+![image-20191215172608160](../images/posts/os/006tNbRwgy1g9xj9zjbxnj31460hmq4p.jpg)
 
 我们再来看内存地址空间的概念：
 
@@ -805,7 +805,7 @@ Linux内存翻译的细节：
 
 在内存分段系统中，一个程序的逻辑地址通过分段机制自动地映射(变换)到**中间层的 4GB(2^32)** 线性地址空间中。程序每次对内存的引用都是对内存段中内存的引用。当程序引用一个内存地址时，通 过把相应的段基址加到程序员看得见的逻辑地址上就形成了一个对应的线性地址。 
 
-![image-20191215174925440](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xjy8lpp2j314m0akmza.jpg)
+![image-20191215174925440](../images/posts/os/006tNbRwgy1g9xjy8lpp2j314m0akmza.jpg)
 
 CPU 进行地址变换(映射)的主要目的是为了解决虚拟内存空间到物理内存空间的映射问题。虚拟内存空间的含义是指一种利用二级或外部存储空间，使程序能不受实际物理内存量限制而使用内存的一种方法。通常虚拟内存空间要比实际物理内存量大得多。 
 
@@ -815,7 +815,7 @@ CPU 进行地址变换(映射)的主要目的是为了解决虚拟内存空间�
 
 据段寄存器和偏移寄存器中的值，就可以算出实际指向的内存地址，见图 5-7 (a)所示。 而在保护模式运行方式下，段寄存器中存放的不再是被寻址段的基地址，而是一个段描述符表 (Segment Descriptor Table)中某一描述符项在表中的索引值。索引值指定的段描述符项中含有需要寻址 的内存段的基地址、段的长度值和段的访问特权级别等信息。寻址的内存位置是由该段描述符项中指定 的段基地址值与一个段内偏移值组合而成。段的长度可变，由描述符中的内容指定。可见，和实模式下 的寻址相比，段寄存器值换成了段描述符表中相应段描述符的索引值以及段表选择位和特权级，称为段 选择符(Segment Selector)，但偏移值还是使用了原实模式下的概念。这样，在保护模式下寻址一个内 存地址就需要比实模式下多一道手续，也即需要使用段描述符表。这是由于在保护模式下访问一个内存 段需要的信息比较多，而一个 16 位的段寄存器放不下这么多内容。示意图见图 5-7 (b)所示。注意，如果 你不在一个段描述符中定义一个内存线性地址空间区域，那么该地址区域就完全不能被寻址，CPU 将拒 绝访问该地址区域。 
 
-![image-20191215175145169](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xk0krinaj31360ka767.jpg)
+![image-20191215175145169](../images/posts/os/006tNbRwgy1g9xk0krinaj31360ka767.jpg)
 
 每个描述符占用 8 个字节，其中含有所描述段在线性地址空间中的起始地址(基址)、段的长度、段 的类型(例如代码段和数据段)、段的特权级别和其他一些信息。一个段可以定义的最大长度是 4GB。 
 
@@ -825,39 +825,39 @@ CPU 进行地址变换(映射)的主要目的是为了解决虚拟内存空间�
 
 中具体地址位置。在 Linux 0.12 中，程序逻辑地址到线性地址的变换过程使用了 CPU 的全局段描述符表 GDT 和局部段描述符表 LDT。由 GDT 映射的地址空间称为全局地址空间，由 LDT 映射的地址空间则称 为局部地址空间，而这两者构成了虚拟地址的空间。具体的使用方式见图 5-8 所示。 
 
-![image-20191215175421825](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xk3be92qj313q0nmn2v.jpg)
+![image-20191215175421825](../images/posts/os/006tNbRwgy1g9xk3be92qj313q0nmn2v.jpg)
 
 下面我们再来看下内存的分页管理：
 
 内存分页管理机制的基本原理是将 CPU 整个线性内存区域划分成 4096 字节为 1 页的内存页面。
 
-![image-20191215175725425](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xk6i9v17j30xo0fujt9.jpg)
+![image-20191215175725425](../images/posts/os/006tNbRwgy1g9xk6i9v17j30xo0fujt9.jpg)
 
-![image-20191215175941890](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xk8vwd6rj313s0euta8.jpg)
+![image-20191215175941890](../images/posts/os/006tNbRwgy1g9xk8vwd6rj313s0euta8.jpg)
 
-![image-20191215180125438](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xkaphxfkj314g0ewae4.jpg)
+![image-20191215180125438](../images/posts/os/006tNbRwgy1g9xkaphxfkj314g0ewae4.jpg)
 
 进程逻辑地址空间中代码段(Code Section)和数据段(Data Section)的概念与CPU 分段机制中的代码段和数据段不是同一个概念。CPU 分段机制中段的概念确定了在线性地址空间中一个 段的用途以及被执行或访问的约束和限制，每个段可以设置在 4GB 线性地址空间中的任何地方，它们可 以相互独立也可以完全重叠或部分重叠。而进程在其逻辑地址空间中的代码段和数据段则是指由编译器 在编译程序和操作系统在加载程序时规定的在进程逻辑空间中顺序排列的代码区域、初始化和未初始化 的数据区域以及堆栈区域。进程逻辑地址空间中代码段和数据段等结构形式见图所示。有关逻辑地址空 间的说明请参见内存管理一章内容。其中 nr 是任务号，start_code 是进程或任务在线性地址空间的起始 位置。其他变量均表示进程在逻辑空间中的值。 
 
-![image-20191215180916590](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xkitdpx3j31360dwacd.jpg)
+![image-20191215180916590](../images/posts/os/006tNbRwgy1g9xkitdpx3j31360dwacd.jpg)
 
 虚拟地址、线性地址和物理地址之间的关系:
 
-![image-20191215183305811](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xl7moxfdj314g0pkn09.jpg)
+![image-20191215183305811](../images/posts/os/006tNbRwgy1g9xl7moxfdj314g0pkn09.jpg)
 
 任务 **0** 的地址对应关系:
 
-![image-20191215183532971](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xldg6vp2j316m0logpm.jpg)
+![image-20191215183532971](../images/posts/os/006tNbRwgy1g9xldg6vp2j316m0logpm.jpg)
 
 任务 **1** 的地址对应关系:
 
 与任务 0 类似，任务 1 也是一个特殊的任务。它的代码也在内核代码区域中。与任务 0 不同的是在 线性地址空间中，系统在使用 fork()创建任务 1(init 进程)时为存放任务 1 的二级页表而在主内存区申 请了一页内存来存放，并复制了父进程(任务 0)的页目录和二级页表项。 
 
-![image-20191215183711488](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xlbvpmtgj315e0p8wj8.jpg)
+![image-20191215183711488](../images/posts/os/006tNbRwgy1g9xlbvpmtgj315e0p8wj8.jpg)
 
 其他任务的地址对应关系:
 
-![image-20191215183740120](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xlcctc9cj315q0tk79q.jpg)
+![image-20191215183740120](../images/posts/os/006tNbRwgy1g9xlcctc9cj315q0tk79q.jpg)
 
 # 4. 设备驱动与文件系统
 
@@ -869,39 +869,39 @@ CPU 进行地址变换(映射)的主要目的是为了解决虚拟内存空间�
 
 **printf(Display)** 
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xsskglq2j30za0p47p9.jpg" alt="image-20191215225351937" style="zoom:50%;" />
+<img src="../images/posts/os/006tNbRwly1g9xsskglq2j30za0p47p9.jpg" alt="image-20191215225351937" style="zoom:50%;" />
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xsvc0hnyj310y0tkn51.jpg" alt="image-20191215225755985" style="zoom:33%;" />
+<img src="../images/posts/os/006tNbRwly1g9xsvc0hnyj310y0tkn51.jpg" alt="image-20191215225755985" style="zoom:33%;" />
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xt2wzs7sj30tw0oian5.jpg" alt="image-20191215230521080" style="zoom:33%;" />
+<img src="../images/posts/os/006tNbRwly1g9xt2wzs7sj30tw0oian5.jpg" alt="image-20191215230521080" style="zoom:33%;" />
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xta8itv0j318m0pgke0.jpg" alt="image-20191215231221986" style="zoom:33%;" />
+![image-20200308220558883](../images/posts/os/image-20200308220558883.png)
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xtbfgzjnj30ve0qgwrc.jpg" alt="image-20191215231326922" style="zoom:33%;" />
+<img src="../images/posts/os/006tNbRwly1g9xtbfgzjnj30ve0qgwrc.jpg" alt="image-20191215231326922" style="zoom:33%;" />
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xtdh37hoj315w0q8kbn.jpg" alt="image-20191215231530850" style="zoom:33%;" />
+<img src="../images/posts/os/006tNbRwly1g9xtdh37hoj315w0q8kbn.jpg" alt="image-20191215231530850" style="zoom:33%;" />
 
 <img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xtgl4tgmj30zm0pu4g1.jpg" alt="image-20191215231821581" style="zoom:33%;" />
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xthnanpfj30uw0ps1b5.jpg" alt="image-20191215231923589" style="zoom:33%;" />
+<img src="../images/posts/os/006tNbRwly1g9xthnanpfj30uw0ps1b5.jpg" alt="image-20191215231923589" style="zoom:33%;" />
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xtjqlhilj30x60oodsl.jpg" alt="image-20191215232128185" style="zoom:50%;" />
+<img src="../images/posts/os/006tNbRwly1g9xtjqlhilj30x60oodsl.jpg" alt="image-20191215232128185" style="zoom:50%;" />
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xtl14jfaj30wc0qknei.jpg" alt="image-20191215232242549" style="zoom:50%;" />
+<img src="../images/posts/os/006tNbRwly1g9xtl14jfaj30wc0qknei.jpg" alt="image-20191215232242549" style="zoom:50%;" />
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xtocnzfoj30y00qaast.jpg" alt="image-20191215232536169" style="zoom:50%;" />
+<img src="../images/posts/os/006tNbRwly1g9xtocnzfoj30y00qaast.jpg" alt="image-20191215232536169" style="zoom:50%;" />
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xtoza04mj30qs15cteh.jpg" alt="image-20191215232629160" style="zoom:50%;" />
+<img src="../images/posts/os/006tNbRwly1g9xtoza04mj30qs15cteh.jpg" alt="image-20191215232629160" style="zoom:50%;" />
 
 ### 4.1.2 键盘
 
 **Keyboard** ，终端设备包括显示器和键盘。
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xtx5591mj30wm0pq4hi.jpg" alt="image-20191215233418075" style="zoom:50%;" /><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xtzv2i1mj30kg0zmgro.jpg" alt="image-20191215233657657" style="zoom:50%;" />
+<img src="../images/posts/os/006tNbRwly1g9xtx5591mj30wm0pq4hi.jpg" alt="image-20191215233418075" style="zoom:50%;" /><img src="../images/posts/os/006tNbRwly1g9xtzv2i1mj30kg0zmgro.jpg" alt="image-20191215233657657" style="zoom:50%;" />
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xu0dsowej30o60h8426.jpg" alt="image-20191215233726036" style="zoom:50%;" />
+<img src="../images/posts/os/006tNbRwly1g9xu0dsowej30o60h8426.jpg" alt="image-20191215233726036" style="zoom:50%;" />
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9xu1ivmwhj30p6136afj.jpg" alt="image-20191215233834616" style="zoom:50%;" />
+<img src="../images/posts/os/006tNbRwly1g9xu1ivmwhj30p6136afj.jpg" alt="image-20191215233834616" style="zoom:50%;" />
 
 ## 4.2 proc文件系统的实现
 
@@ -909,23 +909,23 @@ CPU 进行地址变换(映射)的主要目的是为了解决虚拟内存空间�
 
 **Raw Disks** 
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9ystes6raj30mw0v67am.jpg" alt="image-20191216194148400" style="zoom:33%;" />
+<img src="../images/posts/os/006tNbRwly1g9ystes6raj30mw0v67am.jpg" alt="image-20191216194148400" style="zoom:33%;" />
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9ysx648ptj316a0psazt.jpg" alt="image-20191216194526326" style="zoom:33%;" />
+<img src="../images/posts/os/006tNbRwly1g9ysx648ptj316a0psazt.jpg" alt="image-20191216194526326" style="zoom:33%;" />
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yt2fl5jbj30m20v8ahx.jpg" alt="image-20191216195028068" style="zoom:25%;" />
+<img src="../images/posts/os/006tNbRwly1g9yt2fl5jbj30m20v8ahx.jpg" alt="image-20191216195028068" style="zoom:25%;" />
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yt4sya1uj30vo0hi0wo.jpg" alt="image-20191216195244122" style="zoom:50%;" />
+<img src="../images/posts/os/006tNbRwly1g9yt4sya1uj30vo0hi0wo.jpg" alt="image-20191216195244122" style="zoom:50%;" />
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yt64n3ssj30qa0gqq70.jpg" alt="image-20191216195358319" style="zoom:50%;" />
+<img src="../images/posts/os/006tNbRwly1g9yt64n3ssj30qa0gqq70.jpg" alt="image-20191216195358319" style="zoom:50%;" />
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yt6m1ceaj30pq11wn4a.jpg" alt="image-20191216195427753" style="zoom:50%;" />
+<img src="../images/posts/os/006tNbRwly1g9yt6m1ceaj30pq11wn4a.jpg" alt="image-20191216195427753" style="zoom:50%;" />
 
 ### 4.2.2 从生磁盘到文件
 
 **Files- cooked Disks** 
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9ytntdf3fj313c0my45p.jpg" alt="image-20191216201057596" style="zoom:50%;" />
+<img src="../images/posts/os/006tNbRwly1g9ytntdf3fj313c0my45p.jpg" alt="image-20191216201057596" style="zoom:50%;" />
 
 文件在磁盘中的存储分为3种，顺序存储，链式存储，和索引存储。
 
@@ -933,21 +933,21 @@ CPU 进行地址变换(映射)的主要目的是为了解决虚拟内存空间�
 
 **Files Implementation** 
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yu0olerij310a0pewts.jpg" alt="image-20191216202320286" style="zoom:50%;" />
+<img src="../images/posts/os/006tNbRwly1g9yu0olerij310a0pewts.jpg" alt="image-20191216202320286" style="zoom:50%;" />
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yu3or6sqj30zc0qqnc6.jpg" alt="image-20191216202612938" style="zoom:50%;" />
+<img src="../images/posts/os/006tNbRwly1g9yu3or6sqj30zc0qqnc6.jpg" alt="image-20191216202612938" style="zoom:50%;" />
 
 下一步是算出盘块号：
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yu7igilsj31ce0sk1kx.jpg" alt="image-20191216202953111" style="zoom:33%;" />
+<img src="../images/posts/os/006tNbRwly1g9yu7igilsj31ce0sk1kx.jpg" alt="image-20191216202953111" style="zoom:33%;" />
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yu9izq3nj316y0qoqok.jpg" alt="image-20191216203149223" style="zoom:50%;" />
+<img src="../images/posts/os/006tNbRwly1g9yu9izq3nj316y0qoqok.jpg" alt="image-20191216203149223" style="zoom:50%;" />
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yuakj8l5j31by0n27mz.jpg" alt="image-20191216203249129" style="zoom:50%;" />
+<img src="../images/posts/os/006tNbRwly1g9yuakj8l5j31by0n27mz.jpg" alt="image-20191216203249129" style="zoom:50%;" />
 
 > **整个故事是从文件名找到inode,从inode找到盘块号，根据盘块号放到电梯队列，根据电梯队列中的盘块号算出CHS，然后使用out指令发送到磁盘控制器，磁盘控制器控制马达，电生磁，磁生电，形成数据。**
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yui4hbgmj30ky11gn2z.jpg" alt="image-20191216204004488" style="zoom:50%;" />
+<img src="../images/posts/os/006tNbRwly1g9yui4hbgmj30ky11gn2z-1583676043936.jpg" alt="image-20191216204004488" style="zoom:50%;" />
 
 ### 4.2.4 目录与文件系统
 
@@ -955,7 +955,7 @@ CPU 进行地址变换(映射)的主要目的是为了解决虚拟内存空间�
 
 磁盘文件**:** 建立了字符流到盘块集合的映射关系。
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yuwm4jopj310s0octqj.jpg" alt="image-20191216205401548" style="zoom:50%;" />
+<img src="../images/posts/os/006tNbRwly1g9yuwm4jopj310s0octqj-1583676150973.jpg" alt="image-20191216205401548" style="zoom:50%;" />
 
 ### 4.2.5 目录解析代码的实现
 
@@ -965,4 +965,4 @@ CPU 进行地址变换(映射)的主要目的是为了解决虚拟内存空间�
 
 # 5. 总结
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9yv6db62bj31gq0qg1kx.jpg" alt="image-20191216210324134" style="zoom:50%;" />
+<img src="../images/posts/os/006tNbRwly1g9yv6db62bj31gq0qg1kx-1583676135760.jpg" alt="image-20191216210324134" style="zoom:50%;" />
