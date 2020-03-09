@@ -68,12 +68,18 @@ tag: 面试
          * [1.3.7 常用Java命令](#137-常用java命令)
          * [1.3.8 编译与反编译](#138-编译与反编译)
       * [1.4 Java EE](#14-java-ee)
+         * [1.4.1 Servlet](#141-servlet)
+         * [1.4.2 Cookie和Session有什么区别？](#142-cookie和session有什么区别)
+         * [1.4.3 过滤器](#143-过滤器)
+         * [1.4.4. Spring](#144-spring)
+         * [1.4.5 Mybatis](#145-mybatis)
+         * [1.4.6 redis](#146-redis)
+         * [1.4.7 nginx](#147-nginx)
       * [1.5 liteSpring相关知识](#15-litespring相关知识)
    * [2. 数据结构与算法](#2-数据结构与算法)
    * [3. mysql](#3-mysql)
    * [4. 计算机网络](#4-计算机网络)
       * [4.1 基础网络概念@@@@@](#41-基础网络概念)
-      * [<a href="https://haojunsheng.github.io/2019/12/http-learning/" rel="nofollow">应用层</a>](#应用层)
       * [4.2 Unix网络编程 @@@@@](#42-unix网络编程-)
       * [4.3 常见协议区分](#43-常见协议区分)
       * [4.4 后端编程](#44-后端编程)
@@ -86,7 +92,7 @@ tag: 面试
    * [7. 分布式算法](#7-分布式算法)
    * [8. 密码学算法](#8-密码学算法)
 
-<!-- Added by: anapodoton, at: Sun Mar  8 23:24:45 CST 2020 -->
+<!-- Added by: anapodoton, at: Mon Mar  9 18:25:12 CST 2020 -->
 
 <!--te-->
 
@@ -391,10 +397,10 @@ Object – 是所有类的根类，任何类的对象都可以设置给该Object
 - set无序不可重复
   
   |          | HashSet | TreeSet |
-    | -------- | ------- | ------- |
+  | -------- | ------- | ------- |
   | 初始容量 | 16      |         |
-    | 加载因子 | 0.75    |         |
-    | 扩容     | 2倍     |         |
+  | 加载因子 | 0.75    |         |
+  | 扩容     | 2倍     |         |
   
   - queue
   
@@ -412,24 +418,25 @@ Object – 是所有类的根类，任何类的对象都可以设置给该Object
   | 遍历方式   | Iterator                                                     | Enumeration，Iterator |               |                      |         |
 | 加载因子   | 0.75                                                         |                       |               |                      |         |
   
+
 （1）HashMap是一种散列表，采用（数组 + 链表 + 红黑树）的存储结构；
-  
+
 （2）HashMap的默认初始容量为16（1<<4），默认装载因子为0.75f，容量总是2的n次方；
-  
+
 （3）HashMap扩容时每次容量变为原来的两倍；
-  
+
 （4）当桶的数量小于64时不会进行树化，只会扩容；
-  
+
 （5）当桶的数量大于64且单个桶中元素的数量大于8时，进行树化；
-  
+
 （6）当单个桶中元素数量小于6时，进行反树化；
-  
+
 （7）HashMap是非线程安全的容器；
-  
+
 （8）HashMap查找添加元素的时间复杂度都为O(1)；
-  
+
 [HashMap的实现](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md#43-hashmap%E4%B8%AD%E7%9A%84hash%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0)；
-  
+
   [红黑树具有哪些特性](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md#32-%E7%BA%A2%E9%BB%91%E6%A0%91%E6%80%BB%E7%BB%93)
 
 #### 1.1.3.2 ArrayList和LinkedList和Vector的区别 @@@@@
@@ -795,6 +802,10 @@ finally和return的执行顺序
 
 - [class文件格式](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Class-strcture.md)
 
+- <img src="/images/posts/java/image-20200309162407940.png" alt="image-20200309162407940" style="zoom: 33%;" />
+
+  
+
 这个玩意可以帮我们看懂字节码，如果有增强字节码的需求也是看这里。主要是搞明白字节码结构图。java字节码是按照一定的规则来组成的，这样jvm才可以进行解释。
 
 - [运行时数据区：堆、栈、方法区、直接内存](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/jvm-memory-component-heap.md)
@@ -814,11 +825,11 @@ finally和return的执行顺序
 
 - [方法区和运行时常量池](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/method-area-constants-pool.md)
 
-常量池分为class常量池，运行时常量池，字符串常量池。
+常量池分为**class常量池，运行时常量池，字符串常量池**。
 
-class常量池中的字面量和符号引号（**符号引用主要是用来重定位的**）的概念很重要，需要掌握。这两个玩意都是编译原理里面的。常量是怎么存储的，也很重要，和数据类型是息息相关的。
+class常量池中的字面量和符号引用（**符号引用主要是用来重定位的**）的概念很重要，需要掌握。这两个玩意都是编译原理里面的。常量是怎么存储的，也很重要，和数据类型是息息相关的。
 
-运行时常量池里保存了符号引用，进而解析为直接引用。
+运行时常量池里保存了符号引用，**进而解析为直接引用**。
 
 字符串常量池则比较复杂，在不同版本的虚拟机中是不同的，最开始在方法区中，后来移入到了堆中，在后来移动到了本地内存中。
 
@@ -902,27 +913,35 @@ GC参数、对象存活的判定、垃圾收集器（CMS、G1、ZGC、Epsilon）
   - 主要回收堆内存，方法区或者堆中的永久代（不同的jdk版本不同）也有可能回收。
 - [什么时候回收](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/garbage-collection.md#13-%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E8%BF%9B%E8%A1%8C%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6)：
   - 我们需要先判断一个对象有没有存活？
-    - 引用计数法：
-    - 可达性分析算法
+    - 引用计数法：当两个对象**相互引用**，但是二者已经没有作用时，按照常规，应该对其进行垃圾回收，但是其相互引用，又不符合垃圾回收的条件，因此无法完美处理这块内存清理。
+    - 可达性分析算法:
   - 四种引用
-    - 强引用
-    - 软引用
-    - 弱引用
-    - 虚引用
+    - 强引用：刚被new出来的对象所加的引用
+    - 软引用：可被回收的对象
+    - 弱引用：弱引用的对象就是一定需要进行垃圾回收的
+    - 虚引用：
   - finalize()可以起死回生
 - 如何回收
+  - 堆内存分块
+  - <img src="/images/posts/java/image-20200309173121104.png" alt="image-20200309173121104" style="zoom:33%;" />
+    - 新生代
+      - 一个Eden区，两个Survivor区。
+      - 当Eden区满时，还存活的对象将被复制到Survivor区(两个中的一个)，当这个Survivor区满时，此区的存活对象将被复制到另外一个Survivor区，当这个Survivor区也满了的时候，从第一个Survivor区复制过来的并且此时还存活的对象，将被复制“年老区(Tenured)”。**晋升**
+    - 老年代
+    - 持久代
   - 垃圾回收算法
     - 标记清除算法
+      - 标记和清除的效率都不高；存在大量的空间碎片。
     - 复制算法：解决了标记-清除算法的效率问题。解决了内存碎片的问题，缺陷是可以使用的内存变成了原来的一半。
-    - 标记-压缩算法：针对老年代。
+    - 标记-压缩算法：针对老年代。首先需要从根节点开始对所有可达对象做一次标记，但之后，它并不简单地清理未标记的对象，而是**将所有的存活对象压缩到内存的一端**。之后，清理边界外所有的空间。
     - 分代收集算法：根据对象的存活特性。
   - 垃圾回收器
     - Serial收集器：单线程回收，stop the world
     - ParNew：Serial收集器的多线程版本
     - Parallel Scavenge：关注吞吐量
-    - Serial old：
+    - Serial old：老年代串行收集器
     - Parallel old：Parallel Scavenge的老年代版本
-    - Concurrent Mark Sweep:cms，基于标记-清除算法
+    - Concurrent Mark Sweep:**cms**，基于标记-清除算法，主要关注于系统停顿时间。
       - 初始标记
       - 并发标记
       - 重新标记
@@ -991,13 +1010,65 @@ jvisualvm:功能强大的控制台。
 
 什么是编译？什么是反编译？Java如何编译代码，如何反编译代码？尝试反编译switch、String的“+”、lambda表达式、java 10的本地变量推断等。
 
+了解**javap**、**jad**和**cfr**即可。
 
+switch对整数的支持是直接的，字符是转成ASCII码对应的整数，字符串是`equals()`和`hashCode()`来实现的。
 
 ## 1.4 Java EE
 
 [后端编程](https://github.com/haojunsheng/NetworkLearning/blob/master/http-server.md)
 
 Servlet,cookie,session,过滤器，Spring，IOC，AOP，Bean，ORM，Mybatis，Redis，Nginx。
+
+### 1.4.1 Servlet
+
+Servlet抽象了CGI。其实质就是运行在 Web 应用服务器上的 Java 程序，可以对 Web 浏览器或其他 HTTP 客户端程序发送的请求进行处理。
+
+Servlet的生命周期。
+
+实例化，初始化，运行和销毁。
+
+**为什么Servlet是单例的？**
+
+**浏览器多次对Servlet的请求，**一般情况下，**服务器只创建一个Servlet对象，**也就是说，Servlet对象**一旦创建了，**就会**驻留在内存中，为后续的请求做服务，直到服务器关闭。**
+
+对于**每次访问请求，**Servlet引擎都会**创建一个新的HttpServletRequest请求对象和一个新的HttpServletResponse响应对象，**然后将这**两个对象作为参数传递给它调用的Servlet的service()方法，**service方法再根据请求方式分别调用doXXX方法。
+
+当多个用户访问Servlet的时候，**服务器会为每个用户创建一个线程。**当多个用户并发访问Servlet共享资源的时候就会出现线程安全问题。
+
+
+
+### 1.4.2 Cookie和Session有什么区别？
+
+### 1.4.3 过滤器
+
+### 1.4.4. Spring
+
+springMVC就相当于是Struts2加上Spring的整合。使用mvc框架来开发。
+
+
+
+### 1.4.5 Mybatis
+
+### 1.4.6 redis
+
+使用redis有什么缺点
+
+- 缓存和数据库双写一致性问题
+- 缓存击穿问题
+  - 提供一个能迅速判断请求是否有效的拦截机制，比如，利用布隆过滤器，内部维护一系列合法有效的key。
+  - 利用互斥锁，缓存失效的时候，先去获得锁，得到锁了，再去请求数据库。没得到锁，则休眠一段时间重试
+- 缓存雪崩问题
+  - 用加锁或者队列的方式保证缓存的单线程（进程）写，从而避免失效时大量的并发请求落到底层存储系统上。
+- 缓存的并发竞争问题
+
+
+
+**redis为什么这么快？**
+
+采用了非阻塞I/O多路复用机制，纯内存。select,poll,epoll模型。
+
+### 1.4.7 nginx
 
 
 
@@ -1009,7 +1080,7 @@ IOC，AOP的知识。
 
 **第一件要做的事情是根据Bean的定义生成Bean的实例**：
 
-给定一个xml配置的文件（内含bean的定义），可以获取Bean的定义和Bean的实例。使用BeanDefinition来表示Bean的定义，BeanFactory来表示Spring Bean容器的根接口。使用了dom4j解析xml，并且自定义了2个异常（定义异常和创建异常）。为了方便使用，实现了ApplicationContext和ClassPathXmlApplicationContext，当我们传入配置文件和beanID即可获得bean实例。还需要注意的一点是，实例的生成方式，我实现了单例模式和prototype模式。
+给定一个xml配置的文件（内含bean的定义），可以获取Bean的定义和Bean的实例。使用BeanDefinition来表示Bean的定义，BeanFactory来表示Spring Bean容器的根接口（复杂创建和管理Bean）,提供了getBean方法，使用了dom4j解析xml，并且自定义了2个异常（定义异常和创建异常）。为了方便使用，实现了ApplicationContext和ClassPathXmlApplicationContext，当我们传入配置文件和beanID即可获得bean实例。还需要注意的一点是，实例的生成方式，我实现了单例模式和prototype(多例)模式。
 
 下面开始实现**setter注入**：
 
@@ -1142,18 +1213,38 @@ I/O多路复用是I/O模型之一，其他还有同步阻塞，同步非阻塞�
     - **Sequence Number**是包的序号，**用来解决网络包乱序（reordering）问题。**
     - **Acknowledgement Number**就是ACK——用于确认收到，**用来解决不丢包的问题**。
     - **Window又叫Advertised-Window**，也就是著名的滑动窗口（Sliding Window），**用于解决流控的**。
-    - **TCP Flag** ，也就是包的类型，**主要是用于操控TCP的状态机的**。
+    - **TCP Flag** (Code)，也就是包的类型，**主要是用于操控TCP的状态机的**。
       - URG(Urgent)：若为 1 则代表该封包为紧急封包， 接收端应该要紧急处理，且图 2.4-1 当中的 Urgent Pointer 字段也会被启用。
       - ACK(Acknowledge)：若为 1 代表这个封包为响应封包， 则与上面提到的 Acknowledge Number 有关。
       - PSH(Push function)：若为 1 时，代表要求对方立即传送缓冲区内的其他对应封包，而无须等待缓冲区满了才送。
       - RST(Reset)：如果 RST 为 1 的时候，表示联机会被马上结束，而无需等待终止确认手续。这也就是说， 这是个强制结束的联机，且发送端已断线。
       - SYN(Synchronous)：若为 1，表示发送端希望双方建立同步处理， 也就是要求建立联机。通常带有 SYN 标志的封包表示『主动』要连接到对方的意思。
       - FIN(Finish)：若为 1 ，表示传送结束，所以通知对方数据传毕， 是否同意断线，只是发送者还在等待对方的响应而已。
-  - 三次握手，四次挥手的详细细节，
-  - TCP的重传机制
-  - TCP滑动窗口机制，拥塞处理机制。
+  - 三次握手
+    - <img src="/images/posts/network/image-20200309115922635.png" alt="image-20200309115922635" style="zoom: 33%;" />
+    - 主要是要初始化Sequence Number 的初始值。通信的双方要互相通知对方自己的初始化的Sequence Number（缩写为ISN：Inital Sequence Number）——所以叫SYN，全称Synchronize Sequence Numbers。
+    - SYN Flood攻击，利用建连接时SYN超时
+  - 四次挥手的详细细节
+    - 因为TCP是全双工的，所以，发送方和接收方都需要Fin和Ack。
+  - TCP的重传机制：SeqNum和Ack是以字节数为单位，所以ack的时候，不能跳着确认，只能确认最大的连续收到的包
+    - 超时重传机制
+    - 快速重传机制
+      - 如果发送方连续收到3次相同的ack，就重传。
+  - TCP滑动窗口机制
+    - TCP必需要知道网络实际的数据处理带宽或是数据处理速度，这样才不会引起网络拥塞，导致丢包。
+    - \#1已收到ack确认的数据。#2发还没收到ack的。#3在窗口中还没有发出的（接收方还有空间）。#4窗口以外的数据（接收方没空间）
+    - 需要依赖于连接的发送端和接收端，其并不知道网络中间发生了什么。
+  - 拥塞处理机制：
+    - 慢热启动算法 – Slow Start
+      - 连接建好的开始先初始化cwnd = 1
+      - 每当收到一个ACK，cwnd++; 呈线性上升
+      - 每当过了一个RTT，cwnd = cwnd*2; 呈指数让升
+    - 拥塞避免
+      - 当cwnd >= ssthresh时，就会进入“拥塞避免算法”
+      - 收到一个ACK时，cwnd = cwnd + 1/cwnd
+      - 当每过一个RTT时，cwnd = cwnd + 1
+    - 快速重传，快速恢复
 - [应用层](https://haojunsheng.github.io/2019/12/http-learning/)
-  - 
 - 常用网络命令
 
 ## 4.2 Unix网络编程 @@@@@
@@ -1181,10 +1272,6 @@ I/O工作模型，一个输入操作通常包括两个不同的阶段：
 
 
 socket编程。
-
-
-
-
 
 ## 4.3 常见协议区分
 
@@ -1222,7 +1309,7 @@ RFC规范中定义了TCP/UDP的通信规范，像是3次握手，累积确认等
 
 然后最开始服务器是静态的，工作很简单，在80端口上监听，解析客户端发过来的HTTP的请求， 然后把相对应的HTML文件、Image等返回给客户端就可以了。
 
-但是如果想再往前走一步，让Web服务器能产生动态内容，那就难了。我们为了让进程间通信，引入了CGI通用网关接口（Common Gateway Interface），但是CGI过于复杂，我们抽象除了Servlet，为了管理Servlet，我们又抽象出了tomcat。
+但是如果想再往前走一步，让Web服务器能产生动态内容，那就难了。我们为了让进程间通信，引入了CGI通用网关接口（Common Gateway Interface），但是CGI过于复杂，我们抽象出了Servlet，为了管理Servlet，我们又抽象出了tomcat。
 
 但问题是Servlet是java的规范，于是定义了通用的WSGI，这样任何语言都可以了。
 
@@ -1429,6 +1516,7 @@ public class Singleton {
 **会画状态转移图**。
 
 - 发展
+  
   - 由于数据量，计算量和访问量越来越大，集中的服务器越来越无法满足我们的需求，开始研究分布式。网络的不可靠和机器宕机是两个很让人头疼的问题。
 - 状态复制**：所有的节点以相同的顺序执行一个命令序列。是分布式系统的**基本性质。
 - 一致性问题
@@ -1437,10 +1525,12 @@ public class Singleton {
   - 线性一致性（ Linearizability Consistency）
     - 后者在顺序一致性前提下加强了进程间的操作排序，形成唯一的全局顺序（ 系统等价于是顺序执行，所有进程看到的所有操作的序列顺序都一致，并且跟实际发生顺序一致） ，是很强的原子性保证。
 - 共识算法
+  
   - 共识算法解决的是对某个提案（ Proposal） ，大家达成一致意见的过程。
 - FLP 不可能原理
-  - 在网络可靠，存在节点失效（ 即便只有一个） 的最小化异步模型系统中，不存在一个可以解决一致性问题的确定性算法。FLP 不可能原理实际上告诉人们，不要浪费时间去为异步分布式系统设计在任意场景下都能实现共识的算法。
-
+  
+- 在网络可靠，存在节点失效（ 即便只有一个） 的最小化异步模型系统中，不存在一个可以解决一致性问题的确定性算法。FLP 不可能原理实际上告诉人们，不要浪费时间去为异步分布式系统设计在任意场景下都能实现共识的算法。
+  
 - CAP原理
   - 一致性（ Consistency）：指的是强一致性
   - 可用性（ Availablity）：服务一直可用，而且是正常响应时间
@@ -1456,8 +1546,9 @@ public class Singleton {
   - Durability（ 持久性）：状态的改变是持久的，不会失效
 
 - 串行化器：单个服务器称为串行化器，用来进行分发命令，实现状态复制。
-  - 也被称为主从复制（Master-Slave Replication）。由于只使用了一个串行化器，在某些节点出现宕机或者网络状态较差的时候，可能会出现执行结果不一致的问题，此外，还存在单点故障（Single Point of Failure）的问题。我们也称之为1PC。
-
+  
+- 也被称为主从复制（Master-Slave Replication）。由于只使用了一个串行化器，在某些节点出现宕机或者网络状态较差的时候，可能会出现执行结果不一致的问题，此外，还存在单点故障（Single Point of Failure）的问题。我们也称之为1PC。
+  
 - 我们结合分布式事务的概念，提出了两阶段提交协议。
   - 在准备阶段，协调者节点向其他节点进行询问，其他节点启动事务，写入日志。协调者会向所有参与者询问“是否可以执行提交”操作，同时会开始等待各参与者节点回复。参与着执行协调者的事务操作，将操作信息写入日志。如果参与的事务操作执行成功，则返回“同意”消息，否则回复“终止”消息。
   - 在提交阶段（可能出现超时的情况），如果不同意或者超时，所有节点回滚，否则，提交。
