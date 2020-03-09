@@ -92,7 +92,7 @@ tag: 面试
    * [7. 分布式算法](#7-分布式算法)
    * [8. 密码学算法](#8-密码学算法)
 
-<!-- Added by: anapodoton, at: Mon Mar  9 18:25:12 CST 2020 -->
+<!-- Added by: anapodoton, at: Mon Mar  9 22:55:48 CST 2020 -->
 
 <!--te-->
 
@@ -108,10 +108,10 @@ tag: 面试
 - 什么是面向对象:对象是属性和行为的集合体。把问题分解成一个一个步骤，每个步骤都是对象及对象的行为调用，这样的编程思想就是面向对象。
 - 二者区别：面向过程以过程为中心，关注问题的解决过程顺序，而面向对象以对象为中心，将问题分解并抽象成多个对象，关注对象及对象之间的关系。
 - 三大基本特征：
-  - [封装](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#21-%E5%B0%81%E8%A3%85)：所谓封装，也就是把客观事物封装成抽象的类，并且类可以把自己的数据和方法只让可信的类或者对象操作，对不可信的进行信息隐藏。封装是面向对象的特征之一，是对象和类概念的主要特性。简单的说，一个类就是一个封装了数据以及操作这些数据的代码的逻辑实体。在一个对象内部，某些代码或某些数据可以是私有的，不能被外界访问。通过这种方式，对象对内部数据提供了不同级别的保护，以防止程序中无关的部分意外的改变或错误的使用了对象的私有部分。
-  - [继承](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#22-%E7%BB%A7%E6%89%BF):继承是指这样一种能力：它可以使用现有类的所有功能，并在无需重新编写原来的类的情况下对这些功能进行扩展。通过继承创建的新类称为“子类”或“派生类”，被继承的类称为“基类”、“父类”或“超类”。继承的过程，就是从一般到特殊的过程。要实现继承，可以通过“继承”（Inheritance）和“组合”（Composition）来实现。继承概念的实现方式有二类：实现继承与接口继承。实现继承是指直接使用基类的属性和方法而无需额外编码的能力；接口继承是指仅使用属性和方法的名称、但是子类必须提供实现的能力；
-  - [多态](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#23-%E5%A4%9A%E6%80%81):所谓多态就是指一个类实例的相同方法在不同情形有不同表现形式。多态机制使具有不同内部结构的对象可以共享相同的外部接口。这意味着，虽然针对不同对象的具体操作不同，但通过一个公共的类，它们（那些操作）可以通过相同的方式予以调用。最常见的多态就是将子类传入父类参数中，运行时调用父类方法时通过传入的子类决定具体的内部结构或行为。
-- [五大原则](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#3-%E4%BA%94%E5%A4%A7%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99):
+  - [封装](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#21-%E5%B0%81%E8%A3%85)：所谓封装，也就是把客观事物封装成抽象的类，并且类可以把自己的数据和方法只让可信的类或者对象操作，对不可信的进行信息隐藏。封装是面向对象的特征之一，是对象和类概念的主要特性。简单的说，一个类就是一个封装了数据以及操作这些数据的代码的逻辑实体。在一个对象内部，某些代码或某些数据可以是私有的，不能被外界访问。通过这种方式，对象对内部数据提供了不同级别的保护，以防止程序中无关的部分意外的改变或错误的使用了对象的私有部分。
+  - [继承](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#22-%E7%BB%A7%E6%89%BF):继承是指这样一种能力：它可以使用现有类的所有功能，并在无需重新编写原来的类的情况下对这些功能进行扩展。通过继承创建的新类称为“子类”或“派生类”，被继承的类称为“基类”、“父类”或“超类”。继承的过程，就是从一般到特殊的过程。要实现继承，可以通过“继承”（Inheritance）和“组合”（Composition）来实现。继承概念的实现方式有二类：实现继承与接口继承。实现继承是指直接使用基类的属性和方法而无需额外编码的能力；接口继承是指仅使用属性和方法的名称、但是子类必须提供实现的能力；
+  - [多态](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#23-%E5%A4%9A%E6%80%81):所谓多态就是指一个类实例的相同方法在不同情形有不同表现形式。多态机制使具有不同内部结构的对象可以共享相同的外部接口。这意味着，虽然针对不同对象的具体操作不同，但通过一个公共的类，它们（那些操作）可以通过相同的方式予以调用。最常见的多态就是将子类传入父类参数中，运行时调用父类方法时通过传入的子类决定具体的内部结构或行为。
+- [五大原则](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#3-%E4%BA%94%E5%A4%A7%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99):
   - S：单一职责原则:一个类，最好只做一件事，只有一个引起它的变化。
   - O：开放封闭原则:软件实体应该是可扩展的，而不可修改的。也就是，对扩展开放，对修改封闭的。
   - L：里氏替换原则:子类必须能够替换其基类。
@@ -120,20 +120,20 @@ tag: 面试
 
 #### 1.1.1.2 平台无关性
 
-[平台无关性](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/what-is-platform-independent.md)
+[平台无关性](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/what-is-platform-independent.md)
 
 平台无关性就是一种语言在计算机上的运行不受平台的约束，一次编译，到处执行（Write Once ,Run Anywhere）。主要是jvm的原因。
 
 #### 1.1.1.3 值传递
 
-Java中只有[值传递](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/java-only-value-pass.md)。
+Java中只有[值传递](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/java-only-value-pass.md)。
 
 - 形参和实参：前者是用于接收实参内容的参数，后者是真正传递的内容。
 - 值传递和引用传递的区别在于：**传递后会不会影响实参的值**，前者会创建副本，后者不会创建副本。
 
 #### 1.1.1.4 重载（Overloading）和重写（Overriding）@@@
 
-[重载与重写](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/deep-analyze-override-overloading.md)
+[重载与重写](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/deep-analyze-override-overloading.md)
 
 - 重载：签名不一样，编译器。
 - 重写：子类重写父类，签名一样，运行期。
@@ -142,7 +142,7 @@ Java中只有[值传递](https://github.com/haojunsheng/JavaLearning/blob/master
 
 #### 1.1.1.5 组合和继承 @@@
 
-[组合和继承](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/combination-vs-inheritance.md)
+[组合和继承](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/combination-vs-inheritance.md)
 
 - 组合是has-a，继承是is-a
 - 多用组合，少用继承。
@@ -159,7 +159,7 @@ Java中只有[值传递](https://github.com/haojunsheng/JavaLearning/blob/master
 
 #### 1.1.1.6成员变量和方法的作用域
 
-[参考](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#4-%E5%9B%9B%E7%A7%8D%E8%AE%BF%E9%97%AE%E7%BA%A7%E5%88%AB)
+[参考](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#4-%E5%9B%9B%E7%A7%8D%E8%AE%BF%E9%97%AE%E7%BA%A7%E5%88%AB)
 
 - public :表明该成员变量或者方法是对所有类或者对象都是可见的,所有类或者对象都可以直接访问
 - protected:表明成员变量或者方法对类自身,与同在一个包中的其他类可见,其他包下的类不可访问,除非是他的子类
@@ -170,7 +170,7 @@ Java中只有[值传递](https://github.com/haojunsheng/JavaLearning/blob/master
 
 #### 1.1.1.7 抽象类和接口
 
-[抽象类和接口](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/abstract-class-vs-interface.md)
+[抽象类和接口](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/abstract-class-vs-interface.md)
 
 - 抽象类：对类整个整体抽象。
 - 接口：对行为进行抽象。
@@ -184,7 +184,7 @@ Java中只有[值传递](https://github.com/haojunsheng/JavaLearning/blob/master
 
 #### 1.1.1.8 内部类
 
-[内部类](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/inner-class.md)
+[内部类](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/inner-class.md)
 
 - 每个内部类都能独立地继承一个（接口的）实现，所以无论外围类是否已经继承了某个（接口的）实现，对于内部类都没有影响，**解决多重继承问题**。
 - 内部类可以用多个实例，每个实例都有自己的状态信息，并且与其他外围对象的信息相互独立。
@@ -197,13 +197,13 @@ Java中只有[值传递](https://github.com/haojunsheng/JavaLearning/blob/master
 
 #### 1.1.2.1 基本数据类型
 
-[7种基本类型](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-basic-data-type.md)
+[7种基本类型](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-basic-data-type.md)
 
 **区别：占用字节和表示方式的不同。**
 
 #### 1.1.2.2 自动拆装箱 @@@
 
-[自动拆箱与装箱](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-auto-unbox.md)
+[自动拆箱与装箱](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-auto-unbox.md)
 
 - WHY:为什么需要自动拆装箱。
   - 因为需要在基本数据类型和包装类之类进行转换。为了减少开发人员的工作。
@@ -227,24 +227,24 @@ Java中只有[值传递](https://github.com/haojunsheng/JavaLearning/blob/master
 
 #### 1.1.2.3 String相关 @@@@@
 
-[String详细学习](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md)
+[String详细学习](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md)
 
-- [字符串的不可变性](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#41-%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2)（String是用final数组实现的）
+- [字符串的不可变性](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#41-%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2)（String是用final数组实现的）
 
-- [JDK 6和JDK 7中substring的原理及区别](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#71-substring-%E7%9A%84%E4%BD%9C%E7%94%A8)
+- [JDK 6和JDK 7中substring的原理及区别](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#71-substring-%E7%9A%84%E4%BD%9C%E7%94%A8)
 
   - jdk6仍然指向原字符串，会造成内存泄露的问题
   - jdk7会创建一个新的字符串
 
-- [replaceFirst、replaceAll、replace区别](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#155-replacefirstreplaceallreplace%E5%8C%BA%E5%88%AB)
+- [replaceFirst、replaceAll、replace区别](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#155-replacefirstreplaceallreplace%E5%8C%BA%E5%88%AB)
 
-- [String对“+”的重载](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#158-string%E5%AF%B9%E7%9A%84%E9%87%8D%E8%BD%BD)、字符串拼接的几种方式和区别
+- [String对“+”的重载](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#158-string%E5%AF%B9%E7%9A%84%E9%87%8D%E8%BD%BD)、字符串拼接的几种方式和区别
 
   - +是唯一重载的运算符。使用了StringBuilder以及他的append、toString两个方法。
   - "a"+"b"是在编译期完成的，s1+"b"和s1+s2是在运行期完成的。
-  - [字符串拼接方式](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#115-%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%8B%BC%E6%8E%A5%E6%96%B9%E5%BC%8F)
+  - [字符串拼接方式](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#115-%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%8B%BC%E6%8E%A5%E6%96%B9%E5%BC%8F)
 
-- [String.valueOf和Integer.toString的区别](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#159-stringvalueof%E5%92%8Cintegertostring%E7%9A%84%E5%8C%BA%E5%88%AB)
+- [String.valueOf和Integer.toString的区别](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#159-stringvalueof%E5%92%8Cintegertostring%E7%9A%84%E5%8C%BA%E5%88%AB)
 
   - `String.valueOf(i)`也是调用`Integer.toString(i)`来实现的
 
@@ -255,7 +255,7 @@ Java中只有[值传递](https://github.com/haojunsheng/JavaLearning/blob/master
   - 字符串常量池：1.6之后，只存储字面量的引用
   - intern：使用intern后直接指向字面量所在的位置
 
-- [String、StringBuffer、StringBuilder区别](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#114-%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8stringstringbufferstringbuilder)
+- [String、StringBuffer、StringBuilder区别](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#114-%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8stringstringbufferstringbuilder)
 
   - |                | String       | StringBuffer | StringBuilder |
     | -------------- | ------------ | ------------ | ------------- |
@@ -263,13 +263,13 @@ Java中只有[值传递](https://github.com/haojunsheng/JavaLearning/blob/master
     | 线程安全       | 否           | 是           | 否            |
     | 修改创建新对象 | 是           | 否           | 否            |
 
-- [switch对String的支持](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#103-switch%E5%AF%B9%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%94%AF%E6%8C%81%E7%9A%84%E5%AE%9E%E7%8E%B0)
+- [switch对String的支持](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#103-switch%E5%AF%B9%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%94%AF%E6%8C%81%E7%9A%84%E5%AE%9E%E7%8E%B0)
 
 #### 1.1.2.4 java关键字
 
 ##### 1.1.2.4.1 transient
 
-[transient](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/transient-keyword.md)
+[transient](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/transient-keyword.md)
 
 禁止某个变量序列化。
 
@@ -283,7 +283,7 @@ Java中只有[值传递](https://github.com/haojunsheng/JavaLearning/blob/master
 
 ##### 1.1.2.4.2 staic @@@@@
 
-[static](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/static-detail.md)
+[static](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/static-detail.md)
 
 - static变量
   - 静态变量是随着类加载时被完成初始化的，它在内存中仅有一个，且JVM也只会为它分配一次内存，同时类所有的实例都共享静态变量，可以直接通过类名来访问它。
@@ -297,7 +297,7 @@ Java中只有[值传递](https://github.com/haojunsheng/JavaLearning/blob/master
 
 ##### 1.1.2.4.3 final @@@@@
 
-[final](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/final-detail.md)
+[final](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/final-detail.md)
 
 不想被改变的原因有两个：**效率、设计**。
 
@@ -319,20 +319,20 @@ Java中只有[值传递](https://github.com/haojunsheng/JavaLearning/blob/master
 
 ##### 1.1.2.4.4 length vs length()
 
- [length vs length()](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/deep-analyze-java-length-length().md)
+ [length vs length()](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/deep-analyze-java-length-length().md)
 
 - 数组有length属性，数组的长度可以作为`final`实例变量的长度。因此，长度可以被视为一个数组的属性。
 - String有length()方法。String背后的数据结构是一个char数组,所以没有必要来定义一个不必要的属性。
 
 ##### 1.1.2.4.5 Comparable vs Comparator
 
-[Comparable vs Comparator](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/Java-Comparable-Comparator.md)
+[Comparable vs Comparator](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/Java-Comparable-Comparator.md)
 
 
 
 ##### 1.1.2.4.6 ktve
 
-[ktve](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/Java-K-T-V-E.md)
+[ktve](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/Java-K-T-V-E.md)
 
 E – Element (在集合中使用，因为集合中存放的是元素)
 
@@ -352,7 +352,7 @@ Object – 是所有类的根类，任何类的对象都可以设置给该Object
 
 ##### 1.1.2.4.7 equals和hashcode的协同工作 @@@@
 
-[equals和hashcode的协同工作](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/Java-equals-hashcode.md)
+[equals和hashcode的协同工作](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/Java-equals-hashcode.md)
 
 1、如果两个对象相等，那么他们一定有相同的哈希值（hash code）。
 
@@ -362,11 +362,11 @@ Object – 是所有类的根类，任何类的对象都可以设置给该Object
 
 ##### 1.1.2.4.8 迭代和递归
 
-[迭代和递归](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/Java-iteration-recursion.md)
+[迭代和递归](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/Java-iteration-recursion.md)
 
 ##### 1.1.2.4.9 swith
 
-[switch](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/Java-Switch.md)：**其实swich只支持一种数据类型，那就是整型，其他数据类型都是转换成整型之后在使用switch的。**
+[switch](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/Java-Switch.md)：**其实swich只支持一种数据类型，那就是整型，其他数据类型都是转换成整型之后在使用switch的。**
 
 - 整型：直接比较整数的值
 - 字符：比较ASCII码
@@ -376,19 +376,19 @@ Object – 是所有类的根类，任何类的对象都可以设置给该Object
 
 #### 1.1.3.1 常用集合类的使用
 
-[集合类概览](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/collection-family.md)
+[集合类概览](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/collection-family.md)
 
 - 数组：数组是**将数字和对象联系起来**，它**保存明确的对象**。（固定大小）
 
 - Collection：保存单一的元素（可扩容）
   - list:有序可重复的Collection，注意，**有序指的是放入顺序，而不是大小顺序**。
 
-    |            | [ArrayList](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#1-arraylist) | [LinkedList](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#2-linkedlist) | [Vector](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#3-vector) | [Stack](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#stack) |
+    |            | [ArrayList](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#1-arraylist) | [LinkedList](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#2-linkedlist) | [Vector](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#3-vector) | [Stack](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#stack) |
     | ---------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
     | 实现方式   | 数组                                                         | 链表                                                         | 数组                                                         | 继承自Vector,实现一个后进先出的堆栈                          |
     | 线程安全   | 否                                                           | 否                                                           | 是                                                           | 是                                                           |
     | 默认容量   | 10                                                           |                                                              |                                                              |                                                              |
-    | 扩容       | [1.5倍](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#126-%E6%89%A9%E5%AE%B9) |                                                              | 2倍                                                          |                                                              |
+    | 扩容       | [1.5倍](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#126-%E6%89%A9%E5%AE%B9) |                                                              | 2倍                                                          |                                                              |
     | 特性       |                                                              | size，表示大小；first,last；Node定义双向链表。               |                                                              |                                                              |
     | 适用       | 查找                                                         | 插入，删除                                                   |                                                              |                                                              |
     | 时间复杂度 | O(n),O(n),O(1)                                               |                                                              |                                                              |                                                              |
@@ -404,7 +404,7 @@ Object – 是所有类的根类，任何类的对象都可以设置给该Object
   
   - queue
   
-- [map](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md)：保存相关联的值键对  
+- [map](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md)：保存相关联的值键对  
 
   |            | HashMap                                                      | HashTable             | LinkedHashMap | ConcurrentHashMap    | TreeMap |
   | ---------- | ------------------------------------------------------------ | --------------------- | ------------- | -------------------- | ------- |
@@ -414,7 +414,7 @@ Object – 是所有类的根类，任何类的对象都可以设置给该Object
   | 加锁粒度   |                                                              | 方法                  |               | 代码块               |         |
   | 继承关系   | AbstractMap                                                  | Dictionary            |               |                      |         |
   | 容量和扩容 | 初始16，扩容*2                                               | 初始11，扩容old*2+1   |               |                      |         |
-  | hash值     | [重新计算](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md#43-hashmap%E4%B8%AD%E7%9A%84hash%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0) | 对象的hashCode        |               |                      |         |
+  | hash值     | [重新计算](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md#43-hashmap%E4%B8%AD%E7%9A%84hash%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0) | 对象的hashCode        |               |                      |         |
   | 遍历方式   | Iterator                                                     | Enumeration，Iterator |               |                      |         |
 | 加载因子   | 0.75                                                         |                       |               |                      |         |
   
@@ -435,15 +435,15 @@ Object – 是所有类的根类，任何类的对象都可以设置给该Object
 
 （8）HashMap查找添加元素的时间复杂度都为O(1)；
 
-[HashMap的实现](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md#43-hashmap%E4%B8%AD%E7%9A%84hash%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0)；
+[HashMap的实现](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md#43-hashmap%E4%B8%AD%E7%9A%84hash%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0)；
 
-  [红黑树具有哪些特性](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md#32-%E7%BA%A2%E9%BB%91%E6%A0%91%E6%80%BB%E7%BB%93)
+  [红黑树具有哪些特性](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md#32-%E7%BA%A2%E9%BB%91%E6%A0%91%E6%80%BB%E7%BB%93)
 
 #### 1.1.3.2 ArrayList和LinkedList和Vector的区别 @@@@@
 
-[具体详情](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#41-arraylist-vs-linkedlist-vs-vector)
+[具体详情](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#41-arraylist-vs-linkedlist-vs-vector)
 
-|          | [ArrayList](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#1-arraylist) | [LinkedList](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#2-linkedlist) | [Vector](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#3-vector) | [Stack](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#stack) |
+|          | [ArrayList](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#1-arraylist) | [LinkedList](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#2-linkedlist) | [Vector](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#3-vector) | [Stack](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#stack) |
 | -------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | 实现方式 | 数组                                                         | 链表                                                         | 数组                                                         | 继承自Vector,实现一个后进先出的堆栈                          |
 | 线程安全 | 否                                                           | 否                                                           | 是                                                           | 是                                                           |
@@ -474,7 +474,7 @@ Object – 是所有类的根类，任何类的对象都可以设置给该Object
 
 #### 1.1.3.6 fail-fast vs fail-safe @@@@@
 
-[快速失败 vs 安全失败](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#44-fail-fast-vs-fail-safe)
+[快速失败 vs 安全失败](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#44-fail-fast-vs-fail-safe)
 
 我们都接触 HashMap、ArrayList 这些集合类，这些在 **java.util 包的集合类就都是快速失败**的；而  **java.util.concurrent 包下的类都是安全失败**，比如：ConcurrentHashMap。
 
@@ -524,7 +524,7 @@ CopyOnWrite vs Vector
 
 #### 1.1.3.7 ConcurrentSkipList
 
-[ConcurrentSkipList](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md#48-concurrenthashmap)
+[ConcurrentSkipList](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md#48-concurrenthashmap)
 
 为什么Redis选择使用跳表而不是红黑树来实现有序集合
 
@@ -544,7 +544,7 @@ Set特点：元素无放入顺序，元素不可重复。 无顺序，即先放�
 
 #### 1.1.3.9 set如何保证元素不重复 @@@@@
 
-[Set如何保证元素不重复?](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/set-repetition.md)
+[Set如何保证元素不重复?](https://gitee.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/set-repetition.md)
 
 在Java的Set体系中，根据实现方式不同主要分为两大类。HashSet和TreeSet。
 
@@ -564,11 +564,11 @@ TreeMap是按key排序的，元素在插入TreeSet时compareTo()方法要被调�
 
 ### 1.1.4 枚举
 
-[枚举的定义：](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/enum-detail.md#12-%E5%AE%9A%E4%B9%89)
+[枚举的定义：](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/enum-detail.md#12-%E5%AE%9A%E4%B9%89)
 
-[枚举的用法](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/enum-detail.md#16-%E7%94%A8%E6%B3%95)
+[枚举的用法](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/enum-detail.md#16-%E7%94%A8%E6%B3%95)
 
-[Java枚举如何比较](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/enum-detail.md#3-%E6%9E%9A%E4%B8%BE%E7%B1%BB%E7%9A%84%E6%AF%94%E8%BE%83)
+[Java枚举如何比较](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/enum-detail.md#3-%E6%9E%9A%E4%B8%BE%E7%B1%BB%E7%9A%84%E6%AF%94%E8%BE%83)
 
 java 枚举值比较用 == 和 equals 方法没啥区别，两个随便用都是一样的效果。
 
@@ -578,39 +578,39 @@ java 枚举值比较用 == 和 equals 方法没啥区别，两个随便用都是
 
 类似的还有 Enum 的 name 方法和 toString 方法一样都返回的是 Enum 的 name 值。
 
-[switch对枚举的支持](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/enum-detail.md#4-switch%E5%AF%B9%E6%9E%9A%E4%B8%BE%E7%9A%84%E6%94%AF%E6%8C%81)
+[switch对枚举的支持](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/enum-detail.md#4-switch%E5%AF%B9%E6%9E%9A%E4%B8%BE%E7%9A%84%E6%94%AF%E6%8C%81)
 
 Java 1.7 之前 switch 参数可用类型为 short、byte、int、char，枚举类型之所以能使用其实是编译器层面实现的，编译器会将枚举 switch 转换为类似 switch(s.ordinal()) { case Status.START.ordinal() } 形式，所以实质还是 int 参数类型，感兴趣的可以自己写个使用枚举的 switch 代码然后通过 javap -v 去看下字节码就明白了。
 
-[枚举的序列化如何实现？为什么枚举实现的单例不存在可能序列化破坏的问题。](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/enum-detail.md#5-%E6%9E%9A%E4%B8%BE%E5%BA%8F%E5%88%97%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0)
+[枚举的序列化如何实现？为什么枚举实现的单例不存在可能序列化破坏的问题。](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/enum-detail.md#5-%E6%9E%9A%E4%B8%BE%E5%BA%8F%E5%88%97%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0)
 
-[枚举的线程安全性问题](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/enum-detail.md#6-%E6%9E%9A%E4%B8%BE%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8)
+[枚举的线程安全性问题](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/enum-detail.md#6-%E6%9E%9A%E4%B8%BE%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8)
 
-[请使用枚举实现一个单例。 为什么枚举实现的单例比较受推崇？有哪些好处？](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/enum-detail.md#7-%E6%9E%9A%E4%B8%BE%E5%92%8C%E5%8D%95%E4%BE%8B)
+[请使用枚举实现一个单例。 为什么枚举实现的单例比较受推崇？有哪些好处？](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/enum-detail.md#7-%E6%9E%9A%E4%B8%BE%E5%92%8C%E5%8D%95%E4%BE%8B)
 
-[Java 枚举类可以继承其他类（或实现其他接口）或者被其他类继承吗，为什么？](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/enum-detail.md#2-%E6%9E%9A%E4%B8%BE%E7%9A%84%E5%AE%9E%E7%8E%B0)
+[Java 枚举类可以继承其他类（或实现其他接口）或者被其他类继承吗，为什么？](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/enum-detail.md#2-%E6%9E%9A%E4%B8%BE%E7%9A%84%E5%AE%9E%E7%8E%B0)
 
 ### 1.1.5 IO 
 
-[java i/o完全解读](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-IO/Java-IO-all.md)
+[java i/o完全解读](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-IO/Java-IO-all.md)
 
-[什么是比特？什么是字节？什么是字符？它们长度是多少？各有什么区别？](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-io-detail.md#1-%E4%BB%80%E4%B9%88%E6%98%AF-io)
+[什么是比特？什么是字节？什么是字符？它们长度是多少？各有什么区别？](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-io-detail.md#1-%E4%BB%80%E4%B9%88%E6%98%AF-io)
 
-[什么是流？Java IO中包含哪几种流，之间的关系是怎样的？字节流和字符流的区别? 什么是输入流和输出流，如何区分？字节流和字符流之间如何相互转换。](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-io-detail.md#2-%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3java-%E6%B5%81stream)
+[什么是流？Java IO中包含哪几种流，之间的关系是怎样的？字节流和字符流的区别? 什么是输入流和输出流，如何区分？字节流和字符流之间如何相互转换。](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-io-detail.md#2-%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3java-%E6%B5%81stream)
 
 #### 1.1.5.1 I/O模型 @@@@@
 
-[同步、异步、阻塞、非阻塞、Linux 5种IO模型](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-io-detail.md#7-%E4%BA%94%E7%A7%8Dio%E6%A8%A1%E5%9E%8B)
+[同步、异步、阻塞、非阻塞、Linux 5种IO模型](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-io-detail.md#7-%E4%BA%94%E7%A7%8Dio%E6%A8%A1%E5%9E%8B)
 
 #### 1.1.5.2 BIO NIO AIO区别 @@@@@
 
-[BIO、NIO和AIO的区别、三种IO的用法与原理](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-io-detail.md#6-bio-vs-nio-vs-aio)
+[BIO、NIO和AIO的区别、三种IO的用法与原理](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-io-detail.md#6-bio-vs-nio-vs-aio)
 
 需要掌握socket和linux select poll epoll。
 
 ### 1.1.6 反射
 
-[反射与工厂模式](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-reflect/java-factory-union-reflect.md)
+[反射与工厂模式](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-reflect/java-factory-union-reflect.md)
 
 **反射有什么作用**：
 
@@ -640,7 +640,7 @@ AOP
 
 ### 1.1.7 序列化
 
-[序列化](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-serialize.md)
+[序列化](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-serialize.md)
 
 什么是序列化与反序列化、为什么序列化、序列化底层原理、序列化与单例模式、protobuf、为什么说序列化并不安全
 
@@ -648,29 +648,29 @@ AOP
 
 ### 1.1.8 注解
 
-[注解](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-annotation-detail.md)
+[注解](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-annotation-detail.md)
 
 元注解、自定义注解、Java中常用注解使用、注解与反射的结合
 
-[如何自定义一个注解？](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/create-annotation.md)
+[如何自定义一个注解？](https://gitee.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/create-annotation.md)
 
-[Spring常用注解](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/annotation-in-spring.md)
+[Spring常用注解](https://gitee.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/annotation-in-spring.md)
 
 ### 1.1.9 泛型
 
-[泛型](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-generics.md)
+[泛型](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-generics.md)
 
-泛型与继承、类型擦除、[泛型中K T V E ？ object等的含义](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/k-t-v-e.md)、泛型各种用法
+泛型与继承、类型擦除、[泛型中K T V E ？ object等的含义](https://gitee.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/k-t-v-e.md)、泛型各种用法
 
 限定通配符和非限定通配符、上下界限定符extends 和 super
 
-[List和原始类型List之间的区别?](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/genericity-list.md)
+[List和原始类型List之间的区别?](https://gitee.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/genericity-list.md)
 
-[List和List之间的区别是什么?](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/genericity-list-wildcard.md)
+[List和List之间的区别是什么?](https://gitee.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/genericity-list-wildcard.md)
 
 ### 1.1.10 异常
 
-[异常](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-execption-learning.md)
+[异常](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-execption-learning.md)
 
 异常类型、正确处理异常、自定义异常
 
@@ -682,9 +682,9 @@ finally和return的执行顺序
 
 ### 1.1.11 语法糖
 
-[Java中语法糖原理、解语法糖](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/syntactic-sugar.md)
+[Java中语法糖原理、解语法糖](https://gitee.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/syntactic-sugar.md)
 
-[语法糖：switch 支持 String 与枚举、泛型、自动装箱与拆箱、方法变长参数、枚举、内部类、条件编译、 断言、数值字面量、for-each、try-with-resource、Lambda表达式](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/syntactic-sugar.md)
+[语法糖：switch 支持 String 与枚举、泛型、自动装箱与拆箱、方法变长参数、枚举、内部类、条件编译、 断言、数值字面量、for-each、try-with-resource、Lambda表达式](https://gitee.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/syntactic-sugar.md)
 
 ## 1.2 并发编程 @@@@@
 
@@ -698,13 +698,13 @@ finally和return的执行顺序
 
 并发与并行的区别
 
-[并发与并行](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-Concurrent-programming/1-what-is-thread-safe.md)
+[并发与并行](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-Concurrent-programming/1-what-is-thread-safe.md)
 
 并行是指有2个及以上CPU。
 
 ### 1.2.2 线程
 
-- [线程的实现](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#2-%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%AE%9E%E7%8E%B0)
+- [线程的实现](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#2-%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%AE%9E%E7%8E%B0)
   - 内核线程
     - 特点：内核完成线程的切换，1:1
     - 优点：
@@ -718,32 +718,32 @@ finally和return的执行顺序
   - 使用用户线程加轻量级进程混合实现（GO里面叫做协程）
     - 特点：N:M
     - 优点：**用户线程还是完全建立在用户空间中，因此用户线程的创建、切换、析构等操作依然廉价，并且可以支持大规模的用户线程并发。**
-- [线程与进程的区别](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/1-what-is-thread-safe.md#3-%E5%A4%9A%E7%BA%BF%E7%A8%8B)
+- [线程与进程的区别](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/1-what-is-thread-safe.md#3-%E5%A4%9A%E7%BA%BF%E7%A8%8B)
   - **进程是资源分配的基本单元，线程是执行的基本单元，同一个进程的多个线程之间共享资源。**
-- [线程的状态](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#3-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81)
+- [线程的状态](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#3-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81)
   - 新建，就绪，运行，阻塞，等待，终止
   - sleep 和 wait
   - wait 和 notify
   - notify 和 notifyAll
-- [优先级](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#5-%E7%BA%BF%E7%A8%8B%E4%BC%98%E5%85%88%E7%BA%A7)
+- [优先级](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#5-%E7%BA%BF%E7%A8%8B%E4%BC%98%E5%85%88%E7%BA%A7)
   - 最小是1，最大是10，正常是5
-- [线程调度](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#4-%E7%BA%BF%E7%A8%8B%E7%9A%84%E8%B0%83%E5%BA%A6)
+- [线程调度](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#4-%E7%BA%BF%E7%A8%8B%E7%9A%84%E8%B0%83%E5%BA%A6)
   - 一个线程想要从就绪状态变成运行中状态，这个过程需要系统调度，即给线程分配CPU的使用权，获得CPU使用权的线程才会从就绪状态变成运行状态。给多个线程按照特定的机制分配CPU的使用权的过程就叫做线程调度。
   - 协同式调度(自己工作完了,把CPU交给其他的线程)
   - 抢占式调度(java默认模型)
-- [创建线程的多种方式](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/3-java-thread-create-four-way.md)
+- [创建线程的多种方式](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/3-java-thread-create-four-way.md)
   - 继承Thread类创建线程
   - 实现Runnable接口创建线程
     - 二者之间的区别是，一旦java是单继承的，所以最好使用Runnable
     - 二者共同的缺点是：在执行完任务之后无法获取执行结果。
   - 通过Callable和FutureTask创建线程
   - 通过线程池创建线程
-- [守护线程](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#6-%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B)
+- [守护线程](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#6-%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B)
   - 常见的是GC线程
   - 通过setDaemon()可以设置守护线程
   - 只有守护线程的情况下，jvm将退出
-- [ThreadLocal](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#7-threadlocal)
-- [线程池](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/4-java-thread-pool.md)
+- [ThreadLocal](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#7-threadlocal)
+- [线程池](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/4-java-thread-pool.md)
   - 池化技术：提前保存大量的资源。
     - 线程池、连接池、内存池、对象池等。
   - 线程池原理：预先创建好多个线程，放在池中，这样可以在需要使用线程的时候直接获取，避免多次重复创建、销毁带来的开销。
@@ -751,39 +751,39 @@ finally和return的执行顺序
   - submit() 
   - execute()
   - 为什么不允许使用Executors创建线程池
-- [锁](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md)
-  - [数据库相关锁机制](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#11-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E9%94%81%E6%9C%BA%E5%88%B6)
-  - [乐观锁与悲观锁](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#1-%E4%B9%90%E8%A7%82%E9%94%81-vs-%E6%82%B2%E8%A7%82%E9%94%81)：线程要不要锁住同步资源
+- [锁](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md)
+  - [数据库相关锁机制](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#11-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E9%94%81%E6%9C%BA%E5%88%B6)
+  - [乐观锁与悲观锁](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#1-%E4%B9%90%E8%A7%82%E9%94%81-vs-%E6%82%B2%E8%A7%82%E9%94%81)：线程要不要锁住同步资源
     - 悲观锁是一定使用了锁机制的，乐观锁则并未真正加锁。实现方式有版本号和CAS
-    - [CAS](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#3-%E4%B9%90%E8%A7%82%E9%94%81%E7%9A%84%E4%B8%80%E7%A7%8D%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8Fcas)
+    - [CAS](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#3-%E4%B9%90%E8%A7%82%E9%94%81%E7%9A%84%E4%B8%80%E7%A7%8D%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8Fcas)
       - **Compare and Swap**(`CAS`)
-  - [自旋锁vs阻塞锁](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#2-%E8%87%AA%E6%97%8B%E9%94%81-vs-%E9%80%82%E5%BA%94%E6%80%A7%E8%87%AA%E6%97%8B%E9%94%81)：到底要不要放弃处理器的执行时间。阻塞锁是放弃了CPU时间，进入了等待区，等待被唤醒。而自旋锁是一直“自旋”在那里，时刻的检查共享资源是否可以被访问。
-  - [偏向锁vs轻量级锁vs重量级锁](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#3-%E6%97%A0%E9%94%81-vs-%E5%81%8F%E5%90%91%E9%94%81-vs-%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81-vs-%E9%87%8D%E9%87%8F%E7%BA%A7%E9%94%81)：对性能影响的大小
+  - [自旋锁vs阻塞锁](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#2-%E8%87%AA%E6%97%8B%E9%94%81-vs-%E9%80%82%E5%BA%94%E6%80%A7%E8%87%AA%E6%97%8B%E9%94%81)：到底要不要放弃处理器的执行时间。阻塞锁是放弃了CPU时间，进入了等待区，等待被唤醒。而自旋锁是一直“自旋”在那里，时刻的检查共享资源是否可以被访问。
+  - [偏向锁vs轻量级锁vs重量级锁](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#3-%E6%97%A0%E9%94%81-vs-%E5%81%8F%E5%90%91%E9%94%81-vs-%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81-vs-%E9%87%8D%E9%87%8F%E7%BA%A7%E9%94%81)：对性能影响的大小
     - 偏向锁：一段同步代码一直被一个线程所访问，那么该线程会自动获取锁，降低获取锁的代价。
     - 轻量级锁：
     - 重量级锁：使用`Monitor`进行加锁，这是一种互斥锁，称做重量级锁
-  - [可重入锁 vs 非可重入锁：](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#5-%E5%8F%AF%E9%87%8D%E5%85%A5%E9%94%81-vs-%E9%9D%9E%E5%8F%AF%E9%87%8D%E5%85%A5%E9%94%81)
+  - [可重入锁 vs 非可重入锁：](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#5-%E5%8F%AF%E9%87%8D%E5%85%A5%E9%94%81-vs-%E9%9D%9E%E5%8F%AF%E9%87%8D%E5%85%A5%E9%94%81)
     - 可重入锁又名递归锁，是指在同一个线程在外层方法获取锁的时候，再进入该线程的内层方法会自动获取锁
   - 锁消除：即无锁。
   - 锁粗化：锁变大。
-  - [monitor](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/deep-understand-multi-thread.md#4-moniter%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86)
-  - [死锁？](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#6-java%E7%BA%A7%E5%88%AB%E7%9A%84%E6%AD%BB%E9%94%81)
+  - [monitor](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/deep-understand-multi-thread.md#4-moniter%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86)
+  - [死锁？](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#6-java%E7%BA%A7%E5%88%AB%E7%9A%84%E6%AD%BB%E9%94%81)
     - 死锁如何排查
     - 死锁的原因
     - 死锁的解决办法
   - 分布式锁
 - synchronized
-  - [synchronized是如何实现的？](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md#71-synchronized)
+  - [synchronized是如何实现的？](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md#71-synchronized)
   - synchronized和lock之间关系
   - 不使用synchronized如何实现一个线程安全的单例
-  - [synchronized和原子性、可见性和有序性之间的关系](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md#713-synchronized%E4%B8%8E%E5%8E%9F%E5%AD%90%E6%80%A7)
-- [volatile](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md#72-volatile)
+  - [synchronized和原子性、可见性和有序性之间的关系](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md#713-synchronized%E4%B8%8E%E5%8E%9F%E5%AD%90%E6%80%A7)
+- [volatile](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md#72-volatile)
   - happens-before
   - 内存屏障
   - 编译器指令重排和CPU指令重排
   - volatile的实现原理
   - volatile和原子性、可见性和有序性之间的关系
-  - [有了symchronized为什么还需要volatile](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md#727-%E6%97%A2%E7%94%9Fsynchronized%E4%BD%95%E7%94%9Fvolatile)
+  - [有了symchronized为什么还需要volatile](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md#727-%E6%97%A2%E7%94%9Fsynchronized%E4%BD%95%E7%94%9Fvolatile)
 - 写代码来解决生产者消费者问题
 - 并发包
   - https://www.hollischuang.com/archives/3912
@@ -800,7 +800,7 @@ finally和return的执行顺序
 
 掌握：
 
-- [class文件格式](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Class-strcture.md)
+- [class文件格式](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Class-strcture.md)
 
 - <img src="../images/posts/java/image-20200309162407940.png" alt="image-20200309162407940" style="zoom: 33%;" />
 
@@ -808,7 +808,7 @@ finally和return的执行顺序
 
 这个玩意可以帮我们看懂字节码，如果有增强字节码的需求也是看这里。主要是搞明白字节码结构图。java字节码是按照一定的规则来组成的，这样jvm才可以进行解释。
 
-- [运行时数据区：堆、栈、方法区、直接内存](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/jvm-memory-component-heap.md)
+- [运行时数据区：堆、栈、方法区、直接内存](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/jvm-memory-component-heap.md)
 
 这个玩意必须得区分清楚，尤其是堆栈方法区这三个。我们的关键是整明白，为什么要分这三个区？我的理解是：
 
@@ -823,7 +823,7 @@ finally和return的执行顺序
 
 这些的区分一定是为了效率。需要考虑变量的生命周期，访问的速度，空间大小，使用过程中是否保持有序。
 
-- [方法区和运行时常量池](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/method-area-constants-pool.md)
+- [方法区和运行时常量池](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/method-area-constants-pool.md)
 
 常量池分为**class常量池，运行时常量池，字符串常量池**。
 
@@ -833,9 +833,9 @@ class常量池中的字面量和符号引用（**符号引用主要是用来重�
 
 字符串常量池则比较复杂，在不同版本的虚拟机中是不同的，最开始在方法区中，后来移入到了堆中，在后来移动到了本地内存中。
 
-- [堆和栈区别](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/heap-vs-stack.md)
+- [堆和栈区别](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/heap-vs-stack.md)
 
-[Java中的对象一定在堆上分配吗？](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/jvm/stack-alloc.md)
+[Java中的对象一定在堆上分配吗？](https://gitee.com/hollischuang/toBeTopJavaer/blob/master/basics/jvm/stack-alloc.md)
 
 ### 1.3.2 Java内存模型
 
@@ -845,7 +845,7 @@ class常量池中的字面量和符号引用（**符号引用主要是用来重�
 
 内存屏障、synchronized、volatile、final、锁
 
-[java内存模型](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md)
+[java内存模型](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md)
 
 这个玩意需要我们好好去学，学好了这个也就入门了并发编程，这个复杂的问题，而这个问题，在面试中也是要必考的。我们需要回答：**Java内存模型是什么，为什么要有Java内存模型，Java内存模型解决了什么问题？**
 
@@ -879,7 +879,7 @@ class常量池中的字面量和符号引用（**符号引用主要是用来重�
 
 其中，最著名的协议是Intel 的MESI协议。MESI协议保证了**每个缓存中使用的共享变量的副本是一致的。**核心思想是：当CPU写数据时，如果发现操作的变量是共享变量，即在其他CPU中也存在该变量的副本，会发出信号通知其他CPU将该变量的缓存行置为无效状态，因此当其他CPU需要读取这个变量时，发现自己缓存中缓存该变量的缓存行是无效的，那么它就会从内存重新读取。
 
-我们需要了解[synchronized](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/deep-understand-multi-thread.md#1synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86)和volatile究竟是怎么实现的。
+我们需要了解[synchronized](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/deep-understand-multi-thread.md#1synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86)和volatile究竟是怎么实现的。
 
 - 其中Synchronized对原子性的保证是通过（monitorenter和monitorexit）来实现的，对可见性是通过(加锁来实现的），对有序性是通过（as-if-serial）语义来实现的。Synchronized能修饰变量，方法和代码块。
 
@@ -887,13 +887,13 @@ class常量池中的字面量和符号引用（**符号引用主要是用来重�
 
 ### 1.3.3 Java对象模型
 
-[对象模型](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/deep-understand-multi-thread.md#21-java的对象模型)
+[对象模型](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/deep-understand-multi-thread.md#21-java的对象模型)
 
 java的对象模型主要包含对象头，实例数据和对齐填充，主要是研究java的对象是怎么存储的。其中对象头是很重要的。
 
 到这里，我们需要对内存结构，内存模型和对象模型做一个区分：
 
-[内存结构vs内存模型vs对象模型](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/jvm-memoryStrcture-vs-memoryModel-vs-objectModel.md)
+[内存结构vs内存模型vs对象模型](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/jvm-memoryStrcture-vs-memoryModel-vs-objectModel.md)
 
 内存结构讲的是java内存的划分，和运行时区域有关系；
 
@@ -905,13 +905,13 @@ GC算法：标记清除、引用计数、复制、标记压缩、分代回收、
 
 GC参数、对象存活的判定、垃圾收集器（CMS、G1、ZGC、Epsilon）
 
-[垃圾回收](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/garbage-collection.md)
+[垃圾回收](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/garbage-collection.md)
 
 我们的学习思路是哪些内存需要回收？什么时候回收？如何回收？这几个问题。
 
-- [哪些内存需要回收](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/garbage-collection.md#12-%E5%93%AA%E4%BA%9B%E5%9E%83%E5%9C%BE%E9%9C%80%E8%A6%81%E5%9B%9E%E6%94%B6)
+- [哪些内存需要回收](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/garbage-collection.md#12-%E5%93%AA%E4%BA%9B%E5%9E%83%E5%9C%BE%E9%9C%80%E8%A6%81%E5%9B%9E%E6%94%B6)
   - 主要回收堆内存，方法区或者堆中的永久代（不同的jdk版本不同）也有可能回收。
-- [什么时候回收](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/garbage-collection.md#13-%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E8%BF%9B%E8%A1%8C%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6)：
+- [什么时候回收](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/garbage-collection.md#13-%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E8%BF%9B%E8%A1%8C%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6)：
   - 我们需要先判断一个对象有没有存活？
     - 引用计数法：当两个对象**相互引用**，但是二者已经没有作用时，按照常规，应该对其进行垃圾回收，但是其相互引用，又不符合垃圾回收的条件，因此无法完美处理这块内存清理。
     - 可达性分析算法:
@@ -952,7 +952,7 @@ GC参数、对象存活的判定、垃圾收集器（CMS、G1、ZGC、Epsilon）
 
 ### 1.3.5 HotSpot虚拟机
 
-[即时编译器、编译优化](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/HotSpot.md)等相关知识。
+[即时编译器、编译优化](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/HotSpot.md)等相关知识。
 
 优化对现阶段的我不是很重要。
 
@@ -968,7 +968,11 @@ GC参数、对象存活的判定、垃圾收集器（CMS、G1、ZGC、Epsilon）
 
 双亲委派，破坏双亲委派。
 
-[类加载机制](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/class-loader.md)
+[类加载机制](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/class-loader.md)
+
+加载，连接（验证，准备和解析），初始化。
+
+
 
 参考资料：
 
@@ -986,7 +990,7 @@ tomcat类加载有什么不同，说加载顺序并不是双亲模型，具体�
 
 ### 1.3.7 常用Java命令
 
- [常用Java命令](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/java-command.md)
+ [常用Java命令](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/java-command.md)
 
 javac 、javap 、jps、jstack,jinfo、jstat 、jmap 、jhat
 
@@ -1006,7 +1010,7 @@ jvisualvm:功能强大的控制台。
 
 ### 1.3.8 编译与反编译
 
-[Java中的编译与反编译](https://github.com/haojunsheng/JavaLearning/blob/master/jvmLearning/compile-decompile.md)
+[Java中的编译与反编译](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/compile-decompile.md)
 
 什么是编译？什么是反编译？Java如何编译代码，如何反编译代码？尝试反编译switch、String的“+”、lambda表达式、java 10的本地变量推断等。
 
@@ -1016,7 +1020,7 @@ switch对整数的支持是直接的，字符是转成ASCII码对应的整数，
 
 ## 1.4 Java EE
 
-[后端编程](https://github.com/haojunsheng/NetworkLearning/blob/master/http-server.md)
+[后端编程](https://gitee.com/haojunsheng/NetworkLearning/blob/master/http-server.md)
 
 Servlet,cookie,session,过滤器，Spring，IOC，AOP，Bean，ORM，Mybatis，Redis，Nginx。
 
@@ -1197,7 +1201,7 @@ I/O多路复用是I/O模型之一，其他还有同步阻塞，同步非阻塞�
 
 ## 4.1 基础网络概念@@@@@
 
-[基础网络概念](https://github.com/haojunsheng/NetworkLearning/blob/master/vbird.md)
+[基础网络概念](https://gitee.com/haojunsheng/NetworkLearning/blob/master/vbird.md)
 
 好多面试官会问7层：应用层，表示层，会话层，传输层，网络层，数据链路层和物理层。但其实工程上的实现都是5层。
 
@@ -1208,7 +1212,7 @@ I/O多路复用是I/O模型之一，其他还有同步阻塞，同步非阻塞�
   - 网络层的字段及其含义
   - 主要关注：TTL, Protocol, 来源地址与目标地址
   - ARP (Address Resolution Protocol, 网络地址解析) 
-- [传输层TCP/UDP](https://github.com/haojunsheng/NetworkLearning/blob/master/TCP.md)
+- [传输层TCP/UDP](https://gitee.com/haojunsheng/NetworkLearning/blob/master/TCP.md)
   - TCP的表头结构<img src="../images/posts/network/image-20200308224612504.png" alt="image-20200308224612504" style="zoom:50%;" />
     - **Sequence Number**是包的序号，**用来解决网络包乱序（reordering）问题。**
     - **Acknowledgement Number**就是ACK——用于确认收到，**用来解决不丢包的问题**。
@@ -1249,7 +1253,7 @@ I/O多路复用是I/O模型之一，其他还有同步阻塞，同步非阻塞�
 
 ## 4.2 Unix网络编程 @@@@@
 
-[unix网络编程](https://github.com/haojunsheng/NetworkLearning/blob/master/unix-network-socket-api.md)
+[unix网络编程](https://gitee.com/haojunsheng/NetworkLearning/blob/master/unix-network-socket-api.md)
 
 [Unix网络编程2](https://haojunsheng.github.io/2020/01/inter-process-communication/#24-%E5%A5%97%E6%8E%A5%E5%AD%97%E6%8E%A5%E5%8F%A3)
 
@@ -1275,13 +1279,13 @@ socket编程。
 
 ## 4.3 常见协议区分
 
-[常见协议的区别](https://github.com/haojunsheng/NetworkLearning/blob/master/protocol-diff-and-rpc.md)
+[常见协议的区别](https://gitee.com/haojunsheng/NetworkLearning/blob/master/protocol-diff-and-rpc.md)
 
 
 
 ## 4.4 后端编程
 
-[后端编程](https://github.com/haojunsheng/NetworkLearning/blob/master/http-server.md)
+[后端编程](https://gitee.com/haojunsheng/NetworkLearning/blob/master/http-server.md)
 
 RFC规范中定义了TCP/UDP的通信规范，像是3次握手，累积确认等，很复杂，我们于是抽象出来了socket的概念。大概是这样的：**(客户端IP, 客户端Port, 服务器端IP, 服务器端Port)**
 
@@ -1321,7 +1325,7 @@ RFC规范中定义了TCP/UDP的通信规范，像是3次握手，累积确认等
 
 ## 5.1 linux常用命令
 
-[linux常用命令](https://github.com/haojunsheng/JavaLearning/blob/master/Java-interview/Linux-normal-command.md)
+[linux常用命令](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-interview/Linux-normal-command.md)
 
 **1）grep、sed 以及 awk 命令**
 
@@ -1453,7 +1457,7 @@ D：依赖倒置原则（AOP）
 
 ## 6.1 单例模式 @@@@@
 
-[单例模式的实现方法](https://github.com/haojunsheng/JavaLearning/blob/master/Java-basic/seven-singleton-pattern.md)
+[单例模式的实现方法](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/seven-singleton-pattern.md)
 
 ```java
 // 懒汉模式
@@ -1509,7 +1513,7 @@ public class Singleton {
 
 # 7. 分布式算法
 
-[分布式参考](https://github.com/CyC2018/CS-Notes/blob/master/notes/%E5%88%86%E5%B8%83%E5%BC%8F.md)
+[分布式参考](https://gitee.com/CyC2018/CS-Notes/blob/master/notes/%E5%88%86%E5%B8%83%E5%BC%8F.md)
 
 单服务器无法满足需求-》多服务器-》状态复制-》串行化器-》两阶段提交-》Paxos-》raft-》zookeeper
 
