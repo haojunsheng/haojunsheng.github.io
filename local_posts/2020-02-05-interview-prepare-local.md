@@ -869,9 +869,9 @@ class常量池中的字面量和符号引用（**符号引用主要是用来重�
 
 **原子性**主要依靠：两个高级的字节码指令`monitorenter`和`monitorexit`，对应java中的`synchronized`。
 
-**可见性**是指每次修改完立即同步到主存，读取前从主存刷新，依靠`volatile`。
+**可见性**是指每次修改完立即同步到主存，读取前从主存刷新，依靠`volatile`。`synchronized`和`final`两个关键字也可以实现可见性，但是方式是不同的。
 
-我们使用`synchronized`和`volatile`来保证有序性，区别是`synchronized`关键字保证同一时刻只允许一条线程操作，`volatile`关键字会禁止指令重排。
+**有序性**：我们使用`synchronized`和`volatile`来保证有序性，区别是`synchronized`关键字保证同一时刻只允许一条线程操作，`volatile`关键字会禁止指令重排。
 
 我们好奇的是java的内存模型解决了缓存一致性问题，那么到底是怎么解决的呢？
 
