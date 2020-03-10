@@ -796,7 +796,7 @@ finally和return的执行顺序
 
 ## 1.3 jvm @@@@@
 
-### 1.3.1 jvm内存结构
+### 1.3.1 jvm内存结构 @@@@@
 
 掌握：
 
@@ -837,7 +837,7 @@ class常量池中的字面量和符号引用（**符号引用主要是用来重�
 
 [Java中的对象一定在堆上分配吗？](https://gitee.com/hollischuang/toBeTopJavaer/blob/master/basics/jvm/stack-alloc.md)
 
-### 1.3.2 Java内存模型
+### 1.3.2 Java内存模型 @@@@@
 
 计算机内存模型、缓存一致性、MESI协议
 
@@ -867,9 +867,9 @@ class常量池中的字面量和符号引用（**符号引用主要是用来重�
 
 我们可以看到的是java为我们提供了这些关键字`volatile`、`synchronized`、`final`、`concurren`来封装了java内存模型底层的实现了。
 
-原子性主要依靠：两个高级的字节码指令`monitorenter`和`monitorexit`，对应java中的`synchronized`。
+**原子性**主要依靠：两个高级的字节码指令`monitorenter`和`monitorexit`，对应java中的`synchronized`。
 
-可见性是指每次修改完立即同步到主存，读取前从主存刷新，依靠`volatile`。
+**可见性**是指每次修改完立即同步到主存，读取前从主存刷新，依靠`volatile`。
 
 我们使用`synchronized`和`volatile`来保证有序性，区别是`synchronized`关键字保证同一时刻只允许一条线程操作，`volatile`关键字会禁止指令重排。
 
@@ -885,7 +885,7 @@ class常量池中的字面量和符号引用（**符号引用主要是用来重�
 
 - Volatile对可见性是通过（强制刷新内存，强制从内存读进行实现的），对有序性是通过禁止指令重排实现的(增加了内存屏障)。但是不能保证原子性，因为并没有加锁。Volatile只能修饰变量，不能修饰方法和代码块。
 
-### 1.3.3 Java对象模型
+### 1.3.3 Java对象模型@@@@
 
 [对象模型](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/deep-understand-multi-thread.md#21-java的对象模型)
 
@@ -899,7 +899,7 @@ java的对象模型主要包含对象头，实例数据和对齐填充，主要�
 
 内存模型用来解决java的并发编程问题的，和原子性，有序性，可见性有关。
 
-### 1.3.4 Java的垃圾回收机制
+### 1.3.4 Java的垃圾回收机制 @@@@
 
 GC算法：标记清除、引用计数、复制、标记压缩、分代回收、增量式回收
 
@@ -950,7 +950,7 @@ GC参数、对象存活的判定、垃圾收集器（CMS、G1、ZGC、Epsilon）
       - **初始标记，并发标记，最终标记，筛选回收。**
   - 可以阅读垃圾回收日志
 
-### 1.3.5 HotSpot虚拟机
+### 1.3.5 HotSpot虚拟机 @
 
 [即时编译器、编译优化](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/HotSpot.md)等相关知识。
 
@@ -964,31 +964,84 @@ GC参数、对象存活的判定、垃圾收集器（CMS、G1、ZGC、Epsilon）
 
 [对象和数组并不是都在堆上分配内存的。-HollisChuang's Blog](http://www.hollischuang.com/archives/2398)
 
-### 1.3.6 类加载机制
+### 1.3.6 类加载机制 @@@@@
 
 双亲委派，破坏双亲委派。
 
 [类加载机制](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/class-loader.md)
 
+**java类装载器**有三个，分别是BootStrap（加载java核心类），ExtClassLoader（加载扩展类），AppClassLoader（加载指定路径类）。
+
+双亲加载模型指的不是2个父亲，而是指父类和bootstrap classloader。
+
+加载过程，先是父类加载，加载失败，让引导器加载，都失败，自己加载。
+
+**类加载器**简言之，就是用于把`.class`文件中的**字节码信息**转化为具体`的java.lang.Class`**对象**的过程的工具。
+
+具体过程：
+
+1. 在实际类加载过程中，`JVM`会将所有的`.class`字节码文件中的**二进制数据**读入内存中，导入运行时数据区的**方法区**中。
+2. 当一个类首次被**主动加载**或**被动加载**时，类加载器会对此类执行类加载的流程 – **加载**、**连接**（**验证**、**准备**、**解析**）、**初始化**。
+3. 如果类加载成功，**堆内存**中会产生一个新的`Class`对象，`Class`对象封装了类在**方法区**内的**数据结构**。
+
 加载，连接（验证，准备和解析），初始化。
 
+- 加载：查找并加载类的**二进制数据**的过程。
+  - 通过类的**全限定名**定位`.class`文件，并获取其**二进制字节流**。
+  - 把字节流所代表的**静态存储结构**转换为**方法区**的**运行时数据结构**。
+  - 在`Java`**堆**中生成一个此类的`java.lang.Class`对象，作为方法区中这些数据的**访问入口**。
+- 连接
+  - 验证：保证字节流符合虚拟机的要求，并且不会危害虚拟机自身的安全。
+  - 准备：为类的**静态变量**分配内存，并将其初始化为**默认值**。准备过程通常分配一个结构用来存储类信息，这个结构中包含了类中定义的**成员变量**，**方法**和**接口信息**等。
+  - 解析：把类中对**常量池**内的**符号引用**转换为**直接引用**。
+- 初始化
+  - 对**类静态变量**赋予正确的初始值 (注意和连接时的**解析过程**区分开)。
 
+**对象的初始化顺序**：
 
-参考资料：
+静态变量/静态代码块 -> 普通代码块 -> 构造函数
 
-[Java类的加载、链接和初始化-HollisChuang's Blog](http://www.hollischuang.com/archives/201)
+1. 父类**静态变量**和**静态代码块**（先声明的先执行）； 
 
-[深度分析Java的ClassLoader机制（源码级别）-HollisChuang's Blog](http://www.hollischuang.com/archives/199)
+2. 子类**静态变量**和**静态代码块**（先声明的先执行）； 
+3. 父类**普通成员变量**和**普通代码块**（先声明的先执行）； 
 
-[双亲委派模型与自定义类加载器 - ImportNew](http://www.importnew.com/24036.html)
+4. 父类的**构造函数**；
+
+5. 子类**普通成员变量**和**普通代码块**（先声明的先执行）； 
+
+6. 子类的**构造函数**。
 
 [Java双亲委派模型及破坏 - CSDN博客](https://blog.csdn.net/zhangcanyan/article/details/78993959)
 
 tomcat类加载有什么不同，说加载顺序并不是双亲模型，具体顺序说一下
 
+我们来看下为什么要破坏双亲模型？
 
+1. 隔离性。一个web容器可能需要部署两个应用程序，不同的应用程序可能会依赖**同一个第三方类库的不同版本**，不能要求同一个类库在同一个服务器只有一份，因此要保证每个应用程序的类库都是独立的，保证相互隔离。
+2. **灵活性**：Web应用之间的类加载器相互独立，那么就能针对一个Web应用进行重新部署，此时Web应用的类加载器会被重建，而且不会影响其他的Web应用。如果采用一个类加载器，类之间的依赖是杂乱复杂的，无法完全移出某个应用的类。
+3. **性能**：部署在同一个Web容器上的两个Web应用程序所使用的Java类库可以互相共享。这个需求也很常见，例如，用户可能有10个使用Spring组织的应用程序部署在同一台服务器上，如果把10份Spring分别存放在各个应用程序的隔离目录中，将会是很大的资源浪费
 
-### 1.3.7 常用Java命令
+所以tomcat重新定义了类加载器。
+
+<img src="../images/posts/java/image-20200310111510343.png" alt="image-20200310111510343" style="zoom:25%;" />
+
+**Common**：以应用类加载器为父类，是tomcat顶层的公用类加载器，其路径由conf/catalina.properties中的common.loader指定，默认指向${catalina.home}/lib下的包。
+
+**Catalina**：以Common类加载器为父类，是用于加载Tomcat应用服务器的类加载器，其路径由server.loader指定，默认为空，此时tomcat使用Common类加载器加载应用服务器。
+
+**Shared**：以Common类加载器为父类，是所有Web应用的父类加载器，其路径由shared.loader指定，默认为空，此时tomcat使用Common类加载器作为Web应用的父加载器。
+
+**Web应用**：以Shared类加载器为父类，加载/WEB-INF/classes目录下的未压缩的Class和资源文件以及/WEB-INF/lib目录下的jar包，该类加载器只对当前Web应用可见，对其他Web应用均不可见。
+
+Web应用类加载器默认的加载顺序是：
+
+(1).先从缓存中加载；
+ (2).如果没有，则从JVM的Bootstrap类加载器加载；
+ (3).如果没有，则从当前类加载器加载（按照WEB-INF/classes、WEB-INF/lib的顺序）；
+ (4).如果没有，则从父类加载器加载，由于父类加载器采用默认的委派模式，所以加载顺序是AppClassLoader、Common、Shared。
+
+### 1.3.7 常用Java命令 @@@
 
  [常用Java命令](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/java-command.md)
 
@@ -1008,7 +1061,7 @@ jconsole:简易的可视化控制台。
 
 jvisualvm:功能强大的控制台。
 
-### 1.3.8 编译与反编译
+### 1.3.8 编译与反编译 @@
 
 [Java中的编译与反编译](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/compile-decompile.md)
 
