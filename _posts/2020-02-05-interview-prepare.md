@@ -51,6 +51,7 @@ tag: 面试
             * [1.1.5.2 BIO NIO AIO区别 @@@@@](#1152-bio-nio-aio区别-)
          * [1.1.6 反射](#116-反射)
          * [1.1.7 序列化](#117-序列化)
+      * [为什么序列化](#为什么序列化)
          * [1.1.8 注解](#118-注解)
          * [1.1.9 泛型](#119-泛型)
          * [1.1.10 异常](#1110-异常)
@@ -59,14 +60,14 @@ tag: 面试
          * [1.2.1 并发与并行](#121-并发与并行)
          * [1.2.2 线程](#122-线程)
       * [1.3 jvm @@@@@](#13-jvm-)
-         * [1.3.1 jvm内存结构](#131-jvm内存结构)
-         * [1.3.2 Java内存模型](#132-java内存模型)
-         * [1.3.3 Java对象模型](#133-java对象模型)
-         * [1.3.4 Java的垃圾回收机制](#134-java的垃圾回收机制)
-         * [1.3.5 HotSpot虚拟机](#135-hotspot虚拟机)
-         * [1.3.6 类加载机制](#136-类加载机制)
-         * [1.3.7 常用Java命令](#137-常用java命令)
-         * [1.3.8 编译与反编译](#138-编译与反编译)
+         * [1.3.1 jvm内存结构 @@@@@](#131-jvm内存结构-)
+         * [1.3.2 Java内存模型 @@@@@](#132-java内存模型-)
+         * [1.3.3 Java对象模型@@@@](#133-java对象模型)
+         * [1.3.4 Java的垃圾回收机制 @@@@](#134-java的垃圾回收机制-)
+         * [1.3.5 HotSpot虚拟机 @](#135-hotspot虚拟机-)
+         * [1.3.6 类加载机制 @@@@@](#136-类加载机制-)
+         * [1.3.7 常用Java命令 @@@](#137-常用java命令-)
+         * [1.3.8 编译与反编译 @@](#138-编译与反编译-)
       * [1.4 Java EE](#14-java-ee)
          * [1.4.1 Servlet](#141-servlet)
          * [1.4.2 Cookie和Session有什么区别？](#142-cookie和session有什么区别)
@@ -92,7 +93,7 @@ tag: 面试
    * [7. 分布式算法](#7-分布式算法)
    * [8. 密码学算法](#8-密码学算法)
 
-<!-- Added by: anapodoton, at: Mon Mar  9 22:55:48 CST 2020 -->
+<!-- Added by: anapodoton, at: Wed Mar 11 18:30:26 CST 2020 -->
 
 <!--te-->
 
@@ -395,31 +396,65 @@ Object – 是所有类的根类，任何类的对象都可以设置给该Object
   | 加载因子   | 0.5                                                          | 1                                                            |                                                              |                                                              |
   
 - set无序不可重复
-  
+
   |          | HashSet | TreeSet |
   | -------- | ------- | ------- |
   | 初始容量 | 16      |         |
   | 加载因子 | 0.75    |         |
   | 扩容     | 2倍     |         |
-  
+
+  HashSet基于HashMap。
+
+  1. HashSet怎么保证添加元素不重复？
+
+     HashSet内部使用HashMap的key存储元素，以此来保证元素不重复；
+
+  2. HashSet是有序的吗？
+
+     HashSet是无序的，因为HashMap的key是无序的；
+
+  3. HashSet是否允许null元素？
+
+     HashSet中允许有一个null元素，因为HashMap允许key为null；
+
+  4. HashSet是非线程安全的；
+
+  5. HashSet是没有get()方法的；
+
+  6. LinkedHashSet的底层使用LinkedHashMap存储元素。
+
+  7. LinkedHashSet是有序的吗？怎么个有序法？
+
+     LinkedHashSet是有序的，它是按照插入的顺序排序的。
+
+  8. TreeSet底层使用NavigableMap存储元素；
+
+  9. TreeSet是有序的；
+
+  10. TreeSet是非线程安全的；
+
+  11. TreeSet实现了NavigableSet接口，而NavigableSet继承自SortedSet接口；
+
+  12. TreeSet实现了SortedSet接口；
+
   - queue
-  
+
 - [map](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md)：保存相关联的值键对  
 
-  |            | HashMap                                                      | HashTable             | LinkedHashMap | ConcurrentHashMap    | TreeMap |
-  | ---------- | ------------------------------------------------------------ | --------------------- | ------------- | -------------------- | ------- |
-  | null       | 键和值都可以为null                                           |                       |               | 键和值都不允许为null |         |
-  | 线程安全   | 否                                                           | 是                    |               | 是                   |         |
-  | 插入顺序   | 否                                                           |                       | 插入有序      |                      |         |
-  | 加锁粒度   |                                                              | 方法                  |               | 代码块               |         |
-  | 继承关系   | AbstractMap                                                  | Dictionary            |               |                      |         |
-  | 容量和扩容 | 初始16，扩容*2                                               | 初始11，扩容old*2+1   |               |                      |         |
-  | hash值     | [重新计算](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md#43-hashmap%E4%B8%AD%E7%9A%84hash%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0) | 对象的hashCode        |               |                      |         |
-  | 遍历方式   | Iterator                                                     | Enumeration，Iterator |               |                      |         |
-| 加载因子   | 0.75                                                         |                       |               |                      |         |
+  |            | HashMap                                                      | HashTable              | LinkedHashMap | ConcurrentHashMap    | TreeMap |
+  | ---------- | ------------------------------------------------------------ | ---------------------- | ------------- | -------------------- | ------- |
+  | null       | 键和值都可以为null                                           | 键和值都不允许为null   |               | 键和值都不允许为null |         |
+  | 线程安全   | 否                                                           | 是                     |               | 是                   |         |
+  | 插入顺序   | 否(插入的时候算hash)                                         |                        | 插入有序      |                      |         |
+  | 加锁粒度   |                                                              | 方法                   |               | 代码块               |         |
+  | 继承关系   | AbstractMap                                                  | Dictionary             |               |                      |         |
+  | 容量和扩容 | 初始16，扩容*2                                               | 初始11，扩容old*2+1    |               |                      |         |
+  | hash值     | [重新计算](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md#43-hashmap%E4%B8%AD%E7%9A%84hash%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0) | 直接使用对象的hashCode |               |                      |         |
+  | 遍历方式   | Iterator                                                     | Enumeration，Iterator  |               |                      |         |
+| 加载因子   | 0.75                                                         |                        |               |                      |         |
   
 
-（1）HashMap是一种散列表，采用（数组 + 链表 + 红黑树）的存储结构；
+（1）HashMap是一种散列表，采用（数组(也称为桶) + 链表 + 红黑树）的存储结构；
 
 （2）HashMap的默认初始容量为16（1<<4），默认装载因子为0.75f，容量总是2的n次方；
 
@@ -433,7 +468,63 @@ Object – 是所有类的根类，任何类的对象都可以设置给该Object
 
 （7）HashMap是非线程安全的容器；
 
-（8）HashMap查找添加元素的时间复杂度都为O(1)；
+（8）HashMap数组的查询效率为O(1)，链表的查询效率是O(k)，红黑树的查询效率是O(log k)
+
+**HashMap的核心概念**：
+
+- size 和 capacity:
+  - Size记录了Map中KV对的个数,数组的长度(实际的长度)
+  - capacity:最多装的元素
+- loadFactor和
+  - loadFactor：用来衡量HashMap满的程度，loadFactor的默认值为0.75f
+    - 0.75有一个好处，那就是**0.75正好是3/4，而capacity又是2的幂。所以，两个数的乘积都是整数**。
+  - threshold：临界值，当实际KV个数超过threshold时，HashMap会将容量扩容，threshold＝容量*加载因子。
+
+**HashMap的初始化问题：**
+
+**HashMap中的hash算法实现**
+
+- hash ：该方法主要是将Object转换成一个整型。
+- indexFor ：该方法主要是将hash生成的整型转换成链表数组中的下标。
+
+**hashCode(确定对象是属于哪个桶的)和equals(桶中的各个对象之前区分)方法的作用，二者有什么关系?**
+
+- 如果两个对象相等，那么他们一定有相同的哈希值（hash code）。
+- 如果两个对象的哈希值相等，那么这两个对象有可能相等也有可能不相等。
+
+
+
+二叉查找树(BST):
+
+1.**左**子树上所有结点的值均**小于或等于**它的根结点的值。
+
+2.**右**子树上所有结点的值均**大于或等于**它的根结点的值。
+
+3.左、右子树也分别为二叉查找树。
+
+但是可能出现左右子树失衡的情况，有人提出了AVL树，有人提出了红黑树。
+
+平衡二叉树必须具备如下特性：**它是一棵空树或它的左右两个子树的高度差的绝对值不超过1，并且左右两个子树都是一棵平衡二叉树。也就是说该二叉树的任何一个等等子节点，其左右子树的高度都相近。**
+
+AVL树的特点是，由于非常平衡，在插入和删除的时候，需要不断的调整树结构，很麻烦，所以引入了红黑树。
+
+红黑树()：
+
+1.节点是红色或黑色。
+
+2.根节点是黑色。
+
+3.每个叶子节点都是黑色的空节点（NIL节点）。
+
+4 每个红色节点的两个子节点都是黑色。(从每个叶子到根的所有路径上不能有两个连续的红色节点)
+
+5.从任一节点到其每个叶子的所有路径都包含相同数目的黑色节点。
+
+推论：**红黑树从根节点到叶子的最长路径不会超过最短路径的2倍**。
+
+添加或者删除节点的时候，可能会出现不满足红黑树性质的情况，这个时候我们需要进行调整，调整的方法有**变色和旋转**。变色分为红变黑和黑变红。
+
+**本质上我们是使用红色和黑色来追踪树的高度，左旋的本质是增加左树的高度，右旋的本质是增加右树的高度。**
 
 [HashMap的实现](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md#43-hashmap%E4%B8%AD%E7%9A%84hash%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0)；
 
@@ -480,17 +571,17 @@ Object – 是所有类的根类，任何类的对象都可以设置给该Object
 
 集合中的快速失败：当多个线程对部分集合进行结构上的改变的操作时，有可能会产生fail-fast机制，这个时候就会抛出ConcurrentModificationException（后文用CME代替）。
 
-**之所以会抛出CMException异常，是因为我们的代码中使用了增强for循环，而在增强for循环中，集合遍历是通过iterator进行的，但是元素的add/remove却是直接使用的集合类自己的方法。这就导致iterator在遍历的时候，会发现有一个元素在自己不知不觉的情况下就被删除/添加了，就会抛出一个异常，用来提示用户，可能发生了并发修改！**
+**之所以会抛出CMException异常，是因为我们的代码中使用了增强for循环，而在增强for循环中，集合遍历是通过iterator进行的，但是元素的add/remove却是直接使用的集合类自己的方法。这就导致iterator在遍历的时候（会比较expectedModCount和modCount），会发现有一个元素在自己不知不觉的情况下就被删除/添加了，就会抛出一个异常，用来提示用户，可能发生了并发修改！**
 
 遍历删除List中的元素有很多种方法，当运用不当的时候就会产生问题。下面主要看看以下几种遍历删除List中元素的形式：
 
-1.通过增强的for循环删除符合条件的多个元素
+1.通过增强的for循环删除符合条件的多个元素(CME)
 
-2.通过增强的for循环删除符合条件的一个元素
+2.通过增强的for循环删除符合条件的一个元素(正常)
 
-3.通过普通的for删除删除符合条件的多个元素
+3.通过普通的for删除删除符合条件的多个元素(无异常，但结果可能错误)
 
-4.通过Iterator进行遍历删除符合条件的多个元素
+4.通过Iterator进行遍历删除符合条件的多个元素(使用Iterator的remove方法正常，使用集合的remove则CME异常)
 
 **安全失败：**
 
@@ -540,7 +631,6 @@ Set特点：元素无放入顺序，元素不可重复。 无顺序，即先放�
 | ---- | ---- | ---- |
 | 顺序 | 有   | 无   |
 | 重复 | 可以 | 不可 |
-|      |      |      |
 
 #### 1.1.3.9 set如何保证元素不重复 @@@@@
 
@@ -557,6 +647,8 @@ Set特点：元素无放入顺序，元素不可重复。 无顺序，即先放�
 TreeSet的底层是TreeMap的keySet()，而TreeMap是基于红黑树实现的，红黑树是一种平衡二叉查找树，它能保证任何一个节点的左右子树的高度差不会超过较矮的那棵的一倍。
 
 TreeMap是按key排序的，元素在插入TreeSet时compareTo()方法要被调用，所以TreeSet中的元素要实现Comparable接口。TreeSet作为一种Set，它不允许出现重复元素。TreeSet是用compareTo()来判断重复元素的。
+
+
 
 #### 1.1.3.10 Collection和Collections区别
 
@@ -592,25 +684,55 @@ Java 1.7 之前 switch 参数可用类型为 short、byte、int、char，枚举�
 
 ### 1.1.5 IO 
 
-[java i/o完全解读](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-IO/Java-IO-all.md)
-
 [什么是比特？什么是字节？什么是字符？它们长度是多少？各有什么区别？](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-io-detail.md#1-%E4%BB%80%E4%B9%88%E6%98%AF-io)
 
+
+
 [什么是流？Java IO中包含哪几种流，之间的关系是怎样的？字节流和字符流的区别? 什么是输入流和输出流，如何区分？字节流和字符流之间如何相互转换。](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-io-detail.md#2-%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3java-%E6%B5%81stream)
+
+
 
 #### 1.1.5.1 I/O模型 @@@@@
 
 [同步、异步、阻塞、非阻塞、Linux 5种IO模型](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-io-detail.md#7-%E4%BA%94%E7%A7%8Dio%E6%A8%A1%E5%9E%8B)
 
+[同步、异步](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/synchronized-vs-asynchronization.md)，是描述被调用方的。
+
+阻塞，非阻塞，是描述调用方的。
+
+同步不一定阻塞，异步也不一定非阻塞。没有必然关系。
+
+
+
+I/O工作模型，一个输入操作通常包括两个不同的阶段：
+
+(1) 等待数据准备好；
+
+(2) 从内核向进程复制数据。
+
+- 阻塞式I/O模型：两个阶段都阻塞
+- **非阻塞式I/O模型**
+- I/O复用模型(select/poll)：都阻塞，但是不阻塞在IO上。
+  - select：该函数允许进程指示内核等待多个事件中的任何一个发生，并只在有一个或多个事件发生或经历一段指定的时间后才唤醒它。**当select函数返回后，可以通过遍历fdset，来找到就绪的描述符。**
+  - poll:pollfd结构包含了要监视的event和发生的event，不再使用select“参数-值”传递的方式。和select函数一样，poll返回后，需要轮询pollfd来获取就绪的描述符。
+  - epoll：不需要轮询获取就绪的描述符。
+  - 在 select/poll中，进程只有在调用一定的方法后，内核才对所有监视的文件描述符进行扫描，而**epoll事先通过epoll_ctl()来注册一 个文件描述符，一旦基于某个文件描述符就绪时，内核会采用类似callback的回调机制，迅速激活这个文件描述符，当进程调用epoll_wait() 时便得到通知**。(`此处去掉了遍历文件描述符，而是通过监听回调的的机制`。这正是epoll的魅力所在。)
+- **信号驱动式I/O模型(sigio)**
+- 异步I/O模型
+
 #### 1.1.5.2 BIO NIO AIO区别 @@@@@
 
 [BIO、NIO和AIO的区别、三种IO的用法与原理](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-io-detail.md#6-bio-vs-nio-vs-aio)
 
-需要掌握socket和linux select poll epoll。
+- BIO(Blocking I/O):同步阻塞I/O模式,数据的读取写入必须阻塞在一个线程内等待其完成。
+- NIO （New I/O）：同时支持阻塞与非阻塞模式。
+- AIO （ Asynchronous I/O）：异步非阻塞I/O模型。**异步非阻塞与同步非阻塞的区别在哪里？异步非阻塞无需一个线程去轮询所有IO操作的状态改变，在相应的状态改变后，系统会通知对应的线程来处理。**
 
 ### 1.1.6 反射
 
-[反射与工厂模式](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-reflect/java-factory-union-reflect.md)
+[反射与工厂模式](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-reflect-dynamic-proxy.md#%E5%8F%8D%E5%B0%84%E4%B8%8E%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F)
+
+
 
 **反射有什么作用**：
 
@@ -634,7 +756,9 @@ java.lang.reflect.*
 
 动态代理和反射的关系
 
-动态代理的几种实现方式
+- 动态代理的几种实现方式
+  - JDK动态代理:定义接口，实现兄弟类
+  - Cglib动态代理：实现子类
 
 AOP
 
@@ -642,9 +766,16 @@ AOP
 
 [序列化](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-serialize.md)
 
-什么是序列化与反序列化、为什么序列化、序列化底层原理、序列化与单例模式、protobuf、为什么说序列化并不安全
+- 什么是序列化与反序列化？
+  - **序列化 (Serialization)是将对象的状态信息转换为可以存储或传输的形式的过程。**
 
-
+- 为什么序列化
+  - 
+- 序列化底层原理
+  - writeObject和readObject方法
+- 序列化与单例模式
+- protobuf
+- 为什么说序列化并不安全
 
 ### 1.1.8 注解
 
@@ -663,10 +794,6 @@ AOP
 泛型与继承、类型擦除、[泛型中K T V E ？ object等的含义](https://gitee.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/k-t-v-e.md)、泛型各种用法
 
 限定通配符和非限定通配符、上下界限定符extends 和 super
-
-[List和原始类型List之间的区别?](https://gitee.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/genericity-list.md)
-
-[List和List之间的区别是什么?](https://gitee.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/genericity-list-wildcard.md)
 
 ### 1.1.10 异常
 
@@ -698,13 +825,14 @@ finally和return的执行顺序
 
 并发与并行的区别
 
-[并发与并行](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-Concurrent-programming/1-what-is-thread-safe.md)
+[并发与并行](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/1-what-is-thread-safe.md)
 
 并行是指有2个及以上CPU。
 
 ### 1.2.2 线程
 
 - [线程的实现](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#2-%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%AE%9E%E7%8E%B0)
+  
   - 内核线程
     - 特点：内核完成线程的切换，1:1
     - 优点：
@@ -717,66 +845,175 @@ finally和return的执行顺序
     - 缺点：用户完成进程的切换，调度很困难.进程可能完全被阻塞
   - 使用用户线程加轻量级进程混合实现（GO里面叫做协程）
     - 特点：N:M
-    - 优点：**用户线程还是完全建立在用户空间中，因此用户线程的创建、切换、析构等操作依然廉价，并且可以支持大规模的用户线程并发。**
+    - 优点：**用户线程还是完全建立在用户空间中，因此用户线程的创建、切换、析构等操作依然廉价，并且可以支持大规模的用户线程并发。**线程调度功能及处理器映射，系统调用通过内核线程来完成。
+  
 - [线程与进程的区别](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/1-what-is-thread-safe.md#3-%E5%A4%9A%E7%BA%BF%E7%A8%8B)
+  
   - **进程是资源分配的基本单元，线程是执行的基本单元，同一个进程的多个线程之间共享资源。**
+  
 - [线程的状态](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#3-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81)
-  - 新建，就绪，运行，阻塞，等待，终止
+  
+  - 新建，就绪(需要时间片)，运行，阻塞(需要资源)，等待(需要其他线程通知)，终止
   - sleep 和 wait
   - wait 和 notify
   - notify 和 notifyAll
+  
 - [优先级](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#5-%E7%BA%BF%E7%A8%8B%E4%BC%98%E5%85%88%E7%BA%A7)
+  
   - 最小是1，最大是10，正常是5
+  
 - [线程调度](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#4-%E7%BA%BF%E7%A8%8B%E7%9A%84%E8%B0%83%E5%BA%A6)
   - 一个线程想要从就绪状态变成运行中状态，这个过程需要系统调度，即给线程分配CPU的使用权，获得CPU使用权的线程才会从就绪状态变成运行状态。给多个线程按照特定的机制分配CPU的使用权的过程就叫做线程调度。
   - 协同式调度(自己工作完了,把CPU交给其他的线程)
   - 抢占式调度(java默认模型)
+  
 - [创建线程的多种方式](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/3-java-thread-create-four-way.md)
+  
   - 继承Thread类创建线程
+  
+    ```java
+    SubClassThread subClassThread = new SubClassThread();
+    subClassThread.start(); 
+    class SubClassThread extends Thread {
+        @Override
+        public void run() {
+            System.out.println(getName());
+        }
+    }
+    ```
+  
   - 实现Runnable接口创建线程
     - 二者之间的区别是，一旦java是单继承的，所以最好使用Runnable
-    - 二者共同的缺点是：在执行完任务之后无法获取执行结果。
-  - 通过Callable和FutureTask创建线程
-  - 通过线程池创建线程
+    
+    - 二者共同的缺点是：**在执行完任务之后无法获取执行结果**。
+    
+    - ```java
+      RunnableThread runnableThread = new RunnableThread();
+      new Thread(runnableThread).start();
+      class RunnableThread implements Runnable {
+      
+          @Override
+          public void run() {
+              System.out.println(Thread.currentThread().getName());
+          }
+      }
+      ```
+    
+  - 通过Callable和FutureTask创建线程,可以在执行完任务之后无法获取执行结果。
+  
+    ```java
+    	CallableThread callableThread = new CallableThread();
+      FutureTask futureTask = new FutureTask<>(callableThread);
+      new Thread(futureTask).start();
+      System.out.println(futureTask.get());
+    class CallableThread implements Callable {
+        @Override
+        public Object call() throws Exception {
+            System.out.println(Thread.currentThread().getName());
+            return "Hollis";
+        }
+    }
+    ```
+  
+  - 通过线程池创建线程，线程池本质是一个hashset。多余的任务会放在阻塞队列中。
+  
+    ```java
+    ExecutorService executorService = new ThreadPoolExecutor(1, 1, 60L, TimeUnit.SECONDS,
+                new ArrayBlockingQueue<Runnable>(10));
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println(Thread.currentThread().getName());
+                }
+            });
+    ```
+  
 - [守护线程](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#6-%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B)
   - 常见的是GC线程
   - 通过setDaemon()可以设置守护线程
   - 只有守护线程的情况下，jvm将退出
+  
 - [ThreadLocal](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#7-threadlocal)
+
+  - **通过为每一个线程创建一份共享变量的副本**来保证各个线程之间的变量的访问和修改互相不影响；
+  - **ThreadLocal 适用于每个线程需要自己独立的实例且该实例需要在多个方法中被使用，也即变量在线程间隔离而在方法或类间共享的场景。**
+  - 每个线程持有一个 Map 并维护了 ThreadLocal 对象与具体实例的映射，该 Map 由于只被持有它的线程访问，故不存在线程安全以及锁的问题。
+
 - [线程池](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/4-java-thread-pool.md)
   - 池化技术：提前保存大量的资源。
     - 线程池、连接池、内存池、对象池等。
-  - 线程池原理：预先创建好多个线程，放在池中，这样可以在需要使用线程的时候直接获取，避免多次重复创建、销毁带来的开销。
+  - 线程池原理：预先创建好多个线程，放在池中，这样可以在需要使用线程的时候直接获取，避免多次重复创建、销毁带来的开销。线程池本质是一个hashSet。多余的任务会放在阻塞队列中,只有当阻塞队列满了后，才会触发非核心线程的创建。所以非核心线程只是临时过来打杂的。直到空闲了，然后自己关闭了。线程池提供了两个钩子（beforeExecute，afterExecute）给我们，我们继承线程池，在执行任务前后做一些事情。线程池原理关键技术：锁（lock,cas）、阻塞队列、hashSet（资源池）
+    - ThreadPoolExecutor
+      - corePoolSize: 核心线程数量，可以类比正式员工数量，常驻线程数量。
+      - maximumPoolSize: 最大的线程数量，公司最多雇佣员工数量。常驻+临时线程数量。
+      - workQueue：多余任务等待队列，再多的人都处理不过来了，需要等着，在这个地方等。
+      - keepAliveTime：非核心线程空闲时间，就是外包人员等了多久，如果还没有活干，解雇了。
+      - threadFactory: 创建线程的工厂，在这个地方可以统一处理创建的线程的属性。每个公司对员工的要求不一样，恩，在这里设置员工的属性。
+      - handler：线程池拒绝策略，什么意思呢？就是当任务实在是太多，人也不够，需求池也排满了，还有任务咋办？默认是不处理，抛出异常告诉任务提交者，我这忙不过来了。
+      - <img src="/images/posts/java/image-20200311110424520.png" alt="image-20200311110424520" style="zoom:33%;" />
   - 自己设计线程池
   - submit() 
   - execute()
   - 为什么不允许使用Executors创建线程池
+  
 - [锁](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md)
+
   - [数据库相关锁机制](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#11-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E9%94%81%E6%9C%BA%E5%88%B6)
+
+  - <img src="/images/posts/java/image-20200311112023286.png" alt="image-20200311112023286" style="zoom:33%;" />
+
   - [乐观锁与悲观锁](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#1-%E4%B9%90%E8%A7%82%E9%94%81-vs-%E6%82%B2%E8%A7%82%E9%94%81)：线程要不要锁住同步资源
-    - 悲观锁是一定使用了锁机制的，乐观锁则并未真正加锁。实现方式有版本号和CAS
+    
+    - 悲观锁是一定使用了锁机制的（适合写操作多），乐观锁则并未真正加锁(适合读操作多)。实现方式有版本号和CAS
     - [CAS](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#3-%E4%B9%90%E8%A7%82%E9%94%81%E7%9A%84%E4%B8%80%E7%A7%8D%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8Fcas)
       - **Compare and Swap**(`CAS`)
-  - [自旋锁vs阻塞锁](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#2-%E8%87%AA%E6%97%8B%E9%94%81-vs-%E9%80%82%E5%BA%94%E6%80%A7%E8%87%AA%E6%97%8B%E9%94%81)：到底要不要放弃处理器的执行时间。阻塞锁是放弃了CPU时间，进入了等待区，等待被唤醒。而自旋锁是一直“自旋”在那里，时刻的检查共享资源是否可以被访问。
-  - [偏向锁vs轻量级锁vs重量级锁](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#3-%E6%97%A0%E9%94%81-vs-%E5%81%8F%E5%90%91%E9%94%81-vs-%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81-vs-%E9%87%8D%E9%87%8F%E7%BA%A7%E9%94%81)：对性能影响的大小
+      - 存在ABA问题，循环时间长开销大，只能保证一个共享变量的原子操作
+    
+  - [阻塞锁vs非阻塞锁](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#2-%E8%87%AA%E6%97%8B%E9%94%81-vs-%E9%80%82%E5%BA%94%E6%80%A7%E8%87%AA%E6%97%8B%E9%94%81)：锁住同步资源失败，线程要不要阻塞
+
+    - 到底要不要放弃处理器的执行时间。阻塞锁是放弃了CPU时间，进入了等待区，等待被唤醒。而自旋锁是一直“自旋”在那里，时刻的检查共享资源是否可以被访问。
+
+  - [无锁vs偏向锁vs轻量级锁vs重量级锁](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#3-%E6%97%A0%E9%94%81-vs-%E5%81%8F%E5%90%91%E9%94%81-vs-%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81-vs-%E9%87%8D%E9%87%8F%E7%BA%A7%E9%94%81)：对性能影响的大小,多个线程竞争同步资源的细节
+    
+    - 无锁:没有对资源进行锁定，所有的线程都能访问并修改同一个资源，但同时只有一个线程能修改成功。
+    
     - 偏向锁：一段同步代码一直被一个线程所访问，那么该线程会自动获取锁，降低获取锁的代价。
-    - 轻量级锁：
+    
+    - 轻量级锁：当锁是偏向锁的时候，被另外的线程所访问，偏向锁就会升级为轻量级锁，其他线程会通过自旋的形式尝试获取锁，不会阻塞，从而提高性能。
+    
     - 重量级锁：使用`Monitor`进行加锁，这是一种互斥锁，称做重量级锁
+    
+    - | 锁状态   | 存储内容                                                | 存储内容 |
+      | :------- | :------------------------------------------------------ | :------- |
+      | 无锁     | 对象的hashCode、对象分代年龄、是否是偏向锁（0）         | 01       |
+      | 偏向锁   | 偏向线程ID、偏向时间戳、对象分代年龄、是否是偏向锁（1） | 01       |
+      | 轻量级锁 | 指向栈中锁记录的指针                                    | 00       |
+      | 重量级锁 | 指向互斥量（重量级锁）的指针                            | 10       |
+    
   - [可重入锁 vs 非可重入锁：](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#5-%E5%8F%AF%E9%87%8D%E5%85%A5%E9%94%81-vs-%E9%9D%9E%E5%8F%AF%E9%87%8D%E5%85%A5%E9%94%81)
+    
     - 可重入锁又名递归锁，是指在同一个线程在外层方法获取锁的时候，再进入该线程的内层方法会自动获取锁
+    
   - 锁消除：即无锁。
+
   - 锁粗化：锁变大。
+
   - [monitor](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/deep-understand-multi-thread.md#4-moniter%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86)
+
   - [死锁？](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#6-java%E7%BA%A7%E5%88%AB%E7%9A%84%E6%AD%BB%E9%94%81)
+    
     - 死锁如何排查
     - 死锁的原因
     - 死锁的解决办法
+    
   - 分布式锁
+
 - synchronized
   - [synchronized是如何实现的？](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md#71-synchronized)
   - synchronized和lock之间关系
   - 不使用synchronized如何实现一个线程安全的单例
   - [synchronized和原子性、可见性和有序性之间的关系](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md#713-synchronized%E4%B8%8E%E5%8E%9F%E5%AD%90%E6%80%A7)
+  
 - [volatile](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md#72-volatile)
   - happens-before
   - 内存屏障
@@ -784,7 +1021,9 @@ finally和return的执行顺序
   - volatile的实现原理
   - volatile和原子性、可见性和有序性之间的关系
   - [有了symchronized为什么还需要volatile](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md#727-%E6%97%A2%E7%94%9Fsynchronized%E4%BD%95%E7%94%9Fvolatile)
+  
 - 写代码来解决生产者消费者问题
+
 - 并发包
   - https://www.hollischuang.com/archives/3912
   - Thread、Runnable、Callable、ReentrantLock、ReentrantReadWriteLock、Atomic*、Semaphore、CountDownLatch、、ConcurrentHashMap、Executors
@@ -796,7 +1035,7 @@ finally和return的执行顺序
 
 ## 1.3 jvm @@@@@
 
-### 1.3.1 jvm内存结构
+### 1.3.1 jvm内存结构 @@@@@
 
 掌握：
 
@@ -837,7 +1076,7 @@ class常量池中的字面量和符号引用（**符号引用主要是用来重�
 
 [Java中的对象一定在堆上分配吗？](https://gitee.com/hollischuang/toBeTopJavaer/blob/master/basics/jvm/stack-alloc.md)
 
-### 1.3.2 Java内存模型
+### 1.3.2 Java内存模型 @@@@@
 
 计算机内存模型、缓存一致性、MESI协议
 
@@ -867,11 +1106,11 @@ class常量池中的字面量和符号引用（**符号引用主要是用来重�
 
 我们可以看到的是java为我们提供了这些关键字`volatile`、`synchronized`、`final`、`concurren`来封装了java内存模型底层的实现了。
 
-原子性主要依靠：两个高级的字节码指令`monitorenter`和`monitorexit`，对应java中的`synchronized`。
+**原子性**主要依靠：两个高级的字节码指令`monitorenter`和`monitorexit`，对应java中的`synchronized`。
 
-可见性是指每次修改完立即同步到主存，读取前从主存刷新，依靠`volatile`。
+**可见性**是指每次修改完立即同步到主存，读取前从主存刷新，依靠`volatile`。`synchronized`和`final`两个关键字也可以实现可见性，但是方式是不同的。
 
-我们使用`synchronized`和`volatile`来保证有序性，区别是`synchronized`关键字保证同一时刻只允许一条线程操作，`volatile`关键字会禁止指令重排。
+**有序性**：我们使用`synchronized`和`volatile`来保证有序性，区别是`synchronized`关键字保证同一时刻只允许一条线程操作，`volatile`关键字会禁止指令重排。
 
 我们好奇的是java的内存模型解决了缓存一致性问题，那么到底是怎么解决的呢？
 
@@ -881,11 +1120,11 @@ class常量池中的字面量和符号引用（**符号引用主要是用来重�
 
 我们需要了解[synchronized](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/deep-understand-multi-thread.md#1synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86)和volatile究竟是怎么实现的。
 
-- 其中Synchronized对原子性的保证是通过（monitorenter和monitorexit）来实现的，对可见性是通过(加锁来实现的），对有序性是通过（as-if-serial）语义来实现的。Synchronized能修饰变量，方法和代码块。
+- 其中Synchronized对原子性的保证是通过（monitorenter和monitorexit）来实现的，对可见性是通过加锁来实现的(**对一个变量解锁之前，必须先把此变量同步回主存中**)，对有序性是通过（as-if-serial）语义来实现的。Synchronized能修饰变量，方法(`ACC_SYNCHRONIZED`)和代码块(monitorenter、monitorexit)。
 
-- Volatile对可见性是通过（强制刷新内存，强制从内存读进行实现的），对有序性是通过禁止指令重排实现的(增加了内存屏障)。但是不能保证原子性，因为并没有加锁。Volatile只能修饰变量，不能修饰方法和代码块。
+- Volatile对可见性是通过（强制刷新内存，强制从内存读进行实现的）,对有序性是通过禁止指令重排实现的(增加了**内存屏障**)。但是不能保证原子性，因为并没有加锁。**Volatile只能修饰变量，不能修饰方法和代码块。**
 
-### 1.3.3 Java对象模型
+### 1.3.3 Java对象模型@@@@
 
 [对象模型](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/deep-understand-multi-thread.md#21-java的对象模型)
 
@@ -899,7 +1138,7 @@ java的对象模型主要包含对象头，实例数据和对齐填充，主要�
 
 内存模型用来解决java的并发编程问题的，和原子性，有序性，可见性有关。
 
-### 1.3.4 Java的垃圾回收机制
+### 1.3.4 Java的垃圾回收机制 @@@@
 
 GC算法：标记清除、引用计数、复制、标记压缩、分代回收、增量式回收
 
@@ -950,7 +1189,7 @@ GC参数、对象存活的判定、垃圾收集器（CMS、G1、ZGC、Epsilon）
       - **初始标记，并发标记，最终标记，筛选回收。**
   - 可以阅读垃圾回收日志
 
-### 1.3.5 HotSpot虚拟机
+### 1.3.5 HotSpot虚拟机 @
 
 [即时编译器、编译优化](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/HotSpot.md)等相关知识。
 
@@ -964,31 +1203,84 @@ GC参数、对象存活的判定、垃圾收集器（CMS、G1、ZGC、Epsilon）
 
 [对象和数组并不是都在堆上分配内存的。-HollisChuang's Blog](http://www.hollischuang.com/archives/2398)
 
-### 1.3.6 类加载机制
+### 1.3.6 类加载机制 @@@@@
 
 双亲委派，破坏双亲委派。
 
 [类加载机制](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/class-loader.md)
 
+**java类装载器**有三个，分别是BootStrap（加载java核心类），ExtClassLoader（加载扩展类），AppClassLoader（加载指定路径类）。
+
+双亲加载模型指的不是2个父亲，而是指父类和bootstrap classloader。
+
+加载过程，先是父类加载，加载失败，让引导器加载，都失败，自己加载。
+
+**类加载器**简言之，就是用于把`.class`文件中的**字节码信息**转化为具体`的java.lang.Class`**对象**的过程的工具。
+
+具体过程：
+
+1. 在实际类加载过程中，`JVM`会将所有的`.class`字节码文件中的**二进制数据**读入内存中，导入运行时数据区的**方法区**中。
+2. 当一个类首次被**主动加载**或**被动加载**时，类加载器会对此类执行类加载的流程 – **加载**、**连接**（**验证**、**准备**、**解析**）、**初始化**。
+3. 如果类加载成功，**堆内存**中会产生一个新的`Class`对象，`Class`对象封装了类在**方法区**内的**数据结构**。
+
 加载，连接（验证，准备和解析），初始化。
 
+- 加载：查找并加载类的**二进制数据**的过程。
+  - 通过类的**全限定名**定位`.class`文件，并获取其**二进制字节流**。
+  - 把字节流所代表的**静态存储结构**转换为**方法区**的**运行时数据结构**。
+  - 在`Java`**堆**中生成一个此类的`java.lang.Class`对象，作为方法区中这些数据的**访问入口**。
+- 连接
+  - 验证：保证字节流符合虚拟机的要求，并且不会危害虚拟机自身的安全。
+  - 准备：为类的**静态变量**分配内存，并将其初始化为**默认值**。准备过程通常分配一个结构用来存储类信息，这个结构中包含了类中定义的**成员变量**，**方法**和**接口信息**等。
+  - 解析：把类中对**常量池**内的**符号引用**转换为**直接引用**。
+- 初始化
+  - 对**类静态变量**赋予正确的初始值 (注意和连接时的**解析过程**区分开)。
 
+**对象的初始化顺序**：
 
-参考资料：
+静态变量/静态代码块 -> 普通代码块 -> 构造函数
 
-[Java类的加载、链接和初始化-HollisChuang's Blog](http://www.hollischuang.com/archives/201)
+1. 父类**静态变量**和**静态代码块**（先声明的先执行）； 
 
-[深度分析Java的ClassLoader机制（源码级别）-HollisChuang's Blog](http://www.hollischuang.com/archives/199)
+2. 子类**静态变量**和**静态代码块**（先声明的先执行）； 
+3. 父类**普通成员变量**和**普通代码块**（先声明的先执行）； 
 
-[双亲委派模型与自定义类加载器 - ImportNew](http://www.importnew.com/24036.html)
+4. 父类的**构造函数**；
+
+5. 子类**普通成员变量**和**普通代码块**（先声明的先执行）； 
+
+6. 子类的**构造函数**。
 
 [Java双亲委派模型及破坏 - CSDN博客](https://blog.csdn.net/zhangcanyan/article/details/78993959)
 
 tomcat类加载有什么不同，说加载顺序并不是双亲模型，具体顺序说一下
 
+我们来看下为什么要破坏双亲模型？
 
+1. 隔离性。一个web容器可能需要部署两个应用程序，不同的应用程序可能会依赖**同一个第三方类库的不同版本**，不能要求同一个类库在同一个服务器只有一份，因此要保证每个应用程序的类库都是独立的，保证相互隔离。
+2. **灵活性**：Web应用之间的类加载器相互独立，那么就能针对一个Web应用进行重新部署，此时Web应用的类加载器会被重建，而且不会影响其他的Web应用。如果采用一个类加载器，类之间的依赖是杂乱复杂的，无法完全移出某个应用的类。
+3. **性能**：部署在同一个Web容器上的两个Web应用程序所使用的Java类库可以互相共享。这个需求也很常见，例如，用户可能有10个使用Spring组织的应用程序部署在同一台服务器上，如果把10份Spring分别存放在各个应用程序的隔离目录中，将会是很大的资源浪费
 
-### 1.3.7 常用Java命令
+所以tomcat重新定义了类加载器。
+
+<img src="/images/posts/java/image-20200310111510343.png" alt="image-20200310111510343" style="zoom:25%;" />
+
+**Common**：以应用类加载器为父类，是tomcat顶层的公用类加载器，其路径由conf/catalina.properties中的common.loader指定，默认指向${catalina.home}/lib下的包。
+
+**Catalina**：以Common类加载器为父类，是用于加载Tomcat应用服务器的类加载器，其路径由server.loader指定，默认为空，此时tomcat使用Common类加载器加载应用服务器。
+
+**Shared**：以Common类加载器为父类，是所有Web应用的父类加载器，其路径由shared.loader指定，默认为空，此时tomcat使用Common类加载器作为Web应用的父加载器。
+
+**Web应用**：以Shared类加载器为父类，加载/WEB-INF/classes目录下的未压缩的Class和资源文件以及/WEB-INF/lib目录下的jar包，该类加载器只对当前Web应用可见，对其他Web应用均不可见。
+
+Web应用类加载器默认的加载顺序是：
+
+(1).先从缓存中加载；
+ (2).如果没有，则从JVM的Bootstrap类加载器加载；
+ (3).如果没有，则从当前类加载器加载（按照WEB-INF/classes、WEB-INF/lib的顺序）；
+ (4).如果没有，则从父类加载器加载，由于父类加载器采用默认的委派模式，所以加载顺序是AppClassLoader、Common、Shared。
+
+### 1.3.7 常用Java命令 @@@
 
  [常用Java命令](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/java-command.md)
 
@@ -1008,7 +1300,7 @@ jconsole:简易的可视化控制台。
 
 jvisualvm:功能强大的控制台。
 
-### 1.3.8 编译与反编译
+### 1.3.8 编译与反编译 @@
 
 [Java中的编译与反编译](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/compile-decompile.md)
 

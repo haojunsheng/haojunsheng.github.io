@@ -50,7 +50,7 @@ tag: os
          * [4.2.5 目录解析代码的实现](#425-目录解析代码的实现)
    * [5. 总结](#5-总结)
 
-<!-- Added by: anapodoton, at: Sun Mar  8 22:59:33 CST 2020 -->
+<!-- Added by: anapodoton, at: Wed Mar 11 10:23:21 CST 2020 -->
 
 <!--te-->
 
@@ -100,21 +100,21 @@ CS为代码段寄存器，IP为指令指针寄存器。
 
 **(6)** 设置**cs=0x07c0**，**ip=0x0000** 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205231815.png)
+![](/images/posts/os/20191205231815.png)
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205231920.png)
+![](/images/posts/os/20191205231920.png)
 
 ### 1.1.1 **bootsect.S**  
 
 bootsect.S 代码是磁盘引导块程序，驻留在磁盘的第一个扇区中(引导扇区，0 磁道(柱面)，0 磁头， 第 1 个扇区)。在 PC 机加电、ROM BIOS 自检后，ROM BIOS 会把引导扇区代码 bootsect 加载到内存地 址 0x7C00 开始处并执行之。在 bootsect 代码执行期间，它会将自己移动到内存绝对地址 0x90000 开始处 并继续执行。该程序的主要作用是首先把从磁盘第 2 个扇区开始的 4 个扇区的 setup 模块(由 setup.s 编 译而成)加载到内存紧接着 bootsect 后面位置处(0x90200)，然后利用 BIOS 中断 0x13 取磁盘参数表中 当前启动引导盘的参数，接着在屏幕上显示“Loading system...”字符串。再者把磁盘上 setup 模块后面的 system 模块加载到内存 0x10000 开始的地方。随后确定根文件系统的设备号。若没有指定，则根据所保 存的引导盘的每磁道扇区数判别出盘的类型和种类(是 1.44M A 盘吗?)，并保存其设备号于 root_dev (引导块的 508 地址处)中。最后长跳转到 setup 程序开始处(0x90200)去执行 setup 程序。在磁盘上， 引导块、setup 模块和 system 模块的扇区位置和大小示意图见图 6-3 所示。 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205233454.png)
+![](/images/posts/os/20191205233454.png)
 
 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206000136.png)
+![](/images/posts/os/20191206000136.png)
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206000248.png)
+![](/images/posts/os/20191206000248.png)
 
 ### 1.1.2 setup.s
 
@@ -122,15 +122,15 @@ setup.S 是一个操作系统加载程序，它的主要作用是利用 ROM BIOS
 
 然后 setup 程序将 system 模块从 0x10000-0x8ffff 整块向下移动到内存绝对地址 0x00000 处(当时认 为内核系统模块 system 的长度不会超过此值:512KB)。接下来加载中断描述符表寄存器(IDTR)和全局 描述符表寄存器(GDTR)，开启 A20 地址线，重新设置两个中断控制芯片 8259A，将硬件中断号重新设 置为 0x20 - 0x2f。最后设置 CPU 的控制寄存器 CR0(也称机器状态字)，进入 32 位保护模式运行，并跳 转到位于 system 模块最前面部分的 head.s 程序继续运行。 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206102907.png)
+![](/images/posts/os/20191206102907.png)
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206103200.png)
+![](/images/posts/os/20191206103200.png)
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206103359.png)
+![](/images/posts/os/20191206103359.png)
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206103418.png)
+![](/images/posts/os/20191206103418.png)
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206104727.png)
+![](/images/posts/os/20191206104727.png)
 
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206103537.png)
 

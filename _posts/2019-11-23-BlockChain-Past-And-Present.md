@@ -87,7 +87,7 @@ Table of Contents
 
 比特币能实现上面的功能主要是依赖了分布式技术和密码学的知识，我们先来简单的看一下，下面会详细的讲解：
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img20191123225630.png)
+![](/images/posts/fabric/img20191123225630.png)
 
 区块链像是单向链表，每个块存了自己的数据集，数据集的Hash，前一个区块的Hash。如果上一个块中的ID发生变化，那么其Hash必然变化，后面所有块的指向内容都要改变，这个难度是很大的。
 
@@ -153,7 +153,7 @@ Table of Contents
 
 [Merkle_tree](https://en.wikipedia.org/wiki/Merkle_tree)是由一个根节点、一组中间节点和一组叶节点组成。适用在 快速比较大量数据以及 快速定位修改的场景下。
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img20191123225716.png)
+![](/images/posts/fabric/img20191123225716.png)
 
 大量的交易数据可以被分成各种尺寸的小组，这样有利于我们整合数据和校验数据。 
 
@@ -165,7 +165,7 @@ Table of Contents
 
 ### 3.1.6 比特币中的密码学
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img20191123225737.png)
+![](/images/posts/fabric/img20191123225737.png)
 
 每个块存了数据集，前一个块的hash，本块的hash，其中，本块的hash是由本块的数据集和前一个快的hash出来的，所以前面的数据集一旦修改，必然导致其hash的变化，也必然导致后面所有的块。借助于我们前面的Merkle_tree的相关知识，我们可以进行快速的比较和定位修改的区块。
 
@@ -173,7 +173,7 @@ Table of Contents
 
 下面我们来看下比特币的结构：
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img20191123225801.png)
+![](/images/posts/fabric/img20191123225801.png)
 
 其中，Version，Previous Block Hash，Merkle Root，Timestamp，Difficulty Target 和 Nonce 是区块链的协议头部，后面是本来中的交易数（1-9笔）和交易的大小（不超过1MB）。
 
