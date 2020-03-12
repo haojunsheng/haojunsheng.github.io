@@ -15,13 +15,13 @@ tag: 技巧
 
 markdown算是很好的写作格式，toc标签可以让读者更好的看我们文章的大纲，并且可以快速跳转。像是下面这样:
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191209175554.png" style="zoom:50%;" />
+<img src="../images/posts/md/20191209175554.png" style="zoom:50%;" />
 
 
 
 可是遗憾的是，不是所有的编译器都支持toc这个标签的，比如github，这样就比较烦了，像是下面这样。如果文章比较长的话，我们不能从整体上来把握。
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191209175433.png)
+![](../images/posts/md/20191209175433.png)
 
 # 解决
 
@@ -31,7 +31,7 @@ markdown算是很好的写作格式，toc标签可以让读者更好的看我们
 
 第一个点进去，瞅瞅，star，fork，和issue，感觉还不错，看下readme，就决定入坑了。
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191209175927.png)
+![](../images/posts/md/20191209175927.png)
 
 地址是这个：https://github.com/ekalinin/github-markdown-toc
 

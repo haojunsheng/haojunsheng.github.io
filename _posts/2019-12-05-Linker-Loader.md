@@ -53,7 +53,7 @@ tag: 编译原理
          * [12.2 系统调用的原理](#122-系统调用的原理)
    * [附录](#附录)
 
-<!-- Added by: anapodoton, at: Fri Dec 20 15:33:40 CST 2019 -->
+<!-- Added by: anapodoton, at: Wed Mar 11 23:13:19 CST 2020 -->
 
 <!--te-->
 # 1. 前言
@@ -80,7 +80,7 @@ ELF，executable linkable format。动态链接库（.so）和静态链接库（
 
 文件头，段表，重定位表，字符串表（段名，变量名），符号表。 
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191217143040.png" style="zoom:50%;" />
+<img src="/images/posts/os/image-20200311214710536.png" alt="image-20200311214710536" style="zoom: 25%;" />
 
 - 执行头部分(exec header)。执行文件头部分。该部分中含有一些参数(exec 结构)，是有关目标文件 
 
@@ -207,7 +207,7 @@ return a;
 
 使用objdump -h simpleSecticon.o来打印目标文件的基本信息： 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205112927.png)
+![](/images/posts/os/20191205112927.png)
 
 我们已经了解了几个段在目标文件中的分布，下面我们来详细看下：
 
@@ -215,7 +215,7 @@ return a;
 
 objdump -s -d simpleSecticon.o 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113009.png)
+![](/images/posts/os/20191205113009.png)
 
 我们可以看到代码段包含func1和main函数的指令。
 
@@ -227,7 +227,7 @@ bss段不再赘述。
 
 我们首先来看下ELF文件头，使用readelf -h simpleSecticon.o来查看头部基本信息 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113026.png)
+![](/images/posts/os/20191205113026.png)
 
 elf文件头定义在/usr/include/elf.h中
 
@@ -301,11 +301,11 @@ Elf32_Word sh_entsize; /* Entry size if section holds table */
 } Elf32_Shdr; 
 ```
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113136.png)
+![](/images/posts/os/20191205113136.png)
 
 分析到现在，我们已经把头部和段表都进行了分析，如下图所示，当然只是大概的，具体的没有展开。
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113154.png" style="zoom:50%;" /> 
+<img src="x" style="zoom:50%;" /> 
 
 哈哈，我们还有rel.text重定位表，字符串表，和符号表。
 
@@ -329,11 +329,11 @@ Elf32_Word sh_entsize; /* Entry size if section holds table */
 
 使用nm simpleSection.o来查看符号和符号值之间的关系, 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113237.png) 
+![](/images/posts/os/20191205113237.png) 
 
 也可以使用readelf -s simpleSection.o来查看 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113249.png) 
+![](/images/posts/os/20191205113249.png) 
 
 ``` c
 /* Symbol table entry. */ 
@@ -404,7 +404,7 @@ gcc -c a.c b.c生成a.o和b.o
 
 接下来我们使用objdump来查看链接前后的地址分配情况： 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113429.png)
+![](/images/posts/os/20191205113429.png)
 
 其中，vma（virtual memory address）表示虚拟地址，lma（load memory address）表示加载地址。一般情况下，二者是相同的。
 
@@ -418,19 +418,19 @@ gcc -c a.c b.c生成a.o和b.o
 
 在此之前，我们需要研究研究下a.o是怎么使用shared和swap两个外部变量的。使用objdump -d a.o进行反汇编来看下效果： 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113455.png)
+![](/images/posts/os/20191205113455.png)
 
 我们可以看到调用的地址（shared和swap）并不是真正的地址，而是00。 
 
 然后，我们在来用objdump -d a.out来看下重定位的效果： 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113518.png)
+![](/images/posts/os/20191205113518.png)
 
 我们可以看到，已经是真正的地址了。 
 
 那么问题来了，链接器怎么知道如何调整指令呢？这就引入了下一个话题，重定位表（Relocation Table）。重定位表的规则是：如果.data段有需要重定位的，那么还有一个段叫做.rel.data。我们可以使用objdump -r a.o来进行查看： 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113533.png) 
+![](/images/posts/os/20191205113533.png) 
 
 ```c
 /* Relocation table entry without addend (in section of type SHT_REL). */ 
@@ -450,23 +450,23 @@ Elf32_Word r_info; /* Relocation type and symbol index */
 
 事情还没有完，在重定位的过程中，往往还伴随着符号解析，所以在符号表里面必须进行定义。我们可以使用readelf -s a.o来查看符号表。 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113612.png) 
+![](/images/posts/os/20191205113612.png) 
 
 ### 2.4.5 静态库链接
 
 一个静态库可以看做是一组目标文件的集合。我们使用ar -t /usr/lib/x86_64-linux-gnu/libc.a来查看c语言所提供的库包含哪些静态库： 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113632.png) 
+![](/images/posts/os/20191205113632.png) 
 
 我们使用objdump -t /usr/lib/x86_64-linux-gnu/libc.a | grep printf.o来查看目标print.o文件。 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113650.png) 
+![](/images/posts/os/20191205113650.png) 
 
 我们发现一个仅仅打印hello world的程序需要和很多其他的库进行链接。 
 
 我们可以使用 gcc -static --verbose -fno-builtin hello.c来把编译链接的过程的中间步骤打印出来。 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113704.png) 
+![](/images/posts/os/20191205113704.png) 
 
 总结下，三个关键步骤，第一个调用ccl程序（gcc的c语言编译器）把hello.c变成/tmp/ccUhtGSB.s。 
 
@@ -543,7 +543,7 @@ ld -static -e nomain -o TinyHelloWorld TinyHelloWorld.o
 
 - 将CPU的指令寄存器设置成可执行文件的入口地址，启动执行。 
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191219163216.png" style="zoom:50%;" />
+<img src="/images/posts/os/image-20200311215727966.png" alt="image-20200311215727966" style="zoom:50%;" />
 
 ### 6.4 进程虚存空间分布 
 
@@ -575,11 +575,11 @@ return 0;
 
 然后我们按Section来看，总共32个段：readelf -S SectionMapping.elf 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205113950.png) 
+![](/images/posts/os/20191205113950.png) 
 
 然后我们按Segment来看，总共5个,readelf -l SectionMapping.elf 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114003.png) 
+![](/images/posts/os/20191205114003.png) 
 
 程序头表。 
 
@@ -715,7 +715,7 @@ do_execve()(处理128字节的文件头部)-->>search_binary_handle()-->load_elf
 
 看一张mit的图片：
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191219192603.png" style="zoom:50%;" />
+<img src="/images/posts/os/20191219192603-20200311220132920.png" alt="20191219192603.png" style="zoom:33%;" />
 
 来自《Linux内核完全注释》5.3节。
 
@@ -725,7 +725,7 @@ Linux内存翻译的细节：
 
 为了有效地使用机器中的物理内存，在系统初始化阶段内存被划分成几个功 能区域 ：
 
-![image-20191215172608160](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xj9zjbxnj31460hmq4p.jpg)
+![image-20191215172608160](/images/posts/os/006tNbRwgy1g9xj9zjbxnj31460hmq4p.png)
 
 我们再来看内存地址空间的概念：
 
@@ -742,7 +742,7 @@ Linux内存翻译的细节：
 
 下面我们来看下内存分段机制：
 
-![image-20191215174925440](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xjy8lpp2j314m0akmza.jpg)
+![image-20191215174925440](/images/posts/os/006tNbRwgy1g9xjy8lpp2j314m0akmza.png)
 
 CPU 进行地址变换(映射)的主要目的是为了解决虚拟内存空间到物理内存空间的映射问题。虚拟 内存空间的含义是指一种利用二级或外部存储空间，使程序能不受实际物理内存量限制而使用内存的一种方法。通常虚拟内存空间要比实际物理内存量大得多。 
 
@@ -752,7 +752,7 @@ CPU 进行地址变换(映射)的主要目的是为了解决虚拟内存空间�
 
 据段寄存器和偏移寄存器中的值，就可以算出实际指向的内存地址，见图 5-7 (a)所示。 而在保护模式运行方式下，段寄存器中存放的不再是被寻址段的基地址，而是一个段描述符表 (Segment Descriptor Table)中某一描述符项在表中的索引值。索引值指定的段描述符项中含有需要寻址 的内存段的基地址、段的长度值和段的访问特权级别等信息。寻址的内存位置是由该段描述符项中指定 的段基地址值与一个段内偏移值组合而成。段的长度可变，由描述符中的内容指定。可见，和实模式下 的寻址相比，段寄存器值换成了段描述符表中相应段描述符的索引值以及段表选择位和特权级，称为段 选择符(Segment Selector)，但偏移值还是使用了原实模式下的概念。这样，在保护模式下寻址一个内 存地址就需要比实模式下多一道手续，也即需要使用段描述符表。这是由于在保护模式下访问一个内存 段需要的信息比较多，而一个 16 位的段寄存器放不下这么多内容。示意图见图 5-7 (b)所示。注意，如果 你不在一个段描述符中定义一个内存线性地址空间区域，那么该地址区域就完全不能被寻址，CPU 将拒 绝访问该地址区域。 
 
-![image-20191215175145169](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xk0krinaj31360ka767.jpg)
+![image-20191215175145169](/images/posts/os/006tNbRwgy1g9xk0krinaj31360ka767.png)
 
 每个描述符占用 8 个字节，其中含有所描述段在线性地址空间中的起始地址(基址)、段的长度、段 的类型(例如代码段和数据段)、段的特权级别和其他一些信息。**一个段可以定义的最大长度是 4GB**。 
 
@@ -760,7 +760,7 @@ CPU 进行地址变换(映射)的主要目的是为了解决虚拟内存空间�
 
 当 CPU 要寻址一个段时，就会使用 16 位的段寄存器中的选择符来定位一个段描述符。在 80X86 CPU 中，段寄存器中的值右移 3 位即是描述符表中一个描述符的索引值。13 位的索引值最多可定位 8192 (0--8191)个的描述符项。选择符中位 2(TI)用来指定使用哪个表。若该位是 0 则选择符指定的是 GDT 表中的描述符，否则是 LDT 表中的描述符。 每个程序都可有若干个内存段组成。程序的逻辑地址(或称为虚拟地址)即是用于寻址这些段和段中具体地址位置。在 Linux 0.12 中，**程序逻辑地址到线性地址的变换过程使用了 CPU 的全局段描述符表 GDT 和局部段描述符表 LDT**。由 GDT 映射的地址空间称为全局地址空间，由 LDT 映射的地址空间则称 为局部地址空间，而这两者构成了虚拟地址的空间。具体的使用方式见图 5-8 所示。 
 
-![image-20191215175421825](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xk3be92qj313q0nmn2v.jpg)
+![image-20191215175421825](/images/posts/os/006tNbRwgy1g9xk3be92qj313q0nmn2v.png)
 
 下面我们再来看下内存的分页管理：
 
@@ -768,39 +768,39 @@ CPU 进行地址变换(映射)的主要目的是为了解决虚拟内存空间�
 
 线性地址到物理地址的变换过程。由于Linux 0.1x系统中内核和所有任务都共用同一个页目录表，使得任何时刻处理器线性地址空间 到物理地址空间的映射函数都一样。因此为了让内核和所有任务都不互相重叠和干扰，它们都必须从虚 拟地址空间映射到线性地址空间的不同位置，即占用不同的线性地址空间范围。
 
-![image-20191215175725425](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xk6i9v17j30xo0fujt9.jpg)
+![image-20191215175725425](/images/posts/os/006tNbRwgy1g9xk6i9v17j30xo0fujt9.png)
 
 一个任务的虚拟地址需要首先通 过其局部段描述符变换为 CPU 整个线性地址空间中的地址，然后再使用页目录表 PDT(一级页表)和 页表 PT(二级页表)映射到实际物理地址页上。为了使用实际物理内存，每个进程的线性地址通过二级内存页表动态地映射到主内存区域的不同物理内存页上。由于 Linux 0.12 中把每个进程最大可用虚拟内 存空间定义为 64MB，因此每个进程的逻辑地址通过加上(任务号)*64MB，即可转换为线性空间中的地址。 
 
-![image-20191215175941890](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xk8vwd6rj313s0euta8.jpg)
+![image-20191215175941890](/images/posts/os/006tNbRwgy1g9xk8vwd6rj313s0euta8.png)
 
-![image-20191215180125438](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xkaphxfkj314g0ewae4.jpg)
+![image-20191215180125438](/images/posts/os/006tNbRwgy1g9xkaphxfkj314g0ewae4.png)
 
 进程逻辑地址空间中代码段(Code Section)和数据段(Data Section)的概念与CPU 分段机制中的代码段和数据段不是同一个概念。CPU 分段机制中段的概念确定了在线性地址空间中一个 段的用途以及被执行或访问的约束和限制，每个段可以设置在 4GB 线性地址空间中的任何地方，它们可 以相互独立也可以完全重叠或部分重叠。而进程在其逻辑地址空间中的代码段和数据段则是指由编译器 在编译程序和操作系统在加载程序时规定的在进程逻辑空间中顺序排列的代码区域、初始化和未初始化 的数据区域以及堆栈区域。进程逻辑地址空间中代码段和数据段等结构形式见图所示。有关逻辑地址空 间的说明请参见内存管理一章内容。其中 nr 是任务号，start_code 是进程或任务在线性地址空间的起始 位置。其他变量均表示进程在逻辑空间中的值。 
 
-![image-20191215180916590](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xkitdpx3j31360dwacd.jpg)
+![image-20191215180916590](/images/posts/os/006tNbRwgy1g9xkitdpx3j31360dwacd.png)
 
 虚拟地址、线性地址和物理地址之间的关系:
 
-![image-20191215183305811](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xl7moxfdj314g0pkn09.jpg)
+![image-20191215183305811](/images/posts/os/006tNbRwgy1g9xl7moxfdj314g0pkn09.png)
 
 任务 **0** 的地址对应关系:
 
-![image-20191215183532971](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xldg6vp2j316m0logpm.jpg)
+![image-20191215183532971](/images/posts/os/006tNbRwgy1g9xldg6vp2j316m0logpm-20200311214639063.jpg)
 
 任务 **1** 的地址对应关系:
 
 与任务 0 类似，任务 1 也是一个特殊的任务。它的代码也在内核代码区域中。与任务 0 不同的是在 线性地址空间中，系统在使用 fork()创建任务 1(init 进程)时为存放任务 1 的二级页表而在主内存区申 请了一页内存来存放，并复制了父进程(任务 0)的页目录和二级页表项。 
 
-![image-20191215183711488](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xlbvpmtgj315e0p8wj8.jpg)
+![image-20191215183711488](/images/posts/os/006tNbRwgy1g9xlbvpmtgj315e0p8wj8-3934402.jpg)
 
 其他任务的地址对应关系:
 
-![image-20191215183740120](https://tva1.sinaimg.cn/large/006tNbRwgy1g9xlcctc9cj315q0tk79q.jpg)
+![image-20191215183740120](/images/posts/os/006tNbRwgy1g9xlcctc9cj315q0tk79q-3934405.jpg)
 
 总体来看下：
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191217165102.png" style="zoom:50%;" />
+![img](/images/posts/os/20191217165102.png)
 
 ## 7. 动态链接 
 
@@ -868,7 +868,7 @@ gcc -o Program1 Program1.c ./Lib.so
 
 gcc -o Program2 Program2.c ./Lib.so 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114314.png)
+![](/images/posts/os/20191205114314.png)
 
 从这张图片中，我们可以看到，貌似Lib.so也参与了链接过程，这是为什么呢？原来，在静态链接中，目标文件直接参与了链接，地址进行了重定位。在动态链接中，只是进行了标记，实质上还是在运行中进行链接的。 
 
@@ -891,13 +891,13 @@ sleep(-1);
 
 然后重新编译,看进程的虚拟地址空间分布： 
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191219173119.png" style="zoom:50%;" /> 
+![img](/images/posts/os/20191219173119.png)
 
 可以看到，二者被操作系统用同样的方法映射到进程中。 
 
-我们再次使用readelf -l Lib.so来查看装载属性： 
+我们再次使用readelf -l Lib.so来查看装载属性：  
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114408.png) 
+![](/images/posts/os/20191205114408.png)
 
 我们竟然看到是从0开始的，这明显是无效地址，我们来**推断**：共享对象的最终装载地址在编译时不确定，在装载时动态分配一块空间给相应的共享对象。
 
@@ -919,11 +919,13 @@ sleep(-1);
 
 在此之前，我们需要分析模块中各种类型地址的引用方式： 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114428.png) 
+![](/images/posts/os/20191205114428.png) 
+
+
 
 总结一下指令无关码：
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191219203455.png" style="zoom:50%;" />
+![img](/images/posts/os/20191219203455-20200311220732532.png)
 
 ### 7.4 延迟绑定（PLT）
 
@@ -939,7 +941,7 @@ sleep(-1);
 
 那么问题来了，是不是所有的动态链接器都是/lib/ld.so呢，实际上并不是（因为环境不同），这个是由ELF文件中的.interp段来决定的，我们可以使用objdump -s a.out来查看：
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191219210554.png" style="zoom:50%;" />
+![img](/images/posts/os/20191219210554.png)
 
 可以看到在我的机器上是/lib64/ld-linux-x86-64.so.2。我们找到了动态链接器，接着我们看dynamic段，这个段里面保存了动态链接器需要的基本信息，比如依赖的共享对象，动态链接符号表的位置，动态链接重定位表的位置，共享对象初始化代码的地址，结构定义在elf.h中。
 
@@ -959,21 +961,23 @@ typedef struct
 
 我们使用readelf -d Lib.so来查看dynamic段的内容。
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191219225648.png" style="zoom:50%;" />
+![img](/images/posts/os/20191219225648.png)
 
 我们还可以使用，ldd Program1来查看该程序依赖哪些共享模块。
 
-![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191219230126.png)
+![](/images/posts/os/20191219230126.png)
+
+
 
 下面我们来看动态符号表。和静态链接中的符号表systab相似，我们定义了动态符号表（Dynamic table）来表示动态连接中的模块之间的导入导出关系。除此之外，我们还需要辅助表dynstr表。
 
 我们继续看，动态链接重定位表，使用readelf -r Lib.so 和readelf -S Lib.so来查看：
 
-![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191219233953.png)
+![](/images/posts/os/20191219233953.png)
 
 结构图如下所示：
 
-![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191219234044.png)
+![](/images/posts/os/20191219234044.png)
 
 我们接着看动态链接时进程堆栈初始化信息：
 
@@ -1050,7 +1054,7 @@ int main(int argc, char * argv[])
 
 初始化堆栈如下图所示：
 
-![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191219235551.png)
+![](/images/posts/os/20191219235551.png)
 
 ### 7.6 动态链接的步骤和实现
 
@@ -1082,9 +1086,9 @@ int main(int argc, char * argv[])
 
 * 可执行文件映像：存储着可执行文件在内存里的映像，装载时将可执行文件的内存读取到这里； 
 
-* 保留区：不是单一的，比如NULL是受保护的。 
+* 保留区：不是单一的，比如NULL是受保护的。  
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114448.png) 
+![](/images/posts/os/20191205114448.png)
 
 ### 10.2 栈与调用惯例
 
@@ -1096,9 +1100,9 @@ int main(int argc, char * argv[])
 
 - 临时变量：函数的非静态局部变量； 
 
-- 保存的上下文：在函数调用前后需要保持不变的寄存器。 
+- 保存的上下文：在函数调用前后需要保持不变的寄存器。  
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114504.png) 
+![](/images/posts/os/20191205114504.png)
 
 稍微解释下这个图：ebp固定不变，指向调用该函数前ebp的值，用于函数返回时使用。ebp-4是函数的返回地址，ebp-8，ebp-12是参数等。 
 
@@ -1124,13 +1128,13 @@ int foo(){
 
 return 123; 
 
-} 
+}  
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114555.png) 
+![](/images/posts/os/20191205114555.png)
 
-不知道大家发现问题没，在上面的过程中，有些我们必须进行约定，才能正常的处理函数之间的调用，标准如下所示： 
+不知道大家发现问题没，在上面的过程中，有些我们必须进行约定，才能正常的处理函数之间的调用，标准如下所示：  
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114607.png) 
+![](/images/posts/os/20191205114607.png)
 
 我们再来举个例子： 
 
@@ -1152,7 +1156,7 @@ return 0;
 
 函数的实际执行流程如下所示： 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114635.png) 
+![](/images/posts/os/20191205114635.png) 
 
 到现在，我们还有一个非常棘手的问题，就是函数的返回值我们需要怎么进行处理： 
 
@@ -1166,7 +1170,7 @@ return 0;
 
 我们通过一个实例来研究： 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114647.png) 
+![](/images/posts/os/20191205114647.png) 
 
 可以明确的是128字节是不可能在eax里存下的，所以肯定是地址，步骤如下： 
 
@@ -1178,7 +1182,7 @@ return 0;
 
 4. return_test返回后，main函数将eax执行的temp对象拷贝给n 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114704.png) 
+![](/images/posts/os/20191205114704.png) 
 
 我们可以看到，2次拷贝还是十分浪费空间的，我们应该尽量减少返回大对象。 
 
@@ -1216,7 +1220,11 @@ off_t offset);
 
 空闲链表：把空闲的块串成一个链表，需要的时候，拆分下来，释放的时候，合并到链表中。
 
-位图：![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114756.png)对象池： 
+位图：
+
+![](/images/posts/os/20191205114756.png)
+
+对象池： 
 
 ## 11 虚拟存储器
 
@@ -1234,7 +1242,7 @@ off_t offset);
 
 在虚拟寻址中，CPU通过生成一个虚拟地址来访问主存，虚拟地址被送到存储器前需要先转换为物理地址，这部分叫做MMU，内存管理单元（其中有各种表，由操作系统来进行管理）。
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191220143600.png" style="zoom:50%;" />
+![img](/images/posts/os/20191220143600.png)
 
 ### 11.2 地址空间
 
@@ -1244,27 +1252,27 @@ off_t offset);
 
 这句话概括了虚拟内存的作用。虚拟内存是一个由存放在磁盘上的N个连续的字节大小的单元组成的数组，每字节有一个唯一的虚拟地址，这个地址是数组的的索引，内容在内存中。虚拟内存被切割为页（Virtual Page),物理存储器划分为页祯。
 
-![image-20191220150306612](https://tva1.sinaimg.cn/large/006tNbRwly1ga378p8sagj30p80didj3.jpg)
+![image-20191220150306612](/images/posts/os/006tNbRwly1ga378p8sagj30p80didj3.png)
 
 下面我们来看页表的概念：
 
 操作系统必须维护虚拟页和物理页，虚拟页和磁盘之间的关系。页表就是一个PTE（Page table entry，页表数目）的数组。
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191220150651.png" style="zoom:50%;" />
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191220150651.png)
 
 接下来是页命中的概念，直接使用就行了，麻烦的是缺页的概念：
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191220151113.png" style="zoom:50%;" />
+![img](/images/posts/os/20191220151113-20200311230951357.png)
 
 ### 11.4 虚拟存储器作为存储器管理的工具
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191220152027.png" style="zoom:50%;" />
+
 
 ### 11.6 地址翻译
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191220152827.png" style="zoom:50%;" />
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191220152927.png" style="zoom:50%;" />
+
+![img](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191220152927.png)
 
 ## 12 系统调用 
 
@@ -1276,7 +1284,7 @@ off_t offset);
 
 具体来看下，EAX寄存器用来表示系统调用的接口号，具体的见下表。Linux系统差不多有300多个系统调用。 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114811.png)
+![](/images/posts/os/20191205114811.png)
 
 ### 12.2 系统调用的原理
 
@@ -1284,13 +1292,15 @@ off_t offset);
 
 中断有2个属性，1是中断号，2是中断处理程序，在内核中，有一个数组被称为中断向量表，保存了所有的中断类型。 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114832.png) 
+![](/images/posts/os/20191205114832.png) 
 
 我们用中断号+系统调用号来表示一个具体的中断。一般int指令表示进入中断，0x80表示系统调用。 
 
 下面我们来看下基于int的Linux经典系统调用： 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114900.png) 
+![](/images/posts/os/20191205114900.png)
+
+ 
 
 第一步是触发中断，第二步是切换堆栈，具体来讲，我们需要从用户太的堆栈切换到内核态的堆栈，需要如下步骤： 
 
@@ -1301,15 +1311,17 @@ off_t offset);
    2. 在内核中依次压入用户的寄存器SS,ESP,EFLAGS,CS,EIP 
    3. 恢复原来的ESP和SS的值（iret） 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114922.png) 
+ ![](/images/posts/os/20191205114922.png)
 
 第三步是中断处理程序， 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114933.png) 
+![](/images/posts/os/20191205114933.png) 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114948.png) 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114958.png) 
+
+![](/images/posts/os/20191205114948.png) 
+
+![](/images/posts/os/20191205114958.png) 
 
 
 
@@ -1317,15 +1329,21 @@ off_t offset);
 
 ELF常见段： 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205115015.png) 
+![](/images/posts/os/20191205115015.png) 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205115029.png) 
+![](/images/posts/os/20191205115029.png) 
 
 常见开发工具命令行：
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191220121637.png" style="zoom:50%;" />
+![img](/images/posts/os/20191220121637.png)
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191220121712.png" style="zoom:50%;" />
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191220121754.png" style="zoom:50%;" />
+
+![img](/images/posts/os/20191220121712.png)
+
+
+
+![img](/images/posts/os/20191220121754.png)
+
+
 

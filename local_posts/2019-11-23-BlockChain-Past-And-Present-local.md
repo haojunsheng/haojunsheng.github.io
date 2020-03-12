@@ -213,7 +213,7 @@ while n < 2**32:
 
 结果如下，寻找7个0的时候，我的乞丐版本的mac已经打扰了。
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img20191123225830.png)
+![](../images/posts/fabric/img20191123225830.png)
 
 所以比特币的挖矿难度是可以调整的。
 
@@ -231,7 +231,7 @@ while n < 2**32:
 
 [paxos](https://en.wikipedia.org/wiki/Paxos_(computer_science)) 协议是Lamport于1989年的一篇论文首次提出，直到1998年该论文才得以发表。
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img20191123225830.png)
+![](../images/posts/fabric/img20191123225830.png)
 
 #### 3.2.1.2 Raft
 
@@ -253,7 +253,7 @@ Hyperledger Fabric 1.4采用raft算法。
 
  [Practical Byzantine Fault Tolerance](http://pmg.csail.mit.edu/papers/osdi99.pdf)。 PBFT是一种基于副本状态机复制的算法。将不可信环境一致性达成分成3个阶段，分别是预准备、准备和确认。
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img20191123225915.png)
+![image-20200311232752435](../images/posts/fabric/image-20200311232752435.png)
 
 #### 3.2.2.2 PoW
 

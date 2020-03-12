@@ -72,7 +72,7 @@ SM是商密算法，不涉及国家秘密。
 | sm3                | 哈希算法，用于替换MD5,SHA-256                                |
 | sm4                | 对称加密，AES和DES                                           |
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20190814115800.png)
+![](../images/posts/fabric/20190814115800.png)
 
 # 1. Hyperledger Fabric 国密补丁的使用
 
@@ -130,11 +130,11 @@ git 可以使用patch来记录我们对代码的修改。
 
 补充：找到原因了，具体的修改确实是在patch文件中的，比如：
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20190814094456.png)
+![](../images/posts/fabric/20190814094456.png)
 
 注意：补丁中的id和打完补丁后的id是不一样的，我的理解是前者是补丁作者提交的id,后者是我们打完补丁后生成的id,二者不是一回事。
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20190813231804.png)
+![](../images/posts/fabric/20190813231804.png)
 
 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20190813231904.png)
 
@@ -240,7 +240,7 @@ type BCCSP interface {
 
 在opts.go（opts多个选项）定义了所有可用的加密算法。我们重新生成了一个文件sm2opts.go。就是把国外的ECDSA，RSA等替换为sm2,sm3和sm4。我们在fabric目录下使用 `grep -r -n "sm2opts.go" .`来搜索，发现最终生成的二进制文件使用了sm2opts。
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20190816162327.png)
+![](../images/posts/fabric/20190816162327.png)
 
 
 
@@ -250,7 +250,7 @@ type BCCSP interface {
 
 ### 2.1.2 Hyperledger Fabric中BCCSP的整合方式
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20190814143904.png)
+![](../images/posts/fabric/20190814143904.png)
 
 **框图译注**
 

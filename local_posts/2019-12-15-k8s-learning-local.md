@@ -111,8 +111,6 @@ Kubernetes不是一个传统的，包罗万象的PaaS（平台即服务）系统
 
 ![Components of Kubernetes](../images/posts/docker/components-of-kubernetes.png)
 
-![img](https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LDAOok5ngY4pc1lEDes%2F-LpOIkR-zouVcB8QsFj_%2F-LpOIpZIYxaDoF-FJMZk%2Farchitecture.png?generation=1569161437087842&alt=media)
-
 #### master组件
 
 master提供了集群的控制服务，他们将会检测和回应集群的事件，例如当部署的replicas字段不符合要求的时候，将会启动一个新的pod。集群中的任何机器都可以作为master。
@@ -415,7 +413,7 @@ grep -E --color 'vmx|svm' /proc/cpuinfo
 
       <img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191211145542.png" style="zoom:50%;" />
 
-![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191220173425.png)
+![](../images/posts/docker/20191220173425.png)
 
 值得注意的是，在使用minikube的时候，尽量使用Ubuntu，不要使用centos，原因大概和Docker是有问题的，具体的不是很清楚。
 
@@ -437,8 +435,6 @@ grep -E --color 'vmx|svm' /proc/cpuinfo
 k8s可以支持docker,CRI-O,containerd等。
 
 生产环境：
-
-![Production environment solutions](../images/posts/docker/kubernetessolutions.png)
 
 支持下面的生产环境：
 
@@ -759,7 +755,7 @@ kubectl run nginx --image=nginx --dry-run
 
 pod是k8s对象模型中的最小可部署对象。
 
-Pod 是一组紧密关联的容器集合，它们共享 PID、IPC、Network 和 UTS namespace，是 Kubernetes 调度的基本单位。Pod 内的多个容器共享网络和文件系统，可以通过进程间通信和文件共享这种简单高效的方式组合完成服务。![img](https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LDAOok5ngY4pc1lEDes%2F-LpOIkR-zouVcB8QsFj_%2F-LpOIpZEWjsArXqZpSuN%2Fpod.png?generation=1569161437022859&alt=media)
+Pod 是一组紧密关联的容器集合，它们共享 PID、IPC、Network 和 UTS namespace，是 Kubernetes 调度的基本单位。Pod 内的多个容器共享网络和文件系统，可以通过进程间通信和文件共享这种简单高效的方式组合完成服务。![image-20200311212342608](../images/posts/docker/image-20200311212342608.png)
 
 
 
@@ -800,17 +796,13 @@ spec:
 
 Node 是 Pod 真正运行的主机，可以是物理机，也可以是虚拟机。为了管理 Pod，每个 Node 节点上至少要运行 container runtime（比如 docker 或者 rkt）、`kubelet` 和 `kube-proxy` 服务。
 
-![img](https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LDAOok5ngY4pc1lEDes%2F-LpOIkR-zouVcB8QsFj_%2F-LpOIpZNK7_D9lT7C57d%2Fnode.png?generation=1569161441558542&alt=media)
+<img src="../images/posts/docker/image-20200311212436791.png" alt="image-20200311212436791" style="zoom:50%;" />
 
 Namespace 是对一组资源和对象的抽象集合，比如可以用来将系统内部的对象划分为不同的项目组或用户组。常见的 pods, services, replication controllers 和 deployments 等都是属于某一个 namespace 的（默认是 default），而 node, persistentVolumes 等则不属于任何 namespace。
 
 Service 是应用服务的抽象，通过 labels 为应用提供负载均衡和服务发现。匹配 labels 的 Pod IP 和端口列表组成 endpoints，由 kube-proxy 负责将服务 IP 负载均衡到这些 endpoints 上。
 
 每个 Service 都会自动分配一个 cluster IP（仅在集群内部可访问的虚拟地址）和 DNS 名，其他容器可以通过该地址或 DNS 来访问服务，而不需要了解后端容器的运行。
-
-![img](../images/posts/docker/assets%2F-LDAOok5ngY4pc1lEDes%2F-LpOIkR-zouVcB8QsFj_%2F-LpOIpZQ8P49qNDyiHUJ%2F14731220608865.png?generation=1569161437146749&alt=media.png)
-
-
 
 ```
 apiVersion: v1
@@ -961,10 +953,3 @@ k8s 会怎么做呢？第5章给出了答案：**服务**。为一组功能相�
 当然，由于每个人的基础不同，可能刚开始读书的时候提不出问题，或者提不出有价值的问题，这时候可以去直接看具体内容，但是不能放弃思考：这个技术点是要解决什么问题的？是怎么解决的？
 
 希望每个人都建立一套自己的知识体系，从这个知识体系中能伸出很多的触角，能像海绵一样吸收外界的知识，不断地为自己的知识体系添砖加瓦。
-
- 
-
-
-
-
-
