@@ -42,7 +42,7 @@ tag: 密码学
 
 我们看一个实数域上的椭圆曲线：
 
-![006tKfTcly1g1ks7ak402j30ns0ke786](/images/posts/crypto/006tKfTcly1g1ks7ak402j30ns0ke786.jpg)
+![006tKfTcly1g1ks7ak402j30ns0ke786](../images/posts/crypto/006tKfTcly1g1ks7ak402j30ns0ke786.jpg)
 
 # 3.  椭圆曲线如何进行运算
 
@@ -52,7 +52,7 @@ tag: 密码学
 
 加法：过曲线上的两点A、B画一条直线，找到直线与椭圆曲线的交点，交点关于x轴对称位置的点，定义为A+B，即为加法。如下图所示：A+B+C=0，即A+B=-C=D
 
-![006tKfTcly1g1ks9qewgnj30ki0kotd5](/images/posts/crypto/006tKfTcly1g1ks9qewgnj30ki0kotd5.jpg)
+![006tKfTcly1g1ks9qewgnj30ki0kotd5](../images/posts/crypto/006tKfTcly1g1ks9qewgnj30ki0kotd5.jpg)
 
 如图所示，根据前面的描述，我们得到下面的结论：
 
@@ -62,17 +62,17 @@ tag: 密码学
 
 二倍运算：上述方法无法解释A + A，即两点重合的情况。因此在这种情况下，将椭圆曲线在A点的切线，与椭圆曲线的交点，交点关于x轴对称位置的点，定义为A + A，即2A，即为二倍运算。如下图所示：A + A = 2A = B
 
-![006tKfTcly1g1ksljxlwqj30lm0fuq45](/images/posts/crypto/006tKfTcly1g1ksljxlwqj30lm0fuq45.jpg)
+![006tKfTcly1g1ksljxlwqj30lm0fuq45](../images/posts/crypto/006tKfTcly1g1ksljxlwqj30lm0fuq45.jpg)
 
 
 
 正负取反：将A关于x轴对称位置的点定义为-A，即椭圆曲线的正负取反运算。如下图所示：
 
-![006tKfTcly1g1ksm8kpe4j30l60gg75d](/images/posts/crypto/006tKfTcly1g1ksm8kpe4j30l60gg75d.jpg)
+![006tKfTcly1g1ksm8kpe4j30l60gg75d](../images/posts/crypto/006tKfTcly1g1ksm8kpe4j30l60gg75d.jpg)
 
 无穷远点：如果将A与-A相加，过A与-A的直线平行于y轴，可以认为直线与椭圆曲线相交于无穷远点。如下图所示：
 
-![006tKfTcly1g1ksmvmiwjj30lk0fagmf](/images/posts/crypto/006tKfTcly1g1ksmvmiwjj30lk0fagmf.jpg)
+![006tKfTcly1g1ksmvmiwjj30lk0fagmf](../images/posts/crypto/006tKfTcly1g1ksmvmiwjj30lk0fagmf.jpg)
 
 
 
@@ -124,7 +124,7 @@ y3+y4= -(a1x+a3)
 
 Fx(x,y)/Fy(x,y)= (3x2+2a2x+a4-a1y)/(2y+a1x+a3)，若2y+a1x+a3=0则P+Q=O 。
 
-![006tKfTcly1g1kscswtl7j30nw0roawu](/images/posts/crypto/006tKfTcly1g1kscswtl7j30nw0roawu.jpg)
+![006tKfTcly1g1kscswtl7j30nw0roawu](../images/posts/crypto/006tKfTcly1g1kscswtl7j30nw0roawu.jpg)
 
 综上，定义了A+B、2A运算，因此给定椭圆曲线的某一点G，可以求出2G、3G（即G + 2G）、4G......。即：当给定G点时，已知x，求xG点并不困难。反之，已知xG点，求x则非常困难。此即为椭圆曲线加密算法背后的数学原理。
 
@@ -150,7 +150,7 @@ A * 3 = A + A + A;
 
 如果将点和点之间的加法类比成整数之间的乘法，那么点的标量乘法不就相当于整数上的幂模运算吗？反过来，点之间的除法运算不就相当于证书上的离散对数运算吗？
 
-![006tKfTcly1g1ku5tbtt7j30zu076762](/images/posts/crypto/006tKfTcly1g1ku5tbtt7j30zu076762.jpg)
+![006tKfTcly1g1ku5tbtt7j30zu076762](../images/posts/crypto/006tKfTcly1g1ku5tbtt7j30zu076762.jpg)
 
 # 4. GF(p)上的椭圆曲线
 
@@ -168,13 +168,13 @@ A * 3 = A + A + A;
 
 　　2.若x1=x2且y1=y2，即P=Q，此时R=P+Q=2P，其中
 
-![006tKfTcly1g1kt7lf4scj30ag06ijrp](/images/posts/crypto/006tKfTcly1g1kt7lf4scj30ag06ijrp.jpg)
+![006tKfTcly1g1kt7lf4scj30ag06ijrp](../images/posts/crypto/006tKfTcly1g1kt7lf4scj30ag06ijrp.jpg)
 
 　　3.若x1=x2而y1=-y2，此时称Q点为P点的逆，记为P=-Q，且R=P+Q=O。
 
 　　4.除上述特殊情况之外的一般情况，即P≠±Q时，R=P+Q，其中
 
- ![006tKfTcly1g1kt7u5kicj30ak05yzkm](/images/posts/crypto/006tKfTcly1g1kt7u5kicj30ak05yzkm.jpg)
+ ![006tKfTcly1g1kt7u5kicj30ak05yzkm](../images/posts/crypto/006tKfTcly1g1kt7u5kicj30ak05yzkm.jpg)
 
 
 
@@ -188,7 +188,7 @@ A * 3 = A + A + A;
 
 　　e.m.取p=11，椭圆曲线y^2=x^3+x+6
 
-![006tKfTcly1g1ktmenl4zj30qq0taq53](/images/posts/crypto/006tKfTcly1g1ktmenl4zj30qq0taq53.jpg)
+![006tKfTcly1g1ktmenl4zj30qq0taq53](../images/posts/crypto/006tKfTcly1g1ktmenl4zj30qq0taq53.jpg)
 
 由此表得到所有的解点：(2,4)、(2,7)、(3,5)、(3,6)、(5,2)、(5,9)、(7,2)、(7,9)、(8,3)、(8,8)、(10,2)、(10,9)，再加上无穷点O共13个点的集合E加上加法运算就构成一个加法交换群。
 
@@ -206,7 +206,7 @@ A * 3 = A + A + A;
 2. 如果P=(x,y)，那么(x,y)+(x,-y)=O，即(x,-y)是P的加法逆元，表示为-P。
 3. 设P=(x1,y1), Q=(x2,y2), P≠-Q，则P+Q=(x4,y4),可由以下规则确定 x4=k^2+-x1-x2 modp,y =k(x -x )-y modp 
 
-其中，![006tKfTcly1g1kub82jevj308u05ymxd](/images/posts/crypto/006tKfTcly1g1kub82jevj308u05ymxd.jpg)
+其中，![006tKfTcly1g1kub82jevj308u05ymxd](../images/posts/crypto/006tKfTcly1g1kub82jevj308u05ymxd.jpg)
 
 # 5. 椭圆曲线上Diffie-Hellman密钥交换
 
@@ -365,6 +365,10 @@ NIST向社会推荐了5条素域GF(p)上随机选取的椭圆曲线：
 　　h=1
 
 # 7. 基于Java的椭圆曲线密码算法的实现
+
+通常将Fp上的一条椭圆曲线描述为T=(p,a,b,G,n,h),p、a、b确定一条椭圆曲线（p为质数，(mod p)运算）G为基点，n为点G的阶，h是椭圆曲线上所有点的个数m与n相除的商的整数部分。
+
+
 
 ECPoint:
 
@@ -703,7 +707,7 @@ public class TestECC {
 }
 }
 ```
-![006tKfTcly1g1kvy93rspj30v80nkn2r](/images/posts/crypto/006tKfTcly1g1kvy93rspj30v80nkn2r.jpg)
+![006tKfTcly1g1kvy93rspj30v80nkn2r](../images/posts/crypto/006tKfTcly1g1kvy93rspj30v80nkn2r.jpg)
 
  
 

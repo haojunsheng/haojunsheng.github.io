@@ -50,7 +50,7 @@ tag: os
          * [4.2.5 目录解析代码的实现](#425-目录解析代码的实现)
    * [5. 总结](#5-总结)
 
-<!-- Added by: anapodoton, at: Wed Mar 11 10:23:21 CST 2020 -->
+<!-- Added by: anapodoton, at: Sun Mar 15 23:32:14 CST 2020 -->
 
 <!--te-->
 
@@ -132,33 +132,31 @@ setup.S 是一个操作系统加载程序，它的主要作用是利用 ROM BIOS
 
 ![](/images/posts/os/20191206104727.png)
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206103537.png)
+![](/images/posts/fabric/20191206103537.png)
 
 ### 1.1.3 head.s
 
 head.s 程序在被编译生成目标文件后会与内核其他程序的目标文件一起被链接成 system 模块，并位 于 system 模块的最前面开始部分。这也就是为什么称其为头部(head)程序的原因。system 模块将被放置 在磁盘上 setup 模块之后开始的扇区中，即从磁盘上第 6 个扇区开始放置。一般情况下 Linux 0.12 内核的 system 模块大约有 120KB 左右，因此在磁盘上大约占 240 个扇区。 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206105130.png)
+![](/images/posts/os/20191206105130.png)
 
 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206105150.png)
+![](/images/posts/os/20191206105150.png)
 
 这段程序实际上处于内存绝对地址 0 处开始的地方。这个程序的功能比较单一。首先它加载各个数 据段寄存器，重新设置中断描述符表 IDT，共 256 项。
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206105213.png)
+![](/images/posts/os/20191206105213.png)
 
 接着程序设置管理内存的分页处理机制，将页目录表放在绝对物理地址 0 开始处(也是本程序所处 的物理内存位置，因此这段程序已执行部分将被覆盖掉)，紧随后面会放置共可寻址 16MB 内存的 4 个 页表，并分别设置它们的表项。 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206105241.png)
+![](/images/posts/os/20191206105241.png)
 
 最后，head.s 程序利用返回指令将预先放置在堆栈中的/init/main.c 程序的入口地址弹出，去运行 main() 程序。 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206105335.png)
+![](/images/posts/os/20191206105335.png)
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206111530.png" style="zoom:50%;" />
-
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206105433.png)
+![](/images/posts/os/20191206111530.png)
 
 总结：引导加载程序 bootsect.S 将 setup.s 代码和 system 模块加载到内存中，并且分别把自己和 setup.s 代码 移动到物理内存 0x90000 和 0x90200 处后，就把执行权交给了 setup 程序。其中 system 模块的首部包含 有 head.s 代码。 
 
@@ -170,7 +168,9 @@ Head.s 代码的主要作用是初步初始化中断描述符表中的 256 项�
 
 在内核源代码的 init/目录中只有一个 main.c 文件。系统在执行完 boot/head.s 程序后就会将执行权交 给 main.c。 
 
-main.c 程序首先利用前面 setup.s 程序取得的机器参数设置系统的根文件设备号以及一些内存全局变 量。这些内存变量指明了主内存区的开始地址、系统所拥有的内存容量和作为高速缓冲区内存的末端地 址。如果还定义了虚拟盘(RAMDISK)，则主内存区将适当减少。 ![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206113013.png)
+main.c 程序首先利用前面 setup.s 程序取得的机器参数设置系统的根文件设备号以及一些内存全局变 量。这些内存变量指明了主内存区的开始地址、系统所拥有的内存容量和作为高速缓冲区内存的末端地 址。如果还定义了虚拟盘(RAMDISK)，则主内存区将适当减少。 
+
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191206113013.png)
 
 然后，内核进行各方面的硬件初始化工作。包括陷阱门、块设备、字符设备和 tty，还包括人工设置 第一个任务(task 0)。待所有初始化工作完成后，程序就设置中断允许标志以开启中断，并切换到任务 0 中运行。到此时，可以说内核已基本完成所有设置工作。接下来内核会通过任务 0 创建几个最初的任 务，运行 shell 程序并显示命令行提示符，从而 Linux 系统进入正常运行阶段。 
 
@@ -178,25 +178,25 @@ main.c 程序首先利用前面 setup.s 程序取得的机器参数设置系统�
 
 在整个内核完成初始化后，内核将执行控制权切换到了用户模式(任务 0)，也即 CPU 从 0 特权级 切换到了第 3 特权级。此时 main.c 的主程序就工作在任务 0 中。然后系统第一次调用进程创建函数 fork()， 创建出一个用于运行 init()的子进程(通常被称为 init 进程)。系统整个初始化过程见图 7-2 所示。 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206163732.png)
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191206163732.png)
 
 由图可见，main.c 程序首先确定如何分配使用系统物理内存，然后调用内核各部分的初始化函数分 别对内存管理、中断处理、块设备和字符设备、进程管理以及硬盘和软盘硬件进行初始化处理。在完成 了这些操作之后，系统各部分已经处于可运行状态。此后程序把自己“手工”移动到任务 0(进程 0)中 运行，并使用 fork()调用首次创建出进程 1(init 进程)，并在其中调用 init()函数。在该函数中程序将继 续进行应用环境的初始化并执行 shell 登录程序。而原进程 0 则会在系统空闲时被调度执行，因此进程 0 通常也被称为 idle 进程。此时进程 0 仅执行 pause()系统调用，并又会调用调度函数。 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206165314.png)
+![](/images/posts/os/20191206165314.png)
 
 ## 1.3 Linux系统调用
 
 为了保护系统资源，我们 不能直接让用户程序去访问系统资源。系统调用由0x80中断完成，各个通用寄存器用于传递参数，EAX表示系统调用的接口和结果的返回值。
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206180546.png" style="zoom:50%;" />
+![img](/images/posts/os/20191206180546-20200311233240444.png)
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206181324.png" style="zoom:50%;" />
+![img](/images/posts/os/20191206181324.png)
 
 我们用中断号+系统调用号来表示一个具体的中断。一般int指令表示进入中断，0x80表示系统调用。
 
 下面我们来看下基于int的Linux经典系统调用：
 
-![img](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114900.png)
+![img](/images/posts/os/20191205114900-20200311233143719.png)
 
 第一步是触发中断，比如
 
@@ -206,7 +206,7 @@ int main(){
 }
 ```
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206181730.png" style="zoom:50%;" />
+![img](/images/posts/os/20191206181730.png)
 
 当用户调用某个系统调用的时候，实际上执行了一段汇编代码，CPU执行到int 0x80的时候，会保存现场，便于恢复，接着会将特权态切换到内核态，然后CPU会查找中断向量表中第0x80号元素。
 
@@ -218,19 +218,19 @@ int main(){
    2. 在内核中依次压入用户的寄存器SS,ESP,EFLAGS,CS,EIP
    3. 恢复原来的ESP和SS的值（iret）
 
-![img](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114922.png)
+![img](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191205114922.png)
 
 第三步是中断处理程序，
 
-![img](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114933.png)
+![img](/images/posts/os/20191205114933-20200311233454013.png)
 
-![img](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114948.png)
+![img](/images/posts/os/20191205114948-20200311233404554.png)
 
-![img](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191205114958.png)
+![img](/images/posts/os/20191205114958-20200311233410820.png)
 
 系统调用(通常称为 syscalls)是 Linux 内核与上层应用程序进行交互通信的唯一接口，参见图 5-4 所示。从对中断机制的说明可知，用户程序通过直接或间接(通过库函数)调用中断 int 0x80，并在 eax 寄存器中指定系统调用功能号，即可使用内核资源，包括系统硬件资源。不过通常应用程序都是使用具 有标准接口定义的 C 函数库中的函数间接地使用内核的系统调用，见图 5-19 所示。 
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206172854.png" style="zoom:50%;" />
+![img](/images/posts/os/20191206172854.png)
 
 在 Linux 内核中，每个系统调用都具有唯一的一个系统调用功能号。内核 0.12 共有 87 个系统调用 功能。这些功能号定义在文件 include/unistd.h 中第 62 行开始处。例如，write 系统调用的功能号是 4，定 义为符号__NR_write。这些系统调用功能号实际上对应于 include/linux/sys.h 中定义的系统调用处理程序 指针数组表 sys_call_table[]中项的索引值。因此 write()系统调用的处理程序指针就位于该数组的项 4 处。 
 
@@ -238,17 +238,17 @@ int main(){
 
 当应用程序经过库函数向内核发出一个中断调用int 0x80时，就开始执行一个系统调用。其中寄存 器 eax 中存放着系统调用号，而携带的参数可依次存放在寄存器 ebx、ecx 和 edx 中。因此 Linux 0.12 内 核中用户程序能够向内核最多直接传递三个参数，当然也可以不带参数。处理系统调用中断int 0x80的 过程是程序 kernel/system_call.s 中的 system_call。 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206174656.png)
+![](/images/posts/os/20191206174656.png)
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206174715.png" style="zoom:50%;" />
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191206174715.png)
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206174746.png" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191206174746.png" style="zoom:50%;" />
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206174821.png" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191206174821.png" style="zoom:50%;" />
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206174836.png" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191206174836.png" style="zoom:50%;" />
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191206175006.png" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191206175006.png" style="zoom:50%;" />
 
 操作系统实现系统调用的基本过程是：
 
@@ -290,7 +290,7 @@ _syscallN宏展开系统调用，提供用户态的系统调用接口（参数�
 
 # 2. 进程与线程
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191207231228.png)
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191207231228.png)
 
 我们来区分下进程，线程和协程。进程和线程不在多说了，我们来看下协程。来看生产者消费者的场景，一个线程向队列中放数据，另外一个从队列中取数据，处理起两个线程的协作就显得很麻烦，不但需要加锁，还得做好线程的通知和等待。我们来看下这样的代码：
 
@@ -328,7 +328,7 @@ producer(c)
 
 虽然线程是个轻量级的东西， 但是对于互联网应用来说，如果每个用户的请求都创建一个线程，那会非常得多，服务器也是难于承受， 再说了，众多的线程去竞争CPU，不断切换，也会让CPU调度不堪重负，很多线程将不得不等待。所以前辈们的思路就是（1）用少量的线程 （2） 让线程保持忙碌。
 
-![img](https://mmbiz.qpic.cn/mmbiz_png/KyXfCrME6UK7lmln1L1OSlca8YeiaVJYZbnBqkwPv4w2zueVwcLGzmZE8PrQhuBHYvhDEgNoGRHfl2FHsjczO2A/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+![img](/images/posts/os/640.png)
 
 只创建一定数量的线程，让这些线程去处理所有的任务，任务执行完了以后，线程并不结束，而是回到线程池中去，等待接受下一个任务。
 
@@ -336,7 +336,7 @@ producer(c)
 
 我们可以借助于BlockingQueue技术：
 
-![img](https://mmbiz.qpic.cn/mmbiz_png/KyXfCrME6UK7lmln1L1OSlca8YeiaVJYZLZMmKRdsBGVXnessMvDQibPYwUs8UibhkEx3ARwDJCoxdKmib6bqngibKg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+![img](/images/posts/os/640-20200311233530692.png)
 
 BlockingQueue其实很简单，就是一个线程调用它的take()方法取数据时， 如果这个Queue中没有数据，该线程会阻塞；同样，一个线程调用它的put方法放数据时，如果Queue满了， 也会阻塞。
 
@@ -400,11 +400,13 @@ copy_process()用于创建并复制进程的代码段和数据段以及环境。
 
 图 8-13 是内存验证函数 verify_area()中验证内存的起始位置和范围的调整示意图。因为内存写验证 函数 write_verify()需要以内存页面为单位(4096 字节)进行操作，因此在调用 write_verify()之前，需要 把验证的起始位置调整为页面起始位置，同时对验证范围作相应调整。 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191209114717.png)
+![](/images/posts/os/20191209114717.png)
 
 上面根据 fork.c 程序中各函数的功能简单描述了 fork()的作用。这里我们从总体上再对其稍加说明。 总的来说 fork()首先会为新进程申请一页内存页用来复制父进程的任务数据结构(也称进程控制块，PCB) 信息，然后会为新进程修改复制的任务数据结构的某些字段值，包括利用系统调用中断发生时逐步压入 堆栈的寄存器信息(即 copy_process()的参数)重新设置任务结构中的 TSS 结构的各字段值，让新进程的状态保持父进程即将进入中断过程前的状态。然后为新进程确定在线性地址空间中的起始位置(nr * 64MB)。对于 CPU 的分段机制，Linux 0.12 的代码段和数据段在线性地址空间中的位置和长度完全相同。 接着系统会为新进程复制父进程的页目录项和页表项。对于Linux 0.12内核来说，所有程序共用一个位 于物理内存开始位置处的页目录表，而新进程的页表则需另行申请一页内存来存放。 
 
-在 fork()的执行过程中，内核并不会立刻为新进程分配代码和数据内存页。新进程将与父进程共同 使用父进程已有的代码和数据内存页面。只有当以后执行过程中如果其中有一个进程以写方式访问内存 时被访问的内存页面才会在写操作前被复制到新申请的内存页面中。 <img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191209114858.png" style="zoom:50%;" />
+在 fork()的执行过程中，内核并不会立刻为新进程分配代码和数据内存页。新进程将与父进程共同 使用父进程已有的代码和数据内存页面。只有当以后执行过程中如果其中有一个进程以写方式访问内存 时被访问的内存页面才会在写操作前被复制到新申请的内存页面中。 
+
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191209114858.png" style="zoom:50%;" />
 
 ### 2.1.2 **sched.c** 
 
@@ -422,13 +424,13 @@ sched.c 文件是内核中有关任务(进程)调度管理的程序。其中包�
 
 函数中共牵涉到对三个任务指针的操作:*p、tmp 和 current。*p 是等待队列头指针，如文件系统内 存 i 节点的 i_wait 指针、内存缓冲操作中的 buffer_wait 指针等;tmp 是在函数堆栈上建立的临时指针， 存储在当前任务内核态堆栈上;current 是当前任务指针。对于这些指针在内存中的变化情况我们可以用 图 8-6 的示意图说明。图中的长条表示内存字节序列。 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191209113249.png)
+![](/images/posts/os/20191209113249.png)
 
 当刚进入该函数时，队列头指针*p 指向已经在等待队列中等待的任务结构(进程描述符)。当然， 在系统刚开始执行时，等待队列上无等待任务。因此上图中原等待任务在刚开始时不存在，此时*p 指向 NULL。通过指针操作，在调用调度程序之前，队列头指针指向了当前任务结构，而函数中的临时指针 tmp 指向了原等待任务。在执行调度程序并在本任务被唤醒重新返回执行之前，当前任务指针被指向新 的当前任务，并且 CPU 切换到该新的任务中执行。这样本次 sleep_on()函数的执行使得 tmp 指针指向队 列中队列头指针指向的原等待任务，而队列头指针则指向此次新加入的等待任务，即调用本函数的任务。 
 
 从而通过堆栈上该临时指针 tmp 的链接作用，在几个进程为等待同一资源而多次调用该函数时，内核程 序就隐式地构筑出一个等待队列，参见图 8-7 中的等待队列示意图。图中示出了当向队列头部插入第三 个任务时的情况。从图中我们可以更容易理解 sleep_on()函数的等待队列形成过程。 
 
-![](https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191209113512.png)
+![](/images/posts/os/20191209113512.png)
 
 在把进程插入等待队列后，sleep_on()函数就会调用 schedule()函数去执行别的进程。当进程被唤醒 而重新执行时就会执行后续的语句，把比它早进入等待队列的一个进程唤醒。注意，这里所谓的唤醒并 不是指进程处于执行状态，而是处于可以被调度执行的就绪状态。 
 
@@ -489,39 +491,37 @@ This is only half true. Yes, you can easily cause problems if you call the OS yo
 
 我们开始实现这个浏览器：
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191209195800.png" style="zoom:25%;" />
+![](/images/posts/os/20191209195800.png)
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191209200004.png" style="zoom:25%;" />
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191209200824.png" style="zoom:25%;" />
+
+![](/images/posts/os/20191209200004.png)
+
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191209200824.png" style="zoom:25%;" />
 
 发现没有，如果2个线程只有1个栈，就会出现问题，当第二个Yield被执行的时候，应该204出栈，但是这个时候确是404出栈，这个时候出现了问题。
 
-<img src="../../../Library/Application Support/typora-user-images/image-20191209201200838.png" alt="image-20191209201200838" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191209201329.png" style="zoom:50%;" />
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191209201329.png" style="zoom:50%;" />
-
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191209201614.png" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191209201614.png" style="zoom:50%;" />
 
 ### 2.2.2 内核级线程的样子
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191209203045.png" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191209203045.png" style="zoom:50%;" />
 
-<img src="../../../Library/Application Support/typora-user-images/image-20191209203117609.png" alt="image-20191209203117609" style="zoom:50%;" />
-
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191209203736.png" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191209203736.png" style="zoom:50%;" />
 
 
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191209203759.png" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191209203759.png" style="zoom:50%;" />
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191210105922.png" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191210105922.png" style="zoom:50%;" />
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191210110911.png" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191210110911.png" style="zoom:50%;" />
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191210111052.png" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191210111052.png" style="zoom:50%;" />
 
-<img src="https://raw.githubusercontent.com/Anapodoton/ImageHost/master/img/20191210111121.png" style="zoom:50%;" />
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191210111121.png" style="zoom:50%;" />
 
 ### 2.2.3 内核级线程的实现
 
@@ -532,10 +532,6 @@ This is only half true. Yes, you can easily cause problems if you call the OS yo
 我们来看下中断过程调用。
 
 <img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20191217165351.png" style="zoom:50%;" />
-
-<img src="../../../Library/Application Support/typora-user-images/image-20191211182238864.png" alt="image-20191211182238864" style="zoom:50%;" />
-
-
 
 <img src="/images/posts/os/DZrzSAYnhEIFMVX-1583677093728.png" style="zoom:50%;" />
 
