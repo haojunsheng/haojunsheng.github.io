@@ -930,14 +930,17 @@ finally和return的执行顺序
 [线程与进程的区别](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/1-what-is-thread-safe.md#3-%E5%A4%9A%E7%BA%BF%E7%A8%8B)  
 
 - **进程是资源分配的基本单元，线程是执行的基本单元，同一个进程的多个线程之间共享资源。**
-
-- 进程间通信
-
-  - 管道：父子进程通信
-  - 共享内存：
-  - 消息队列：容量和系统有关
-  - 信号量：用来同步
-  - socket：不同机器之间
+- **进程间通信（同步）**
+- 管道pipe：管道是一种半双工的通信方式，数据只能单向流动，而且只能在具有血缘关系的进程间使用。 进程的血缘关系通常指父子进程关系。管道分为pipe(无名管道)和fifo(命名管道)两种，有名管道也是半双 工的通信方式，但是它允许无亲缘关系进程间通信。
+  - 共享内存：(shared memory):共享内存就是映射一段能被其他进程所访问的内存，这段共享内存由一个进程创建，但多个进程都可以访问，共享内存是最快的IPC方式，它是针对其他进程间的通信方式运行效率低而专门设计的。它往往与其他通信机制，如信号量配合使用，来实现进程间的同步和通信。
+  - 消息队列(message queue):消息队列是由消息组成的链表，存放在内核中 并由消息队列标识符标识。消 息队列克服了信号传递信息少，管道只能承载无格式字节流以及缓冲区大小受限等缺点。消息队列与管道通信相比，其优势是对每个消息指定特定的消息类型，接收的时候不需要按照队列次序，而是可以根据自定义条件接收特定类型的消息。
+  - 信号量(semophore):信号量是一个计数器，可以用来控制多个进程对共享资源的访问。它通常作为一种锁 机制，防止某进程正在访问共享资源时，其他进程也访问该资源。因此，主要作为进程间以及同一进程内不同 线程之间的同步手段。
+  - 信号：信号是一种比较复杂的通信方式，用于通知接收进程某一事件已经发生。
+  - socket：凭借这种机制，客户/服务器(即要进行通信的进程)系统的开发工作既可以在本地单机上进行，也可以跨网络进行。也就是说它可以让不在同一台计算机但通过网 络连接计算机上的进程进行通信。也因为这样，套接字明确地将客户端和服务器区分开来。
+- 线程间通信
+  - 锁机制
+  - 信号量机制
+  - 信号机制
 
 #### 1.2.2.3 线程的状态
 
@@ -1171,13 +1174,11 @@ synchronized关键字解决的是多个线程之间访问资源的同步性，sy
 
 另外，在 Java 早期版本中，synchronized属于重量级锁，效率低下，因为监视器锁(monitor)是依赖于底层的操 作系统的 Mutex Lock 来实现的，Java 的线程是映射到操作系统的原生线程之上的。如果要挂起或者唤醒一个线程， 都需要操作系统帮忙完成，而操作系统实现线程之间的切换时需要从用户态转换到内核态，这个状态之间的转换需要 相对比较长的时间，时间成本相对较高，这也是为什么早期的 synchronized 效率低的原因。庆幸的是在 Java 6 之后 Java 官方对从 JVM 层面对synchronized 较大优化，所以现在的 synchronized 锁效率也优化得很不错了。JDK1.6对 锁的实现引入了大量的优化，如自旋锁、适应性自旋锁、锁消除、锁粗化、偏向锁、轻量级锁等技术来减少锁操作的 开销。
 
-
-
 synchronized关键字最主要的三种使用方式:
 
-- 修饰实例方法，作用于当前对象实例加锁，进入同步代码前要获得当前对象实例的锁 
+- **修饰实例方法**，作用于当前**对象实例加锁**，进入同步代码前要获得当前对象实例的锁 
 
-- 修饰静态方法，作用于当前类对象加锁，进入同步代码前要获得当前类对象的锁 。也就是给当前类加锁，会作 用于类的所有对象实例，因为静态成员不属于任何一个实例对象，是类成员( static 表明这是该类的一个静态 资源，不管new了多少个对象，只有一份，所以对该类的所有对象都加了锁)。所以如果一个线程A调用一个实 例对象的非静态 synchronized 方法，而线程B需要调用这个实例对象所属类的静态 synchronized 方法，是允 许的，不会发生互斥现象，因为访问静态 synchronized 方法占用的锁是当前类的锁，而访问非静态 synchronized 方法占用的锁是当前实例对象锁。 
+- **修饰静态方法**，作用于当前类对象加锁，进入同步代码前要获得当前类对象的锁 。也就是给当前类加锁，会作 用于类的所有对象实例，因为静态成员不属于任何一个实例对象，是类成员( static 表明这是该类的一个静态 资源，不管new了多少个对象，只有一份，所以对该类的所有对象都加了锁)。所以如果一个线程A调用一个实 例对象的非静态 synchronized 方法，而线程B需要调用这个实例对象所属类的静态 synchronized 方法，是允 许的，不会发生互斥现象，因为访问静态 synchronized 方法占用的锁是当前类的锁，而访问非静态 synchronized 方法占用的锁是当前实例对象锁。 
 - 修饰代码块，指定加锁对象，对给定对象加锁，进入同步代码库前要获得给定对象的锁。 和 synchronized 方 法一样，synchronized(this)代码块也是锁定当前对象的。synchronized 关键字加到 static 静态方法和 synchronized(class)代码块上都是是给 Class 类上锁。这里再提一下:synchronized关键字加到非 static 静态 方法上是给对象实例上锁。另外需要注意的是:尽量不要使用 synchronized(String a) 因为JVM中，字符串常量 池具有缓冲功能!
 
 
@@ -1217,7 +1218,412 @@ ReentrantLock(boolean fair)构造方法来制定是否是公平的。 synchroniz
 - volatile和原子性、可见性和有序性之间的关系
 - [有了symchronized为什么还需要volatile](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/Java-memory-model.md#727-%E6%97%A2%E7%94%9Fsynchronized%E4%BD%95%E7%94%9Fvolatile)
 
-#### 1.1.2.13 写代码来解决生产者消费者问题
+#### 1.1.2.13 写代码来解决生产者消费者问题（实现线程的顺序打印）
+
+```java
+// 实现线程的顺序打印
+public class Test implements Runnable {
+
+    private static final Object LOCK = new Object();
+
+    /**
+     * 当前即将打印的数字
+     */
+    private static int current = 0;
+
+    /**
+     * 当前线程编号，从0开始
+     */
+    private int threadNo;
+
+    /**
+     * 线程数量
+     */
+    private int threadCount;
+
+    /**
+     * 打印的最大数值
+     */
+    private int max;
+
+    public Test(int threadNo, int threadCount, int max) {
+        this.threadNo = threadNo;
+        this.threadCount = threadCount;
+        this.max = max;
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            synchronized (LOCK) {
+                // 判断是否轮到当前线程执行
+                while (current % threadCount != threadNo) {
+                    if (current > max) {
+                        break;
+                    }
+                    try {
+                        // 如果不是，则当前线程进入wait
+                        LOCK.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                // 最大值跳出循环
+                if (current > max) {
+                    break;
+                }
+                System.out.println("thread-" + threadNo + " : " + current);
+                current++;
+                // 唤醒其他wait线程
+                LOCK.notifyAll();
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        int threadCount = 3;
+        int max = 2;
+        for (int i = 0; i < threadCount; i++) {
+            new Thread(new Test(i, threadCount, max)).start();
+        }
+    }
+}
+```
+
+
+
+```java
+// 生产者和消费者，wait()和notify()的实现
+// wait(),暂停线程的执行。注意:sleep方法没有释放锁，而wait方法释放了锁 。timeout是等待时间。
+// notify(),唤醒一个在此对象监视器上等待的线程(监视器相当于就是锁的概念)。
+// 如果有多个线程在等待只会任意唤醒一个。
+// notifyAll(),跟notify一样，唯一的区别就是会唤醒 在此对象监视器上等待的所有线程，而不是一个线程。
+public class Test1 {
+    private static Integer count = 0;
+    private static final Integer FULL = 10;
+    private static String LOCK = "lock";
+
+    public static void main(String[] args) {
+        Test1 test1 = new Test1();
+        new Thread(test1.new Producer()).start();
+        new Thread(test1.new Consumer()).start();
+        new Thread(test1.new Producer()).start();
+        new Thread(test1.new Consumer()).start();
+        new Thread(test1.new Producer()).start();
+        new Thread(test1.new Consumer()).start();
+        new Thread(test1.new Producer()).start();
+        new Thread(test1.new Consumer()).start();
+    }
+
+    class Producer implements Runnable {
+        @Override
+        public void run() {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    Thread.sleep(3000);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                synchronized (LOCK) {
+                    while (count.equals(FULL)) {
+                        try {
+                            LOCK.wait();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    count++;
+                    System.out.println(Thread.currentThread().getName() + "生产者生产，目前总共有" + count);
+                    LOCK.notifyAll();
+                }
+            }
+        }
+    }
+
+    class Consumer implements Runnable {
+        @Override
+        public void run() {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                synchronized (LOCK) {
+                    while (count == 0) {
+                        try {
+                            LOCK.wait();
+                        } catch (Exception e) {
+                        }
+                    }
+                    count--;
+                    System.out.println(Thread.currentThread().getName() + "消费者消费，目前总共有" + count);
+                    LOCK.notifyAll();
+                }
+            }
+        }
+    }
+}
+```
+
+<img src="../images/posts/java/image-20200316222653346.png" alt="image-20200316222653346" style="zoom:25%;" />
+
+为什么使用notifyAll() ，不使用notify()，就是随便叫醒一个消费者呢？
+
+使用 notify() 是叫醒 LOCK 阻塞队列里面的任意一个线程，假如此时我们的临界区域已经满了，此时唤醒的是一个生产者线程，就会导致死锁，所以我们在这里采用的是 notifyAll() 这个方法，意思就是唤醒阻塞队列里面的全部线程，这样某一个消费者就可以去取出临界区里面的产品，从而避免死锁的发生，但是很显然，从上面打印的结果可以看出，顺序是无法保证的，想要保证顺序，可以试着使用可重入锁 ReentrantLock 来实现。
+
+
+
+java.util.concurrent.lock 中的 Lock 框架是锁定的一个抽象，通过对lock的lock()方法和unlock()方法实现了对锁的显示控制，而synchronize()则是对锁的隐性控制。
+可重入锁，也叫做递归锁，指的是同一线程 外层函数获得锁之后 ，内层递归函数仍然有获取该锁的代码，但不受影响，简单来说，该锁维护这一个与获取锁相关的计数器，如果拥有锁的某个线程再次得到锁，那么获取计数器就加1，函数调用结束计数器就减1，然后锁需要被释放两次才能获得真正释放。已经获取锁的线程进入其他需要相同锁的同步代码块不会被阻塞。
+
+```java
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+// 生产者和消费者，可重入锁ReentrantLock的实现
+public class Test1 {
+    private static Integer count = 0;
+    private static final Integer FULL = 10;
+    //创建一个锁对象
+    private Lock lock = new ReentrantLock();
+    //创建两个条件变量，一个为缓冲区非满，一个为缓冲区非空
+    private final Condition notFull = lock.newCondition();
+    private final Condition notEmpty = lock.newCondition();
+
+    public static void main(String[] args) {
+        Test1 test2 = new Test1();
+        new Thread(test2.new Producer()).start();
+        new Thread(test2.new Consumer()).start();
+        new Thread(test2.new Producer()).start();
+        new Thread(test2.new Consumer()).start();
+        new Thread(test2.new Producer()).start();
+        new Thread(test2.new Consumer()).start();
+        new Thread(test2.new Producer()).start();
+        new Thread(test2.new Consumer()).start();
+    }
+
+    class Producer implements Runnable {
+        @Override
+        public void run() {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    Thread.sleep(3000);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                //获取锁
+                lock.lock();
+                try {
+                    while (count.equals(FULL)) {
+                        try {
+                            notFull.await();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    count++;
+                    System.out.println(Thread.currentThread().getName()
+                            + "生产者生产，目前总共有" + count);
+                    //唤醒消费者
+                    notEmpty.signal();
+                } finally {
+                    //释放锁
+                    lock.unlock();
+                }
+            }
+        }
+    }
+
+    class Consumer implements Runnable {
+        @Override
+        public void run() {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                lock.lock();
+                try {
+                    while (count == 0) {
+                        try {
+                            notEmpty.await();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    count--;
+                    System.out.println(Thread.currentThread().getName()
+                            + "消费者消费，目前总共有" + count);
+                    notFull.signal();
+                } finally {
+                    lock.unlock();
+                }
+            }
+        }
+    }
+}
+```
+
+<img src="../images/posts/java/image-20200316225207824.png" alt="image-20200316225207824" style="zoom:50%;" />
+
+**阻塞队列BlockingQueue的实现**
+
+BlockingQueue即阻塞队列，从阻塞这个词可以看出，在某些情况下对阻塞队列的访问可能会造成阻塞。被阻塞的情况主要有如下两种:
+
+1. 当队列满了的时候进行入队列操作
+2. 当队列空了的时候进行出队列操作
+   因此，当一个线程对已经满了的阻塞队列进行入队操作时会阻塞，除非有另外一个线程进行了出队操作，当一个线程对一个空的阻塞队列进行出队操作时也会阻塞，除非有另外一个线程进行了入队操作。
+   从上可知，阻塞队列是线程安全的。
+   下面是BlockingQueue接口的一些方法:
+
+<img src="../images/posts/java/image-20200316230658254.png" alt="image-20200316230658254" style="zoom:33%;" />
+
+这四类方法分别对应的是：
+1 . ThrowsException：如果操作不能马上进行，则抛出异常
+2 . SpecialValue：如果操作不能马上进行，将会返回一个特殊的值，一般是true或者false
+3 . Blocks:如果操作不能马上进行，操作会被阻塞
+4 . TimesOut:如果操作不能马上进行，操作会被阻塞指定的时间，如果指定时间没执行，则返回一个特殊值，一般是true或者false
+下面来看由阻塞队列实现的生产者消费者模型,这里我们使用take()和put()方法，这里生产者和生产者，消费者和消费者之间不存在同步，所以会出现连续生成和连续消费的现象
+
+```java
+// 生产者和消费者，使用BlockingQueue实现生产者消费者模型
+public class Test1 {
+    private static Integer count = 0;
+    //创建一个阻塞队列
+    final BlockingQueue blockingQueue = new ArrayBlockingQueue<>(10);
+    public static void main(String[] args) {
+        Test1 test3 = new Test1();
+        new Thread(test3.new Producer()).start();
+        new Thread(test3.new Consumer()).start();
+        new Thread(test3.new Producer()).start();
+        new Thread(test3.new Consumer()).start();
+        new Thread(test3.new Producer()).start();
+        new Thread(test3.new Consumer()).start();
+        new Thread(test3.new Producer()).start();
+        new Thread(test3.new Consumer()).start();
+    }
+    class Producer implements Runnable {
+        @Override
+        public void run() {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    Thread.sleep(3000);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    blockingQueue.put(1);
+                    count++;
+                    System.out.println(Thread.currentThread().getName()
+                            + "生产者生产，目前总共有" + count);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    class Consumer implements Runnable {
+        @Override
+        public void run() {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                try {
+                    blockingQueue.take();
+                    count--;
+                    System.out.println(Thread.currentThread().getName()
+                            + "消费者消费，目前总共有" + count);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+}
+```
+
+**信号量Semaphore的实现**
+
+Semaphore（信号量）是用来控制同时访问特定资源的线程数量，它通过协调各个线程，以保证合理的使用公共资源，在操作系统中是一个非常重要的问题，可以用来解决哲学家就餐问题。Java中的Semaphore维护了一个许可集，一开始先设定这个许可集的数量，可以使用acquire()方法获得一个许可，当许可不足时会被阻塞，release()添加一个许可。在下列代码中，还加入了另外一个mutex信号量，维护生产者消费者之间的同步关系，保证生产者和消费者之间的交替进行
+
+```java
+// 生产者和消费者，使用semaphore信号量实现
+public class Test1 {
+    private static Integer count = 0;
+    //创建三个信号量
+    final Semaphore notFull = new Semaphore(10);
+    final Semaphore notEmpty = new Semaphore(0);
+    final Semaphore mutex = new Semaphore(1);
+
+    public static void main(String[] args) {
+        Test1 test4 = new Test1();
+        new Thread(test4.new Producer()).start();
+        new Thread(test4.new Consumer()).start();
+        new Thread(test4.new Producer()).start();
+        new Thread(test4.new Consumer()).start();
+        new Thread(test4.new Producer()).start();
+        new Thread(test4.new Consumer()).start();
+        new Thread(test4.new Producer()).start();
+        new Thread(test4.new Consumer()).start();
+    }
+
+    class Producer implements Runnable {
+        @Override
+        public void run() {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    notFull.acquire();
+                    mutex.acquire();
+                    count++;
+                    System.out.println(Thread.currentThread().getName()
+                            + "生产者生产，目前总共有" + count);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    mutex.release();
+                    notEmpty.release();
+                }
+            }
+        }
+    }
+
+    class Consumer implements Runnable {
+        @Override
+        public void run() {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                try {
+                    notEmpty.acquire();
+                    mutex.acquire();
+                    count--;
+                    System.out.println(Thread.currentThread().getName()
+                            + "消费者消费，目前总共有" + count);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    mutex.release();
+                    notFull.release();
+                }
+            }
+        }
+    }
+}
+
+```
 
 #### 1.1.2.14 并发包
 
@@ -1683,13 +2089,7 @@ TransactionDefinition 接口中定义了五个表示隔离级别的常量:
 - TransactionDefinition.ISOLATION_REPEATABLE_READ: 对同一字段的多次读取结果都是一致的，除非数据 是被本身事务自己所修改，可以阻止脏读和不可重复读，但幻读仍有可能发生.
 - TransactionDefinition.ISOLATION_SERIALIZABLE: 最高的隔离级别，完全服从ACID的隔离级别。所有的事 务依次逐个执行，这样事务之间就完全不可能产生干扰，也就是说，该级别可以防止脏读、不可重复读以及幻 读。但是这将严重影响程序的性能。通常情况下也不会用到该级别。
 
-
-
-springMVC就相当于是Struts2加上Spring的整合。使用mvc框架来开发。
-
-<img src="../images/posts/java/image-20200312155106696.png" alt="image-20200312155106696" style="zoom:33%;" />
-
-<img src="../images/posts/java/image-20200312155334317.png" alt="image-20200312155334317" style="zoom:33%;" />
+<img src="../images/posts/java/image-20200317155422017.png" alt="image-20200317155422017" style="zoom:50%;" />
 
 ### 1.4.5 Mybatis
 
@@ -1751,7 +2151,7 @@ Redis中有个设置时间过期的功能，即对存储在 redis 数据库中�
 
 但是仅仅通过设置过期时间还是有问题的。我们想一下:如果定期删除漏掉了很多过期 key，然后你也没及时去查， 也就没走惰性删除，此时会怎么样?如果大量过期key堆积在内存里，导致redis内存块耗尽了。怎么解决这个问题 呢?
 
-#### 1.4.6.6 redis 内存淘汰机制。
+#### 1.4.6.6 redis 内存淘汰机制
 
 MySQL里有2000w数据，Redis中只存20w的数据，如何保证Redis中的数据都是热点数据?
 
@@ -1775,8 +2175,6 @@ Redis不同于Memcached的很重一点就是，Redis支持持久化，而且支�
 Redis可以通过创建快照来获得存储在内存里面的数据在某个时间点上的副本。Redis创建快照之后，可以对快照进行 备份，可以将快照复制到其他服务器从而创建具有相同数据的服务器副本(Redis主从结构，主要用来提高Redis性 能)，还可以将快照留在原地以便重启服务器的时候使用。
 
 快照持久化是Redis默认采用的持久化方式，在redis.conf配置文件中默认有此下配置:
-
-![image-20200315225748088](img/image-20200315225748088.png)
 
 
 
@@ -1868,7 +2266,42 @@ Nginx 有以下5个优点:
 
 ### 1.4.8 消息队列
 
-“RabbitMQ?”“Kafka?”“RocketMQ?”...在日常学习与开发过程中，我们常常听到消息队列这个关键词。我也在 我的多篇文章中提到了这个概念。可能你是熟练使用消息队列的老手，又或者你是不懂消息队列的新手，不论你了不 了解消息队列，本文都将带你搞懂消息队列的一些基本理论。如果你是老手，你可能从本文学到你之前不曾注意的一 些关于消息队列的重要概念，如果你是新手，相信本文将是你打开消息队列大门的一板砖。
+#### 1.4.8.1 介绍一下消息队列MQ的应用场景/使用消息队列的好处
+
+<img src="img/image-20200317160129042.png" alt="image-20200317160129042" style="zoom:50%;" />
+
+如上图，在不使用消息队列服务器的时候，用户的请求数据直接写入数据库，在高并发的情况下数据库压力剧增，使 得响应速度变慢。但是在使用消息队列之后，用户的请求数据发送给消息队列之后立即 返回，再由消息队列的消费 者进程从消息队列中获取数据，异步写入数据库。由于消息队列服务器处理速度快于数据库(消息队列也比数据库有 更好的伸缩性)，因此响应速度得到大幅改善。
+
+通过以上分析我们可以得出消息队列具有很好的削峰作用的功能——即通过异步处理，将短时间高并发产生的事务消 息存储在消息队列中，从而削平高峰期的并发事务。 举例:在电子商务一些秒杀、促销活动中，合理使用消息队列 可以有效抵御促销活动刚开始大量订单涌入对系统的冲击。如下图所示:
+
+<img src="../images/posts/java/image-20200317160226150.png" alt="image-20200317160226150" style="zoom:50%;" />
+
+因为用户请求数据写入消息队列之后就立即返回给用户了，但是请求数据在后续的业务校验、写数据库等操作中可能 失败。因此使用消息队列进行异步处理之后，需要适当修改业务流程进行配合，比如用户在提交订单之后，订单数据写入消息队列，不能立即返回用户订单提交成功，需要在消息队列的订单消费者进程真正处理完该订单之后，甚至出 库后，再通过电子邮件或短信通知用户订单成功，以免交易纠纷。这就类似我们平时手机订火车票和电影票。
+
+<img src="../images/posts/java/image-20200317160432978.png" alt="image-20200317160432978" style="zoom: 25%;" />
+
+消息队列使利用发布-订阅模式工作，消息发送者(生产者)发布消息，一个或多个消息接受者(消费者)订阅消
+ 息。 从上图可以看到消息发送者(生产者)和消息接受者(消费者)之间没有直接耦合，消息发送者将消息发送至 分布式消息队列即结束对消息的处理，消息接受者从分布式消息队列获取该消息后进行后续处理，并不需要知道该消 息从何而来。对新增业务，只要对该类消息感兴趣，即可订阅该消息，对原有系统和业务没有任何影响，从而实现网 站业务的可扩展性设计。
+
+消息接受者对消息进行过滤、处理、包装后，构造成一个新的消息类型，将消息继续发送出去，等待其他消息接受者 订阅该消息。因此基于事件(消息对象)驱动的业务架构可以是一系列流程。
+
+另外为了避免消息队列服务器宕机造成消息丢失，会将成功发送到消息队列的消息存储在消息生产者服务器上，等消 息真正被消费者服务器处理后才删除消息。在消息队列服务器宕机后，生产者服务器会选择分布式消息队列服务器集 群中的其他服务器发布消息。
+
+备注: 不要认为消息队列只能利用发布-订阅模式工作，只不过在解耦这个特定业务环境下是使用发布-订阅模式的， 比如在我们的ActiveMQ消息队列中还有点对点工作模式，具体的会在后面的文章给大家详细介绍，这一篇文章主要 还是让大家对消息队列有一个更透彻的了解。
+
+#### 1.4.8.2 使用消息队列会带来什么问题?考虑过这些问题吗?
+
+- 系统可用性降低: 系统可用性在某种程度上降低，为什么这样说呢?在加入MQ之前，你不用考虑消息丢失或 者说MQ挂掉等等的情况，但是，引入MQ之后你就需要去考虑了!
+- 系统复杂性提高: 加入MQ之后，你需要保证消息没有被重复消费、处理消息丢失的情况、保证消息传递的顺 序性等等问题!
+- 一致性问题: 我上面讲了消息队列可以实现异步，消息队列带来的异步确实可以提高系统响应速度。但是，万 一消息的真正消费者并没有正确消费消息怎么办?这样就会导致数据不一致的情况了!
+
+#### 1.4.8.3 介绍一下你知道哪几种消息队列,该如何选择呢?
+
+<img src="../images/posts/java/image-20200317160627692.png" alt="image-20200317160627692" style="zoom: 50%;" />
+
+<img src="../images/posts/java/image-20200317160652955.png" alt="image-20200317160652955" style="zoom:50%;" />
+
+#### 1.4.8.4 fabric中的kafka
 
 
 
@@ -1955,8 +2388,8 @@ Spring是如何解决循环依赖的？
 
 循环依赖 其实就是一个死循环的过程，在初始化 A 的时候发现引用了 B，这时就会去初始化 B，然后又发现 B 引用 C，跑去初始化 C，初始化 C 的时候发现引用了 A，则又会去初始化 A，依次循环永不退出，除非有终结条件。 Spring 循环依赖的场景有两种：
 
-1. 构造器的循环依赖
-2. field 属性的循环依赖
+1. 构造器的循环依赖（无法处理，因为对象都还在创建中）
+2. field 属性的循环依赖setter方式（因为都是先初始化了实例再填充字段值的）
 
 对于构造器的循环依赖，Spring 是无法解决的，只能抛出 BeanCurrentlyInCreationException 异常表示循环依赖，所以下面我们分析的都是基于 field 属性的循环依赖。 在博客 [【死磕 Spring】----- IOC 之开启 bean 的加载](http://cmsblogs.com/?p=2806) 中提到，Spring 只解决 scope 为 singleton 的循环依赖，对于scope 为 prototype 的 bean Spring 无法解决，直接抛出 BeanCurrentlyInCreationException 异常。为什么 Spring 不处理 prototype bean，其实如果理解 Spring 是如何解决 singleton bean 的循环依赖就明白了。这里先卖一个关子，我们先来关注 Spring 是如何解决 singleton bean 的循环依赖的。
 
@@ -2000,13 +2433,13 @@ Spring 在创建 bean 的时候并不是等它完全完成，而是在创建过�
 
 ## 3.2 索引（包括分类及优化方式，失效条件，底层结构）
 
-<img src="../images/posts/mysql/image-20200315214342194.png" alt="image-20200315214342194" style="zoom:50%;" />
+<img src="../images/posts/mysql/image-20200317143417271.png" alt="image-20200317143417271" style="zoom: 50%;" />
 
 ### 3.2.1 为什么要建索引
 
 先从 MySQL 的基本存储结构说起，MySQL的基本存储结构是页(记录都存在页里边):
 
-<img src="../images/posts/mysql/image-20200315215236406.png" alt="image-20200315215236406" style="zoom:50%;" />
+<img src="img/image-20200317143519872.png" alt="image-20200317143519872" style="zoom:50%;" />
 
 - 各个数据页可以组成一个双向链表 
 - 每个数据页中的记录又可以组成一个单向链表
@@ -2024,9 +2457,38 @@ Spring 在创建 bean 的时候并不是等它完全完成，而是在创建过�
 
 索引做了些什么可以让我们查询加快速度呢?其实就是将无序的数据变成有序(相对):
 
-<img src="../images/posts/mysql/image-20200315215555999.png" alt="image-20200315215555999" style="zoom:33%;" />
+<img src="../images/posts/mysql/image-20200317143620970.png" alt="image-20200317143620970" style="zoom:50%;" />
 
 - **索引是对数据库表中一个或多个列的值进行排序的数据结构，以协助快速查询、更新数据库表中数据。**
+- 通过创建唯一性索引，可以保证数据库表中每一行数据的唯一性。
+- 可以大大加快 数据的检索速度(大大减少的检索的数据量), 这也是创建索引的最主要的原因。 3. 帮助服务器避免排序和临时表
+- 将随机IO变为顺序IO
+- 可以加速表和表之间的连接，特别是在实现数据的参考完整性方面特别有意义。
+
+**索引这么多优点，为什么不对表中的每一个列创建一个索引呢?**
+
+1. 当对表中的数据进行增加、删除和修改的时候，索引也要动态的维护，这样就降低了数据的维护速度。
+2. 索引需要占物理空间，除了数据表占数据空间之外，每一个索引还要占一定的物理空间，如果要建立聚簇索 引，那么需要的空间就会更大。
+3. 创建索引和维护索引要耗费时间，这种时间随着数据量的增加而增加。
+
+**说一下使用索引的注意事项**
+
+1. 避免 where 子句中对字段施加函数，这会造成无法命中索引。
+
+2. 在使用InnoDB时使用与业务无关的自增主键作为主键，即使用逻辑主键，而不要使用业务主键。
+
+3. 将打算加索引的列设置为 NOT NULL ，否则将导致引擎放弃使用索引而进行全表扫描
+
+4. 删除长期未使用的索引，不用的索引的存在会造成不必要的性能损耗 MySQL 5.7 可以通过查询 sys 库的
+
+   chema_unused_indexes 视图来查询哪些索引从未被使用
+
+5. 在使用 limit offset 查询缓慢时，可以借助索引来提高性能
+
+**Mysql索引主要使用的哪两种数据结构?**
+
+- 哈希索引:对于哈希索引来说，底层的数据结构就是哈希表，因此在绝大多数需求为**单条记录查询**的时候，可 以选择哈希索引，查询性能最快;其余大部分场景，建议选择BTree索引。 
+- BTree索引:Mysql的BTree索引使用的是B树中的B+Tree。但对于主要的两种存储引擎(MyISAM和InnoDB) 的实现方式是不同的。
 
 ### 3.2.2 索引的分类
 
@@ -2035,11 +2497,17 @@ Spring 在创建 bean 的时候并不是等它完全完成，而是在创建过�
 - **聚集索引(Clustered)**：表中各行的物理顺序与键值的逻辑（索引）顺序相同，每个表只能有一个
 - **非聚集索引(Non-clustered)**：非聚集索引指定表的逻辑顺序。数据存储在一个位置，索引存储在另一个位置，索引中包含指向数据存储位置的指针。可以有多个，小于249个
 
+### 3.3.3 什么时候建索引
+
+1. 较频繁的作为查询条件的字段应该创建索引；
+2. 唯一性太差的字段不适合单独创建索引，即使该字段频繁作为查询条件；（如男女）
+3. 更新非常频繁的字段不适合创建索引。
+
 ### 3.3.3 如何创建索引
 
-<img src="../images/posts/mysql/image-20200315220039897.png" alt="image-20200315220039897" style="zoom:50%;" />
+<img src="img/image-20200317143646990.png" alt="image-20200317143646990" style="zoom:50%;" />
 
-### 3.3.4 引优化
+### 3.3.4 索引优化
 
 - 独立的列
 - 多列索引：在需要使用多个列作为条件进行查询时，使用多列索引比使用多个单列索引性能更好。
@@ -2053,13 +2521,24 @@ Spring 在创建 bean 的时候并不是等它完全完成，而是在创建过�
 
   - 因为查询效率高，而且有序。
 
+- 为设备么不用哈希算法
+
+  - 没办法做数据高效范围查找
+
 - 为什么没有采用二叉查找树？
 
   - 因为二叉查找树的高度可能过高。
 
-- 那么为什么不采用平衡二叉树？
+- 为什么不采用红黑树？
 
-  - 因为平衡二叉树的要求过高，可能需要频繁调整树结构。
+  - 数量过大，二叉树总是不太低,每次IO只能查询到一个节点上的数（一个节点只存一个）
+
+- 为什么不采用AVL
+
+  - 优点：不错的查找性能（O（logn）），不存在极端的低效查找的情况。可以实现范围查找、数据排序。
+  - 缺点：每一个树节点只存储了一个数据，我们一次磁盘 IO 只能取出来一个节点上的数据加载到内存里。
+
+- 
 
 - **文件系统，非关系型数据库MongoDB**为什么采用B-树？<img src="../images/posts/java/image-20200312173737650.png" alt="image-20200312173737650" style="zoom:50%;" />
 
@@ -2070,6 +2549,11 @@ Spring 在创建 bean 的时候并不是等它完全完成，而是在创建过�
   - **底层数据结构是B+树：**
     在数据结构中，我们最为常见的搜索结构就是**二叉搜索树和AVL树**(高度平衡的二叉搜索树，为了提高二叉搜索树的效率，减少树的平均搜索长度)了。然而，无论二叉搜索树还是AVL树，当数据量比较大时，都会由于树的深度过大而造成I/O读写过于频繁，进而导致查询效率低下，因此对于索引而言，多叉树结构成为不二选择。特别地，B-Tree的各种操作能使B树保持较低的高度，从而保证高效的查找效率。
 
+  - B树和B+树区别
+
+    - B 树一个节点里存的是数据，而 B+树存储的是索引（地址），所以 B 树里一个节点存不了很多个数据，但是 B+树一个节点能存很多索引，B+树叶子节点存所有的数据。
+  - B+树的叶子节点是数据阶段用了一个链表串联起来，便于范围查找。
+    
   - **使用B+树的原因：**
 
     1.有k个子树的中间节点包含有k个元素（B树中是k-1个元素），每个元素不保存数据，只用来索引，所有数据都保存在叶子节点。
@@ -2240,15 +2724,510 @@ socket编程。
 
 [常见协议的区别](https://gitee.com/haojunsheng/NetworkLearning/blob/master/protocol-diff-and-rpc.md)
 
+http是协议，rpc是一种规范（生成服务端代理和客户端代理，可以基于tcp，也可以使用http），http连接需要三次握手，rpc可以有服务发现。
+
 # 5. 操作系统
 
 [操作系统笔记](https://haojunsheng.github.io/2019/11/os-learning/)
 
 ## 5.1 操作系统
 
+### 5.1.1 进程和线程
 
+进程是资源分配（内存空间、I/O 设备）的基本单位。进程控制块 (Process Control Block, PCB) 描述进程的基本信息和运行状态，所谓的创建进程和撤销进程，都是指对 PCB 的操作。
 
+线程是独立调度的基本单位。一个进程中可以有多个线程，它们共享进程资源。
 
+### 5.1.2 进程同步
+
+#### 1. 临界区
+
+对临界资源进行访问的那段代码称为临界区。
+
+为了互斥访问临界资源，每个进程在进入临界区之前，需要先进行检查。
+
+```
+// entry section
+// critical section;
+// exit section
+```
+
+#### 2. 同步与互斥
+
+- 同步：多个进程因为合作产生的直接制约关系，使得进程有一定的先后执行关系。
+- 互斥：多个进程在同一时刻只有一个进程能进入临界区。
+
+#### 3. 信号量
+
+信号量（Semaphore）是一个整型变量，可以对其执行 down 和 up 操作，也就是常见的 P 和 V 操作。
+
+- **down** : 如果信号量大于 0 ，执行 -1 操作；如果信号量等于 0，进程睡眠，等待信号量大于 0；
+- **up** ：对信号量执行 +1 操作，唤醒睡眠的进程让其完成 down 操作。
+
+down 和 up 操作需要被设计成原语，不可分割，通常的做法是在执行这些操作的时候屏蔽中断。
+
+如果信号量的取值只能为 0 或者 1，那么就成为了 **互斥量（Mutex）** ，0 表示临界区已经加锁，1 表示临界区解锁。
+
+```
+typedef int semaphore;
+semaphore mutex = 1;
+void P1() {
+    down(&mutex);
+    // 临界区
+    up(&mutex);
+}
+
+void P2() {
+    down(&mutex);
+    // 临界区
+    up(&mutex);
+}
+```
+
+**使用信号量实现生产者-消费者问题**
+
+问题描述：使用一个缓冲区来保存物品，只有缓冲区没有满，生产者才可以放入物品；只有缓冲区不为空，消费者才可以拿走物品。
+
+因为缓冲区属于临界资源，因此需要使用一个互斥量 mutex 来控制对缓冲区的互斥访问。
+
+为了同步生产者和消费者的行为，需要记录缓冲区中物品的数量。数量可以使用信号量来进行统计，这里需要使用两个信号量：empty 记录空缓冲区的数量，full 记录满缓冲区的数量。其中，empty 信号量是在生产者进程中使用，当 empty 不为 0 时，生产者才可以放入物品；full 信号量是在消费者进程中使用，当 full 信号量不为 0 时，消费者才可以取走物品。P用来消耗资源（测试），V用来生产资源。
+
+![image-20200316110033801](../images/posts/os/image-20200316110033801.png)
+
+注意，不能先对缓冲区进行加锁，再测试信号量。也就是说，不能先执行 down(mutex) 再执行 down(empty)。如果这么做了，那么可能会出现这种情况：生产者对缓冲区加锁后，执行 down(empty) 操作，发现 empty = 0，此时生产者睡眠。消费者不能进入临界区，因为生产者对缓冲区加锁了，消费者就无法执行 up(empty) 操作，empty 永远都为 0，导致生产者永远等待下，不会释放锁，消费者因此也会永远等待下去。
+
+```c
+#define N 100
+typedef int semaphore;
+semaphore mutex = 1;
+semaphore empty = N;
+semaphore full = 0;
+
+void producer() {
+    while(TRUE) {
+        int item = produce_item();
+        down(&empty);
+        down(&mutex);
+        insert_item(item);
+        up(&mutex);
+        up(&full);
+    }
+}
+
+void consumer() {
+    while(TRUE) {
+        down(&full);
+        down(&mutex);
+        int item = remove_item();
+        consume_item(item);
+        up(&mutex);
+        up(&empty);
+    }
+}
+```
+
+#### 4. 管程
+
+使用信号量机制实现的生产者消费者问题需要客户端代码做很多控制，而管程把控制的代码独立出来，不仅不容易出错，也使得客户端代码调用更容易。
+
+c 语言不支持管程，下面的示例代码使用了类 Pascal 语言来描述管程。示例代码的管程提供了 insert() 和 remove() 方法，客户端代码通过调用这两个方法来解决生产者-消费者问题。
+
+```
+monitor ProducerConsumer
+    integer i;
+    condition c;
+
+    procedure insert();
+    begin
+        // ...
+    end;
+
+    procedure remove();
+    begin
+        // ...
+    end;
+end monitor;
+```
+
+管程有一个重要特性：在一个时刻只能有一个进程使用管程。进程在无法继续执行的时候不能一直占用管程，否则其它进程永远不能使用管程。
+
+管程引入了 **条件变量** 以及相关的操作：**wait()** 和 **signal()** 来实现同步操作。对条件变量执行 wait() 操作会导致调用进程阻塞，把管程让出来给另一个进程持有。signal() 操作用于唤醒被阻塞的进程。
+
+**使用管程实现生产者-消费者问题**
+
+```c
+// 管程
+monitor ProducerConsumer
+    condition full, empty;
+    integer count := 0;
+    condition c;
+
+    procedure insert(item: integer);
+    begin
+        if count = N then wait(full);
+        insert_item(item);
+        count := count + 1;
+        if count = 1 then signal(empty);
+    end;
+
+    function remove: integer;
+    begin
+        if count = 0 then wait(empty);
+        remove = remove_item;
+        count := count - 1;
+        if count = N -1 then signal(full);
+    end;
+end monitor;
+
+// 生产者客户端
+procedure producer
+begin
+    while true do
+    begin
+        item = produce_item;
+        ProducerConsumer.insert(item);
+    end
+end;
+
+// 消费者客户端
+procedure consumer
+begin
+    while true do
+    begin
+        item = ProducerConsumer.remove;
+        consume_item(item);
+    end
+end;
+```
+
+### 5.1.3 经典同步问题
+
+生产者和消费者问题前面已经讨论过了。
+
+#### 1. 哲学家进餐问题
+
+五个哲学家围着一张圆桌，每个哲学家面前放着食物。哲学家的生活有两种交替活动：吃饭以及思考。当一个哲学家吃饭时，需要先拿起自己左右两边的两根筷子，并且一次只能拿起一根筷子。
+
+下面是一种错误的解法，如果所有哲学家同时拿起左手边的筷子，那么所有哲学家都在等待其它哲学家吃完并释放自己手中的筷子，导致死锁。
+
+```
+#define N 5
+
+void philosopher(int i) {
+    while(TRUE) {
+        think();
+        take(i);       // 拿起左边的筷子
+        take((i+1)%N); // 拿起右边的筷子
+        eat();
+        put(i);
+        put((i+1)%N);
+    }
+}
+```
+
+为了防止死锁的发生，可以设置两个条件：
+
+- 必须同时拿起左右两根筷子；
+- 只有在两个邻居都没有进餐的情况下才允许进餐。
+
+```
+#define N 5
+#define LEFT (i + N - 1) % N // 左邻居
+#define RIGHT (i + 1) % N    // 右邻居
+#define THINKING 0
+#define HUNGRY   1
+#define EATING   2
+typedef int semaphore;
+int state[N];                // 跟踪每个哲学家的状态
+semaphore mutex = 1;         // 临界区的互斥，临界区是 state 数组，对其修改需要互斥
+semaphore s[N];              // 每个哲学家一个信号量
+
+void philosopher(int i) {
+    while(TRUE) {
+        think(i);
+        take_two(i);
+        eat(i);
+        put_two(i);
+    }
+}
+
+void take_two(int i) {
+    down(&mutex);
+    state[i] = HUNGRY;
+    check(i);
+    up(&mutex);
+    down(&s[i]); // 只有收到通知之后才可以开始吃，否则会一直等下去
+}
+
+void put_two(i) {
+    down(&mutex);
+    state[i] = THINKING;
+    check(LEFT); // 尝试通知左右邻居，自己吃完了，你们可以开始吃了
+    check(RIGHT);
+    up(&mutex);
+}
+
+void eat(int i) {
+    down(&mutex);
+    state[i] = EATING;
+    up(&mutex);
+}
+
+// 检查两个邻居是否都没有用餐，如果是的话，就 up(&s[i])，使得 down(&s[i]) 能够得到通知并继续执行
+void check(i) {         
+    if(state[i] == HUNGRY && state[LEFT] != EATING && state[RIGHT] !=EATING) {
+        state[i] = EATING;
+        up(&s[i]);
+    }
+}
+```
+
+#### 2. 读者-写者问题
+
+允许多个进程同时对数据进行读操作，但是不允许读和写以及写和写操作同时发生。
+
+一个整型变量 count 记录在对数据进行读操作的进程数量，一个互斥量 count_mutex 用于对 count 加锁，一个互斥量 data_mutex 用于对读写的数据加锁。
+
+```
+typedef int semaphore;
+semaphore count_mutex = 1;
+semaphore data_mutex = 1;
+int count = 0;
+
+void reader() {
+    while(TRUE) {
+        down(&count_mutex);
+        count++;
+        if(count == 1) down(&data_mutex); // 第一个读者需要对数据进行加锁，防止写进程访问
+        up(&count_mutex);
+        read();
+        down(&count_mutex);
+        count--;
+        if(count == 0) up(&data_mutex);
+        up(&count_mutex);
+    }
+}
+
+void writer() {
+    while(TRUE) {
+        down(&data_mutex);
+        write();
+        up(&data_mutex);
+    }
+}
+```
+
+以下内容由 [@Bandi Yugandhar](https://github.com/yugandharbandi) 提供。
+
+The first case may result Writer to starve. This case favous Writers i.e no writer, once added to the queue, shall be kept waiting longer than absolutely necessary(only when there are readers that entered the queue before the writer).
+
+```
+int readcount, writecount;                   //(initial value = 0)
+semaphore rmutex, wmutex, readLock, resource; //(initial value = 1)
+
+//READER
+void reader() {
+<ENTRY Section>
+ down(&readLock);                 //  reader is trying to enter
+ down(&rmutex);                  //   lock to increase readcount
+  readcount++;                 
+  if (readcount == 1)          
+   down(&resource);              //if you are the first reader then lock  the resource
+ up(&rmutex);                  //release  for other readers
+ up(&readLock);                 //Done with trying to access the resource
+
+<CRITICAL Section>
+//reading is performed
+
+<EXIT Section>
+ down(&rmutex);                  //reserve exit section - avoids race condition with readers
+ readcount--;                       //indicate you're leaving
+  if (readcount == 0)          //checks if you are last reader leaving
+   up(&resource);              //if last, you must release the locked resource
+ up(&rmutex);                  //release exit section for other readers
+}
+
+//WRITER
+void writer() {
+  <ENTRY Section>
+  down(&wmutex);                  //reserve entry section for writers - avoids race conditions
+  writecount++;                //report yourself as a writer entering
+  if (writecount == 1)         //checks if you're first writer
+   down(&readLock);               //if you're first, then you must lock the readers out. Prevent them from trying to enter CS
+  up(&wmutex);                  //release entry section
+
+<CRITICAL Section>
+ down(&resource);                //reserve the resource for yourself - prevents other writers from simultaneously editing the shared resource
+  //writing is performed
+ up(&resource);                //release file
+
+<EXIT Section>
+  down(&wmutex);                  //reserve exit section
+  writecount--;                //indicate you're leaving
+  if (writecount == 0)         //checks if you're the last writer
+   up(&readLock);               //if you're last writer, you must unlock the readers. Allows them to try enter CS for reading
+  up(&wmutex);                  //release exit section
+}
+```
+
+We can observe that every reader is forced to acquire ReadLock. On the otherhand, writers doesn’t need to lock individually. Once the first writer locks the ReadLock, it will be released only when there is no writer left in the queue.
+
+From the both cases we observed that either reader or writer has to starve. Below solutionadds the constraint that no thread shall be allowed to starve; that is, the operation of obtaining a lock on the shared data will always terminate in a bounded amount of time.
+
+```
+int readCount;                  // init to 0; number of readers currently accessing resource
+
+// all semaphores initialised to 1
+Semaphore resourceAccess;       // controls access (read/write) to the resource
+Semaphore readCountAccess;      // for syncing changes to shared variable readCount
+Semaphore serviceQueue;         // FAIRNESS: preserves ordering of requests (signaling must be FIFO)
+
+void writer()
+{ 
+    down(&serviceQueue);           // wait in line to be servicexs
+    // <ENTER>
+    down(&resourceAccess);         // request exclusive access to resource
+    // </ENTER>
+    up(&serviceQueue);           // let next in line be serviced
+
+    // <WRITE>
+    writeResource();            // writing is performed
+    // </WRITE>
+
+    // <EXIT>
+    up(&resourceAccess);         // release resource access for next reader/writer
+    // </EXIT>
+}
+
+void reader()
+{ 
+    down(&serviceQueue);           // wait in line to be serviced
+    down(&readCountAccess);        // request exclusive access to readCount
+    // <ENTER>
+    if (readCount == 0)         // if there are no readers already reading:
+        down(&resourceAccess);     // request resource access for readers (writers blocked)
+    readCount++;                // update count of active readers
+    // </ENTER>
+    up(&serviceQueue);           // let next in line be serviced
+    up(&readCountAccess);        // release access to readCount
+
+    // <READ>
+    readResource();             // reading is performed
+    // </READ>
+
+    down(&readCountAccess);        // request exclusive access to readCount
+    // <EXIT>
+    readCount--;                // update count of active readers
+    if (readCount == 0)         // if there are no readers left:
+        up(&resourceAccess);     // release resource access for all
+    // </EXIT>
+    up(&readCountAccess);        // release access to readCount
+}
+```
+
+### 5.1.4 进程通信
+
+进程同步与进程通信很容易混淆，它们的区别在于：
+
+- 进程同步：控制多个进程按一定顺序执行；
+- 进程通信：进程间传输信息。
+
+进程通信是一种手段，而进程同步是一种目的。也可以说，为了能够达到进程同步的目的，需要让进程进行通信，传输一些进程同步所需要的信息。
+
+#### 1. 管道
+
+管道是通过调用 pipe 函数创建的，fd[0] 用于读，fd[1] 用于写。
+
+```
+#include <unistd.h>
+int pipe(int fd[2]);
+```
+
+它具有以下限制：
+
+- 只支持半双工通信（单向交替传输）；
+- 只能在父子进程或者兄弟进程中使用。
+
+#### 2. FIFO
+
+也称为命名管道，去除了管道只能在父子进程中使用的限制。
+
+```
+#include <sys/stat.h>
+int mkfifo(const char *path, mode_t mode);
+int mkfifoat(int fd, const char *path, mode_t mode);
+```
+
+FIFO 常用于客户-服务器应用程序中，FIFO 用作汇聚点，在客户进程和服务器进程之间传递数据。
+
+#### 3. 消息队列
+
+相比于 FIFO，消息队列具有以下优点：
+
+- 消息队列可以独立于读写进程存在，从而避免了 FIFO 中同步管道的打开和关闭时可能产生的困难；
+- 避免了 FIFO 的同步阻塞问题，不需要进程自己提供同步方法；
+- 读进程可以根据消息类型有选择地接收消息，而不像 FIFO 那样只能默认地接收。
+
+#### 4. 信号量
+
+它是一个计数器，用于为多个进程提供对共享数据对象的访问。
+
+#### 5. 共享存储
+
+允许多个进程共享一个给定的存储区。因为数据不需要在进程之间复制，所以这是最快的一种 IPC。
+
+需要使用信号量用来同步对共享存储的访问。
+
+多个进程可以将同一个文件映射到它们的地址空间从而实现共享内存。另外 XSI 共享内存不是使用文件，而是使用内存的匿名段。
+
+#### 6. 套接字
+
+与其它通信机制不同的是，它可用于不同机器间的进程通信。
+
+### 5.1.5 死锁
+
+必要条件：
+
+- 互斥：每个资源要么已经分配给了一个进程，要么就是可用的。
+- 占有和等待：已经得到了某个资源的进程可以再请求新的资源。
+- 不可抢占：已经分配给一个进程的资源不能强制性地被抢占，它只能被占有它的进程显式地释放。
+- 环路等待：有两个或者两个以上的进程组成一条环路，该环路中的每个进程都在等待下一个进程所占有的资源。
+
+处理非法：
+
+- 鸵鸟策略：大多数操作系统，包括 Unix，Linux 和 Windows，处理死锁问题的办法仅仅是忽略它。
+- 死锁检测与死锁恢复
+- 死锁预防
+- 死锁避免
+
+### 5.1.6 虚拟内存
+
+虚拟内存的目的是为了让物理内存扩充成更大的逻辑内存，从而让**程序获得更多的可用内存**。
+
+为了更好的管理内存，操作系统将内存抽象成地址空间。每个程序拥有自己的地址空间，这个地址空间被分割成多个块，每一块称为一页。这些页被映射到物理内存，但不需要映射到连续的物理内存，也不需要所有页都必须在物理内存中。当程序引用到不在物理内存中的页时，由硬件执行必要的映射，将缺失的部分装入物理内存并重新执行失败的指令。
+
+从上面的描述中可以看出，虚拟内存允许程序不用将地址空间中的每一页都映射到物理内存，也就是说一个程序不需要全部调入内存就可以运行，这使得有限的内存运行大程序成为可能。例如有一台计算机可以产生 16 位地址，那么一个程序的地址空间范围是 0~64K。该计算机只有 32KB 的物理内存，虚拟内存技术允许该计算机运行一个 64K 大小的程序。
+
+#### 5.1.6.1 分页
+
+**内存管理单元（MMU）管理着地址空间和物理内存的转换**，其中的页表（Page table）存储着页（程序虚拟地址空间）和页框（物理内存空间）的映射表。
+
+**一个虚拟地址分成两个部分，一部分存储页面号，一部分存储偏移量。**
+
+页面置换算法：FIFO，最近最少使用，第二次机会算法
+
+#### 5.1.6.2 分段
+
+代码段，数据段，堆栈段，共享段。操作系统还得维护一个段表。
+
+**那么地址的翻译更加复杂了：段号+段偏移量得到一个线性地址，然后在经过分页系统进行转换，才是实际的物理地址。**
+
+- 内核空间
+- 用户空间
+- 栈：用于维护函数调用的上下文；
+- 堆：用来动态分配的区域；
+- 可执行文件映像：存储着可执行文件在内存里的映像，装载时将可执行文件的内存读取到这里；
+- 保留区：不是单一的，比如NULL是受保护的。
 
 
 
@@ -2358,7 +3337,29 @@ top 命令输出的第一部分：显示系统的概括。
 
 ## 5.2 docker
 
+1. **DevOps的优势**
+   1. 持续的软件交付，修复不太复杂的问题，更快地解决问题
+   2. 更快地解决问题，更稳定的操作环境，有更多时间可以增加价值（而不是修复/维护）
 
+**2. 什么是虚拟化？**
+
+ 1. 虚拟化允许您在相同的硬件上运行两个完全不同的操作系统。每个客户操作系统都经历了引导，加载内核等所有过程。您可以拥有非常严格的安全性，例如，客户操作系统无法完全访问主机操作系统或其他客户端并搞砸了
+
+ 2. 可以基于虚拟化方法如何模仿客户操作系统的硬件并模拟客户操作环境来对虚拟化方法进行分类。主要有三种类型的虚拟化：仿真，半虚拟化，基于容器的虚拟化。hypervisor创建的虚拟环境叫做虚拟机
+
+ 3. **Docker与虚拟机有何不同？**![image-20200317141435309](../images/posts/docker/image-20200317141435309.png)
+
+    	1. Docker不是虚拟化方法。它依赖于实际实现基于容器的虚拟化或操作系统级虚拟化的其他工具。为此，Docker最初使用LXC驱动程序，然后移动到libcontainer现在重命名为runc。Docker主要专注于在应用程序容器内自动部署应用程序。应用程序容器旨在打包和运行单个服务，而系统容器则设计为运行多个进程，如虚拟机。因此，Docker被视为容器化系统上的容器管理或应用程序部署工具。
+    	2. 容器虚拟的是操作系统，虚拟机虚拟的是硬件
+    	3. 打包了应用程序和相关的依赖
+    	4. 与虚拟机不同（加载内核，是硬件层的抽象），容器（为每个运行的程序提供了隔离的环境）不需要引导操作系统内核，因此可以在不到一秒的时间内创建容器。此功能使基于容器的虚拟化比其他虚拟化方法更加独特和可取。
+    	5. 由于基于容器的虚拟化为主机增加了很少或没有开销，因此基于容器的虚拟化具有接近本机的性能
+    	6. 对于基于容器的虚拟化，与其他虚拟化不同，不需要其他软件。
+    	7. 主机上的所有容器共享主机的调度程序，从而节省了额外资源的需求。
+    	8. 与虚拟机映像相比，容器状态（Docker或LXC映像）的大小很小，因此容器映像很容易分发。
+    	9. 容器中的资源管理是通过cgroup实现的。Cgroups不允许容器消耗比分配给它们更多的资源。虽然主机的所有资源都在虚拟机中可见，但无法使用。这可以通过在容器和主机上同时运行top或htop来实现。所有环境的输出看起来都很相似。
+
+    <img src="../images/posts/docker/image-20200317141522505.png" alt="image-20200317141522505" style="zoom:25%;" />
 
 # 6. 设计模式
 
@@ -2430,9 +3431,7 @@ public class Singleton {
 }
 ```
 
-这段代码其实是分
-
-为三步执行:
+这段代码其实是分为三步执行:
 
 1. 为 Singleton 分配内存空间
 2. 初始化 Singleton
@@ -2461,18 +3460,21 @@ public class Singleton {
 - 发展
   
   - 由于数据量，计算量和访问量越来越大，集中的服务器越来越无法满足我们的需求，开始研究分布式。网络的不可靠和机器宕机是两个很让人头疼的问题。
+  
 - 状态复制**：所有的节点以相同的顺序执行一个命令序列。是分布式系统的**基本性质。
+
+- 状态机：
+  
 - 一致性问题
+  
   - 顺序一致性（ Sequential Consistency）
     - 比较强的约束，保证所有进程看到的 全局执行顺序（ total order） 一致，并且每个进程看自身的执行（ local order） 跟实际发生顺序一致。例如，某进程先执行 A，后执行 B，则实际得到的全局结果中就应该为 A 在 B 前面，而不能反过来。同时所有其它进程在全局上也应该看到这个顺序。顺序一致性实际上限制了各进程内指令的偏序关系，但不在进程间按照物理时间进行全局排序。
   - 线性一致性（ Linearizability Consistency）
     - 后者在顺序一致性前提下加强了进程间的操作排序，形成唯一的全局顺序（ 系统等价于是顺序执行，所有进程看到的所有操作的序列顺序都一致，并且跟实际发生顺序一致） ，是很强的原子性保证。
+  
 - 共识算法
   
   - 共识算法解决的是对某个提案（ Proposal） ，大家达成一致意见的过程。
-- FLP 不可能原理
-  
-- 在网络可靠，存在节点失效（ 即便只有一个） 的最小化异步模型系统中，不存在一个可以解决一致性问题的确定性算法。FLP 不可能原理实际上告诉人们，不要浪费时间去为异步分布式系统设计在任意场景下都能实现共识的算法。
   
 - CAP原理
   - 一致性（ Consistency）：指的是强一致性
@@ -2482,22 +3484,18 @@ public class Singleton {
   - CP without A (牺牲可用性，Redis、HBase、Zookeeper)
   - AP without C(12306)
 
-- ACID原则
-  - Atomicity（ 原子性）：每次操作是原子的，要么成功，要么不执行
-  - Consistency（ 一致性）：数据库的状态是一致的，无中间状态
-  - Isolation（ 隔离性）：各种操作彼此互相不影响
-  - Durability（ 持久性）：状态的改变是持久的，不会失效
-
 - 串行化器：单个服务器称为串行化器，用来进行分发命令，实现状态复制。
   
 - 也被称为主从复制（Master-Slave Replication）。由于只使用了一个串行化器，在某些节点出现宕机或者网络状态较差的时候，可能会出现执行结果不一致的问题，此外，还存在单点故障（Single Point of Failure）的问题。我们也称之为1PC。
   
 - 我们结合分布式事务的概念，提出了两阶段提交协议。
-  - 在准备阶段，协调者节点向其他节点进行询问，其他节点启动事务，写入日志。协调者会向所有参与者询问“是否可以执行提交”操作，同时会开始等待各参与者节点回复。参与着执行协调者的事务操作，将操作信息写入日志。如果参与的事务操作执行成功，则返回“同意”消息，否则回复“终止”消息。
-  - 在提交阶段（可能出现超时的情况），如果不同意或者超时，所有节点回滚，否则，提交。
-  - 但是**二阶段提交存在着诸如同步阻塞、单点问题、脑裂等缺陷**，我们开始研究三阶段提交协议，我们引入了超时机制（协调者和参与者），和两阶段的区别是把询问和事务操作进行了分离。减少了阻塞的发生，但是其缺点也是很明显的，无法处理节点发生故障的情况，因为其需要所有节点的参与，无法处理节点发生宕机的情况，只是可以保证事务失败的时候可以进行回滚操作。
+  - 在准备阶段，协调者会向所有参与者询问“是否可以执行提交”操作，同时会开始等待各参与者节点回复。参与着执行协调者的事务操作，将操作信息写入日志。如果参与的事务操作执行成功，则返回“同意”消息，否则回复“终止”消息。
+  - 在提交阶段（可能出现超时的情况），当第一个节点所有参与着都回复“同意”时，协调者会向所有节点发出正式“正式提交”操作请求。如果有节点不同意或者超时，所有节点回滚，否则，提交。
+  - 缺点：事务的提交的过程中节点是处于阻塞状态的，及节点在等待其他节点返回时无法响应其他服务。并且如果出现参与者宕机或者无响应时，协调者需要通过超时机制来恢复，系统无法容错且低效。我们开始研究三阶段提交协议，我们引入了超时机制（协调者和参与者），和两阶段的区别是把询问和事务操作进行了分离。减少了阻塞的发生，但是其缺点也是很明显的，无法处理节点发生故障的情况，因为其需要所有节点的参与，无法处理节点发生宕机的情况，只是可以保证事务失败的时候可以进行回滚操作。
 
 - Paxos算法，可以一个在异步通信环境，并容忍在只有多数派机器存活的情况下，仍然能完成一个一致性写入的协议。
+
+  <img src="../images/posts/consensus/image-20200317130941991.png" alt="image-20200317130941991" style="zoom:33%;" />
 
   - **本质是为了解决效率的问题，而不是一致性的问题**。
 
@@ -2519,7 +3517,7 @@ public class Singleton {
 
     - 当某个节点宕机后，落后于当前网络，发出的提案不会被其他节点理会，Learner向其他节点来复制数据即可。这被称为实例的对齐。
 
-  - 状态机：根据状态机的理论，只要初始状态一致，输入一致，那么引出的最终状态也是一致的。
+  - **状态机**：根据状态机的理论，只要初始状态一致，输入一致，那么引出的最终状态也是一致的。
 
     - 在工程实现中，我们常把Acceptor，Proposer，Learner，State machine四个角色放入到一个实例中，不同机器上的相同实例构成paxos group。那么具体这四个角色是如何工作的呢。首先，由于Acceptor和Proposer在同一个进程里面，那么保证他们处于同一个实例是很简单的事情，其次，当一个值被确认之后，也可以很方便的传送给State machine去进行状态的转移，最后当出现异常状态，实例落后或者收不到其他机器的回应，剩下的事情就交给Learner去解决，就这样一整合，一下事情就变得简单了。
 
@@ -2549,14 +3547,27 @@ Master的应用非常广泛。比如在分布式存储里面，我们希望读�
 
 我们可以用paxos算法来选举Master
 
-动态成员变更
-
 - Raft
 
-1. 1. 单点系统->节点是一个只存储一个值的数据库服务器->有一个客服端可以发送一个值到该服务器(这种模式下很容易修改服务器的值)->如果有多个服务器，怎么去修改值，达成共识（Raft是用于实现分布式共识的协议。）->把一个节点分为3种状态（Follower，Candidate，Leader）->最开始所有节点都是follower->如果节点没有收到leader，则成为candidate->然后candidate向其他节点发送请求，其他节点将会投票->收到大多数节点的认可，则成为leader（**该过程成为leader选举**）->该分布式系统的变化通过leader来进行，每次变化都用日志来进行记录，未提交的日志不会更新节点的值->需要把日志复制到其他的节点，而不是值复制到其他的节点->leader提交日志，更新状态，同时通知其他节点进行更新值（该过程成为**Log Replication**）
-   2. raft算法中有两个timeout机制，第一个是election timeout，发生在follower成为candidate的时间，选举超时时间是一个在150ms和300ms之间的随机数字，选举超时后，follower成为candidate，开始一个新的选举周期，给自己投一票，同时向其他节点发送投票请求，如果接受到投票请求的节点在该周期内没有投票，则把票投给还候选者，节点将会重置选举周期，一旦一个节点获得大多数节点的票，将会成为leader。节点就可以发送日志到其他节点，他们之间的联系通过hearbeat timeout来维持。该选举周期直到停止接受心跳成为候选者才会结束。
-2. 和paxos对比
-3. 1. Multi-Paxos的Leader不需要选举，raft需要选举Leader
+<img src="../images/posts/consensus/image-20200316235336245.png" alt="image-20200316235336245" style="zoom:25%;" />
+
+1. leader选举
+   1. Follower, Candidate, Leader。最开始都是Follower，正常情况下，Leader会不停的给Follower发心跳，来保持自己的权威。当Leader异常，Follower收不到新的心跳的时候，follower就变成Candidate，term加1，参加选举，当收到多数派的同意后，这个Candidate就变成了leader。每个leader对应一个term，每个term最多只有一个leader。为了防止split vote，引入了随机化的election timeout，election timeout小的那个节点最先参与选举，有效的避免了split vote的问题。
+   2. 选举超时和心跳超时。election timeout，发生在follower成为candidate的时间，选举超时后，follower成为candidate，开始一个新的选举周期，给自己投一票，同时向其他节点发送投票请求，如果接受到投票请求的节点在该周期内没有投票，则把票投给候选者，节点将会重置选举周期，一旦一个节点获得大多数节点的票，将会成为leader。
+
+<img src="../images/posts/consensus/image-20200316235552142.png" alt="image-20200316235552142" style="zoom:25%;" />
+
+2. **日志复制** 
+   1. raft客户端的读写请求都是由leader来处理的，如果是follower收到了读写的请求，会把请求转发给leader来处理。raft的日志只会从leader向follower流动。Log Matching Property：每条日志都记录有日志所在的term，以及日志的index。在AppendEntry的时候，会对比上一条日志的term和index看和leader的是否一致，如果不一致的话，会向前滚动，直到一致为止，然后从这个一致的地方开始同步日志，这样所有的日志都以leader的为准。
+   2. 第一个阶段选出主后，会进入第二个阶段Log replication，这个阶段Leader就开始处理客户端的请求，每一个请求包含一个被副本状态机执行的命令。Leader将该命令作为一个新的记录追加在日志结尾。同时调用其他节点的追加记录的接口，将操作同步给其他副本。如果某个Follower宕机、运行地很慢或者网络丢包，那么Leader会一直重试直到副本与与Leader状态一致。
+
+3. **成员变更**
+
+   raft集群成员变更主要是要避免同时有两个主的场景，raft使用两阶段的方式来解决这个问题。第一阶段先提交一个joint的配置，然后第二阶段再提交new的配置。
+
+1. 和paxos对比
+
+2. 1. Multi-Paxos的Leader不需要选举，raft需要选举Leader
    2. 1. Leader在时。由Leader向Follower同步日志 
       2. Leader挂掉了，选一个新Leader，Leader选举算法
    3. Raft（ZAB）不允许并发提交proposals，而是只能由Leader来提交
@@ -2564,14 +3575,18 @@ Master的应用非常广泛。比如在分布式存储里面，我们希望读�
    5. leader合法性（Multi-Paxos：proposer-id;  raft：term）
    6. Multi-Paxos允许日志出现空洞，raft要求日志连续
 
-1. Zookeeper
+3. Zookeeper
 
-2. 1. ZAB协议
+4. 1. ZAB协议
+
    2. 核心概念
+
    3. 1. **Session：**表示某个客户系统（例如Batch Job）和ZooKeeper之间的连接会话
       2. znode：树形结构中的每个节点叫做znode， 按类型可以分为**永久的znode**（除非主动删除，否则一直存在），**临时的znode**（Session结束就会删除）和 **顺序znode**（就是小蔡的分布式锁中的process_01,process_02.....）
       3. **Watch** ： 某个客户系统（例如Batch Job）可以监控znode， znode节点的变化（删除，修改数据等）都可以通知Batch Job， 这样Batch Job可以采取相应的动作，例如争抢着去创建节点。
+      
    4. 对比Raft：https://my.oschina.net/pingpangkuangmo/blog/782702
+
    5. 1. leader选举
       2. 1. 选举轮次：Raft定义了term来表示选举轮次，ZooKeeper定义了electionEpoch来表示
          2. leader包含更多的日志：（日志的越新越大表示：轮次新的优先，然后才是同一轮次下日志记录大的优先）
@@ -2590,7 +3605,9 @@ Master的应用非常广泛。比如在分布式存储里面，我们希望读�
          8. leader选举触发（leader选举完成之后，检测到超时触发）
          9. 1. Raft：目前只是follower在检测。
             2. ZooKeeper：leader和follower都有各自的检测超时方式。
+      
    6. kafka
+
    7. 1. 为什么需要kafka:https://mp.weixin.qq.com/s?__biz=MzAxOTc0NzExNg==&mid=2665516366&idx=1&sn=423441de039433a395434c0fa94bcee5&scene=0#wechat_redirect
       2. 1. 数据库存储数据，但不擅长通知。通知：轮询（效率低），应用程序之间直接交互（调用方的责任太大）
          2. 引入消息队列（解耦：，消峰）
@@ -2601,7 +3618,11 @@ Master的应用非常广泛。比如在分布式存储里面，我们希望读�
          5. 1. 消息可以持久化，让多个程序都可以读取，还支持发布-订阅这种模式
       3. kafka基本概念<img src="../images/posts/java/image-20200306235837092.png" alt="image-20200306235837092" style="zoom:50%;" />
 
-   1. 1. 请求过程
+   8. PBFT：在一个拜占庭将军问题中，总节点为N的环境下，最多只能f个拜占庭节点，且N>=3f+1。PBFT是一种基于副本状态机复制的算法。将不可信环境一致性达成分成3个阶段，分别是预准备、准备和确认。
+
+      <img src="../images/posts/consensus/image-20200317141108577.png" alt="image-20200317141108577" style="zoom:33%;" />
+
+      1. 请求过程
       2. 1. 请求（request）：客户端c向服务器0发起一个请求
          2. 预准备阶段（pre-prepare）：该阶段，服务器0分配一个整数n给收到的请求，并将消息广播给所有的副本节点，同时将消息添加到日志的结尾，消息格式为，其中v表示发送消息的视图、m表示客户端发送的消息，d表示消息的摘要。副本收到消息后会进行消息的签名验证、消息摘要验证、视图验证和水平线验证，验证通过的消息予以接收。
          3. 准备阶段（prepare）：当副本接受了消息时，就会进入prepare阶段，这个阶段，副本会广播消息，同时将预准备消息和准备消息写入日志。当所有正常节点对统一视图v的请求序号n达成一致时，会进入确认阶段。
@@ -2615,9 +3636,9 @@ Master的应用非常广泛。比如在分布式存储里面，我们希望读�
       7. 缺点
       8. 1. 系统中的节点规模不能很大，因为系统中的每个节点都要频繁地和其他说有节点进行通信，当系统节点规模太大后，系统将无法运行。
 
-3. Pow
+5. Pow
 
-4. 1. 原因
+6. 1. 原因
    2. 1. 公链系统，如比特币、以太坊节点数都超过了1W个。在这样的系统中PBFT和SBFT都无法很好地工作。
    3. 原理
    4. 1. PoW算法致力于寻找一个值，使得它SHA256的hash值以若干个0开始。随着0的个数的增加，算出目标hash值的工作量耗费会呈指数上升，但是可以只通过一次hash运算就可以验证谜题。
@@ -2787,3 +3808,65 @@ KLedger基于Fabric进行二次开发。参与国密算法的改造，修改并�
 
 ## 9.5 KLedger-Auto
 
+**logrotate切割日志**
+
+logrotate程序是一个日志文件管理工具，它可以自动对日志进行截断（或轮循）、压缩以及删除旧的日志文件，并创建新的日志文件，起到“转储”作用。它是基于CRON来运行的，其脚本是「/etc/cron.daily/logrotate」。
+
+logrotate.conf 才主要的配置文件，logrotate.d 是一个目录，该目录里的所有文件都会被主动的读入/etc/logrotate.conf中执行。 
+另外，如果 /etc/logrotate.d/ 里面的文件中没有设定一些细节，则会以/etc/logrotate.conf这个文件的设定来作为默认值。虽然可以将所有的配置都写入/etc/logrotate.conf ，但是这样一来这个文件就实在是太复杂了，尤其是当使用很多的服务在系统上面时， 每个服务都要去修改/etc/logrotate.conf的设定也似乎不太合理了。 所以，如果独立出来一个目录，那么每个要切割日志的服务， 就可以独自成为一个文件，并且放置到 /etc/logrotate.d/ 当中。
+
+logrotate.conf默认配置：
+
+```
+weekly  
+rotate 4  
+create  
+dateext  
+include /etc/logrotate.d  
+/var/log/wtmp {
+    monthly
+    create 0664 root utmp
+        minsize 1M
+    rotate 1
+}
+/var/log/btmp {
+    missingok
+    monthly
+    create 0600 root utmp
+    rotate 1
+}
+```
+
+weekly 默认每一周执行一次rotate轮转工作 
+rotate 4 保留多少个日志文件(轮转几次).默认保留四个.就是指定日志文件删除之前轮转的次数，0 指没有备份
+create 自动创建新的日志文件，新的日志文件具有和原来的文件相同的权限；因为日志被改名,因此要创建一个新的来继续存储之前的日志。
+dateext 这个参数很重要！就是切割后的日志文件以当前日期为格式结尾，如xxx.log-20131216这样,如果注释掉,切割出来是按数字递增,即前面说的 xxx.log-1这种格式
+/var/log/wtmp和/var/log/btmp是对默认2个日志进行轮转的配置
+
+编写一个系统任务每日定时执行或者监控日志文件大小，比如超过100M做一次切割，先用现在的日志输出文件测试切割，再测试docker默认目录的日志采集。
+
+在每台产生日志的服务器上，我们在新建一个文件efk-log，文件内容如下：
+
+```
+/opt/log/*.com/log.txt{
+        daily
+        rotate 5 
+        mail haojunsheng@kingsoft.com
+        compress
+        delaycompress
+        missingok
+        size 100M
+        notifempty
+        create 644 root root
+        dateext
+        postrotate
+            rsync -avzr /opt/log/peer1.kingsoft.example.com/log.txt-* ip:/opt/log/remoteLog/
+            rsync -avzr /opt/log/log.txt-* ip:/opt/log/remoteLog
+            /usr/bin/killall -HUP rsyslogd
+        endscript
+
+}
+```
+
+手动运行：logrotate -vf /etc/logrotate.d/efk-log
+rsync可以把切割好的日志同步到其他的服务器上

@@ -50,7 +50,7 @@ tag: os
          * [4.2.5 目录解析代码的实现](#425-目录解析代码的实现)
    * [5. 总结](#5-总结)
 
-<!-- Added by: anapodoton, at: Sun Mar 15 23:32:14 CST 2020 -->
+<!-- Added by: anapodoton, at: Tue Mar 17 16:58:41 CST 2020 -->
 
 <!--te-->
 
@@ -318,7 +318,7 @@ producer(c)
 3. 消费者在循环中再次yield， 暂停执行。
 4. 生产者继续下一轮的循环，生成新的消息，发送给消费者。
 
-![img](https://mmbiz.qpic.cn/mmbiz_png/KyXfCrME6UK2jYy4icwjYbUQAazpQX3yDlBBc6rwlQOJT1TgGFulCzBibDsqfumnbfiabkhprhZm4LNDBpl5IOcwA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+![image-20200316110150468](../images/posts/os/image-20200316110150468.png)
 
 注意，这个yield和Java的yield是不同的，前者是真的让程序暂停了。后者只是让出CPU进入了就绪状态。等待下次调度运行。干了操作系统的事情。这样的程序叫做协程，完全在用户态，**比线程更加轻量级**。协程是依赖于线程的。
 
@@ -406,7 +406,7 @@ copy_process()用于创建并复制进程的代码段和数据段以及环境。
 
 在 fork()的执行过程中，内核并不会立刻为新进程分配代码和数据内存页。新进程将与父进程共同 使用父进程已有的代码和数据内存页面。只有当以后执行过程中如果其中有一个进程以写方式访问内存 时被访问的内存页面才会在写操作前被复制到新申请的内存页面中。 
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191209114858.png" style="zoom:50%;" />
+![](img/20191209114858.png)
 
 ### 2.1.2 **sched.c** 
 
@@ -497,23 +497,23 @@ This is only half true. Yes, you can easily cause problems if you call the OS yo
 
 ![](../images/posts/os/20191209200004.png)
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191209200824.png" style="zoom:25%;" />
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191209200824.png)
 
 发现没有，如果2个线程只有1个栈，就会出现问题，当第二个Yield被执行的时候，应该204出栈，但是这个时候确是404出栈，这个时候出现了问题。
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191209201329.png" style="zoom:50%;" />
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191209201329.png)
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191209201614.png" style="zoom:50%;" />
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191209201614.png)
 
 ### 2.2.2 内核级线程的样子
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191209203045.png" style="zoom:50%;" />
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191209203045.png)
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191209203736.png" style="zoom:50%;" />
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191209203736.png)
 
 
 
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191209203759.png" style="zoom:50%;" />
+![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191209203759.png)
 
 <img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20191210105922.png" style="zoom:50%;" />
 
