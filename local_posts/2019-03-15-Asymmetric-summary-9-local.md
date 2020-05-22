@@ -22,7 +22,7 @@ tag: 密码学
    * [7.  ELGamal密码](#7--elgamal密码)
    * [8. 椭圆曲线密码体制](#8-椭圆曲线密码体制)
 
-<!-- Added by: anapodoton, at: 2019年12月 9日 星期一 14时54分17秒 CST -->
+<!-- Added by: anapodoton, at: 2020年 5月22日 星期五 15时59分04秒 CST -->
 
 <!--te-->
 # 1. 前言
@@ -111,7 +111,7 @@ def egcd(a, b):
 **费马定理(Fermat)：**
 定理4-2 若p是素数，a是整数且(a, p)=1（a,p互素），则
 
-![006tKfTcly1g1jok5lkt6j30z006yq4t](/images/posts/crypto/006tKfTcly1g1jok5lkt6j30z006yq4t.jpg)
+![006tKfTcly1g1jok5lkt6j30z006yq4t](../images/posts/crypto/006tKfTcly1g1jok5lkt6j30z006yq4t.jpg)
 
 证明：由于(a, p)=1，所以{amodp, 2amodp, …,(p-1)amodp}={1,2,…,p-1}
 因此， a×2a×…×(p-1)a modp=1×2×…×p-1modp
@@ -125,7 +125,7 @@ Fermat定理也可以写成如下形式： 若p是素数， a是整数且(a, p)=
 
 我们都知道任意整数n都可以表示成它的所有素因子的乘积：
 
-![006tKfTcly1g1jpe5wyblj3076026749](/images/posts/crypto/006tKfTcly1g1jpe5wyblj3076026749.jpg)
+![006tKfTcly1g1jpe5wyblj3076026749](../images/posts/crypto/006tKfTcly1g1jpe5wyblj3076026749.jpg)
 
 所以所有那些和 n不互素的数，一定和n 有其中某个素因子作为公共因子。
 
@@ -133,7 +133,7 @@ Fermat定理也可以写成如下形式： 若p是素数， a是整数且(a, p)=
 
 例如， p1的倍数一共有多少个呢，由于p1的倍数在1到 n中是均匀分布的，所以占据的比例是1/p1 ，剔除p1的倍数后，还剩下n(1-1/p1)个；在剩下的数中，由于p2的倍数在1到n中也是均匀分布的，所以占据的比例是1/p2，所以再剔除p2的倍数后，剩下n(1-1/p1)(1-1/p2)个。以此类推，当把所有素因子的整数倍都剔除后，剩下的数共有n(1-1/p1)(1-1/p2)...(1-1/ps)个。即
 
-![006tKfTcly1g1jpfqynokj30a803ewej](/images/posts/crypto/006tKfTcly1g1jpfqynokj30a803ewej.jpg)
+![006tKfTcly1g1jpfqynokj30a803ewej](../images/posts/crypto/006tKfTcly1g1jpfqynokj30a803ewej.jpg)
 
 由此可见，求<u>欧拉函数的关键在于求出n的的所有素因子，即对n做素因子分解。</u>
 
@@ -159,11 +159,11 @@ ax1mod n,x2mod n…xφ(n) mod n.
 
 所以如果将这些元素相乘，应当和 P，即
 
-![006tKfTcly1g1jprw60lej30v405c759](/images/posts/crypto/006tKfTcly1g1jprw60lej30v405c759.jpg)
+![006tKfTcly1g1jprw60lej30v405c759](../images/posts/crypto/006tKfTcly1g1jprw60lej30v405c759.jpg)
 
 由于x1,x2…xφ(n)通通与n互素，等式两边可以约去，从而得到a^φ(n)≡1(modn)
 
-![006tKfTcly1g1joqfs4fmj31cu0ns7c4](/images/posts/crypto/006tKfTcly1g1joqfs4fmj31cu0ns7c4.jpg)
+![006tKfTcly1g1joqfs4fmj31cu0ns7c4](../images/posts/crypto/006tKfTcly1g1joqfs4fmj31cu0ns7c4.jpg)
 
 **欧拉定理推论**
 
@@ -205,7 +205,7 @@ x^2≡6mod7无解；
 
 ## 2.4 **中国剩余定理CRT**
 
-![006tKfTcly1g1jqbdmlqtj31240n8whw](/images/posts/crypto/006tKfTcly1g1jqbdmlqtj31240n8whw.jpg)
+![006tKfTcly1g1jqbdmlqtj31240n8whw](../images/posts/crypto/006tKfTcly1g1jqbdmlqtj31240n8whw.jpg)
 
 ## 2.5 **离散对数**
 
@@ -235,7 +235,7 @@ a^m ≡ 1 mod n,称满足上述等式最小正整数m为a模n的阶，记为ordn
 
 **交换律：**
 
-![006tKfTcly1g1jtjc6ernj30n401gglz](/images/posts/crypto/006tKfTcly1g1jtjc6ernj30n401gglz.jpg)
+![006tKfTcly1g1jtjc6ernj30n401gglz](../images/posts/crypto/006tKfTcly1g1jtjc6ernj30n401gglz.jpg)
 
 **单向性：**
 
@@ -269,7 +269,7 @@ DH算法用于密钥协商，不能用于加密或解密。需要加密的话，
 
 由于幂模运算满足交换律，所以：
 
-![006tKfTcly1g1ju39kskhj30d008k3zh](/images/posts/crypto/006tKfTcly1g1ju39kskhj30d008k3zh.jpg)
+![006tKfTcly1g1ju39kskhj30d008k3zh](../images/posts/crypto/006tKfTcly1g1ju39kskhj30d008k3zh.jpg)
 
 
 
@@ -299,7 +299,7 @@ Rabin体制是RSA的一种特例，RSA中选取的公开钥e满足1＜e＜φ(n)�
 
 3. **解密：**
 
-![006tKfTcly1g1ju6f5s6gj30ei07mt9j](/images/posts/crypto/006tKfTcly1g1ju6f5s6gj30ei07mt9j.jpg)
+![006tKfTcly1g1ju6f5s6gj30ei07mt9j](../images/posts/crypto/006tKfTcly1g1ju6f5s6gj30ei07mt9j.jpg)
 
 # 7.  ELGamal密码
 

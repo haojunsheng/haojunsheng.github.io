@@ -9,12 +9,15 @@ tag: 计算机网络
 ---
 
 <!--ts-->
+   * [前言](#前言)
+
+<!-- Added by: anapodoton, at: 2020年 5月22日 星期五 16时00分40秒 CST -->
 
 <!--te-->
 
 # 前言
 
-![](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/20200120151505.png)
+![](../images/posts/fabric/20200120151505.png)
 
 我们可以看到，Fabric网络使用了kafka协议消息，http请求消息，Gossip协议消息，gRPC通信消息来进行通信。然后Orderer节点还提供了Broadcast()交易广播服务，Deliver()区块分发服务。
 
