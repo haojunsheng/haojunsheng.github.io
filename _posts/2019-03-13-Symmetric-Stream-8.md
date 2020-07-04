@@ -4,7 +4,7 @@ title: "区块链中的密码学系列之对称加密算法流密码（八）"
 date: 2019-03-13 
 description: "2019-03-13-区块链中的密码学系列之对称加密算法流密码（八）"
 categories: 密码学
-tag: 密码学
+tag: [密码学,对称加密算法,流密码]
 ---
 
 <!--ts-->
@@ -23,9 +23,9 @@ tag: 密码学
 
 **流密码**：也称序列密码 (Stream Cipher) ,是指明文消息按**字符(如二元数字)逐位地、对应地加密**的一类密码算法。
 
-![006tKfTcly1g1il51nd1aj31fe08q421](/images/posts/crypto/006tKfTcly1g1il51nd1aj31fe08q421.jpg)
+![006tKfTcly1g1il51nd1aj31fe08q421/images/posts/crypto/006tKfTcly1g1il51nd1aj31fe08q421.jpg)
 
-![006tKfTcly1g1il7wrl47j30os06ajt5](/images/posts/crypto/006tKfTcly1g1il7wrl47j30os06ajt5.jpg)
+![006tKfTcly1g1il7wrl47j30os06ajt5/images/posts/crypto/006tKfTcly1g1il7wrl47j30os06ajt5.jpg)
 
 
 
@@ -35,7 +35,7 @@ tag: 密码学
 
 随机数的性质：
 
-![006tKfTcly1g1ilcerz4sj30ra0n0dp8](/images/posts/crypto/006tKfTcly1g1ilcerz4sj30ra0n0dp8.jpg)
+![006tKfTcly1g1ilcerz4sj30ra0n0dp8/images/posts/crypto/006tKfTcly1g1ilcerz4sj30ra0n0dp8.jpg)
 
 
 
@@ -47,7 +47,7 @@ tag: 密码学
 
 **伪随机数生成器：**
 
-![006tKfTcly1g1ilesge66j30ow0e6wib](/images/posts/crypto/006tKfTcly1g1ilesge66j30ow0e6wib.jpg)
+![006tKfTcly1g1ilesge66j30ow0e6wib/images/posts/crypto/006tKfTcly1g1ilesge66j30ow0e6wib.jpg)
 
 # 3. **密钥流生成器**
 
@@ -70,7 +70,7 @@ A、C、M是常量， A和C小于M
 
 **3. 线性同余法伪随机数发生器**
 
-![006tKfTcly1g1ilmxjfi5j30ti0dwju7](/images/posts/crypto/006tKfTcly1g1ilmxjfi5j30ti0dwju7.jpg)
+![006tKfTcly1g1ilmxjfi5j30ti0dwju7/images/posts/crypto/006tKfTcly1g1ilmxjfi5j30ti0dwju7.jpg)
 
 
 
@@ -84,11 +84,11 @@ R1=4,R2=5,R3=1,R4=3，周期6 谨慎选择A、C、M的值
 
 易于硬件实现，速度快，典型应用:A5,GSM语音加密标准。
 
-![006tKfTcly1g1ilpa97enj30r607o76r](/images/posts/crypto/006tKfTcly1g1ilpa97enj30r607o76r.jpg)
+![006tKfTcly1g1ilpa97enj30r607o76r/images/posts/crypto/006tKfTcly1g1ilpa97enj30r607o76r.jpg)
 
 
 
-![006tKfTcly1g1ilpuk888j30v2092wik](/images/posts/crypto/006tKfTcly1g1ilpuk888j30v2092wik.jpg)
+![006tKfTcly1g1ilpuk888j30v2092wik/images/posts/crypto/006tKfTcly1g1ilpuk888j30v2092wik.jpg)
 
 
 

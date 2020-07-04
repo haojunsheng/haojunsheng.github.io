@@ -4,7 +4,7 @@ title: "区块链中的密码学系列之非对称密码ELGamal算法（十一�
 date: 2019-03-21 
 description: "2019-03-21-区块链中的密码学系列之非对称密码ELGamal算法（十一）"
 categories: 密码学
-tag: 密码学
+tag: [密码学,非对称加密算法,ELGamal]
 ---
 
 <!--ts-->
@@ -14,7 +14,7 @@ tag: 密码学
    * [4. ELGamal密码的安全性](#4-elgamal密码的安全性)
    * [5.  基于ELGamal的java源码的实现](#5--基于elgamal的java源码的实现)
 
-<!-- Added by: anapodoton, at: 2019年12月 9日 星期一 14时53分00秒 CST -->
+<!-- Added by: anapodoton, at: 2020年 7月 4日 星期六 19时59分11秒 CST -->
 
 <!--te-->
 
@@ -54,7 +54,7 @@ ELGamal密码是除了RSA之外最有代表性的公开密钥密码之一，它�
 
 **正确性证明**
 
-![006tKfTcly1g1juqynl3hj30u01hchdt](../images/posts/crypto/006tKfTcly1g1juqynl3hj30u01hchdt.jpg)
+![006tKfTcly1g1juqynl3hj30u01hchdt](/images/posts/crypto/006tKfTcly1g1juqynl3hj30u01hchdt.jpg)
 
 # 3.  ELGamal算法细节
 
@@ -94,7 +94,7 @@ eg:判断2是不是模11的原根，φ(11)=10。10的因子有1、2、5、10，�
 
 　　为了安全加密所使用的k必须是一次性的。如果长期使用同一个k加密的话，就可能被攻击者获取，从而根据V=U=y^k(mod p)，M=C2V^-1(mod p)而得到明文。另外，使用同一个k加密不同的明文M和M'，则由于
 
-![006tKfTcly1g1jv06vle1j304u03aweg](../images/posts/crypto/006tKfTcly1g1jv06vle1j304u03aweg.jpg)
+![006tKfTcly1g1jv06vle1j304u03aweg](/images/posts/crypto/006tKfTcly1g1jv06vle1j304u03aweg.jpg)
 
 如果攻击者知道M，则很容易求出M'。此外，k选取时还要保证U=y^k(mod p)≠1。
 

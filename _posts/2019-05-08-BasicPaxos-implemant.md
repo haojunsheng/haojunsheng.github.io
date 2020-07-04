@@ -4,7 +4,7 @@ title: "BasicPaxos的实现"
 date: 2019-05-08 
 description: "2019-05-08-BasicPaxos的实现"
 categories: 共识算法
-tag: 共识算法
+tag: [共识算法,paxos]
 ---
 
 <!--ts-->
@@ -14,7 +14,7 @@ tag: 共识算法
    * [运行结果](#运行结果)
    * [参考资料](#参考资料)
 
-<!-- Added by: anapodoton, at: 2019年12月 9日 星期一 14时47分39秒 CST -->
+<!-- Added by: anapodoton, at: 2020年 7月 4日 星期六 20时04分20秒 CST -->
 
 <!--te-->
 # BasicPaxos

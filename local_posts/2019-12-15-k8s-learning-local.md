@@ -4,7 +4,7 @@ title: "k8s的学习之路"
 date: 2019-12-15
 description: "2019-12-15-k8s的学习之路"
 categories: docker
-tag: docker
+tag: [docker,k8s]
 ---
 
 <!--ts-->
@@ -39,7 +39,7 @@ tag: docker
                * [1.3.1.1.3 pod模板](#13113-pod模板)
    * [后记](#后记)
 
-<!-- Added by: anapodoton, at: Wed Mar 11 10:24:42 CST 2020 -->
+<!-- Added by: anapodoton, at: 2020年 7月 4日 星期六 20时09分31秒 CST -->
 
 <!--te-->
 

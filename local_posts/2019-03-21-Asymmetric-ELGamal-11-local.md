@@ -4,7 +4,7 @@ title: "区块链中的密码学系列之非对称密码ELGamal算法（十一�
 date: 2019-03-21 
 description: "2019-03-21-区块链中的密码学系列之非对称密码ELGamal算法（十一）"
 categories: 密码学
-tag: 密码学
+tag: [密码学,非对称加密算法,ELGamal]
 ---
 
 <!--ts-->
@@ -14,7 +14,7 @@ tag: 密码学
    * [4. ELGamal密码的安全性](#4-elgamal密码的安全性)
    * [5.  基于ELGamal的java源码的实现](#5--基于elgamal的java源码的实现)
 
-<!-- Added by: anapodoton, at: 2019年12月 9日 星期一 14时53分00秒 CST -->
+<!-- Added by: anapodoton, at: 2020年 7月 4日 星期六 19时59分11秒 CST -->
 
 <!--te-->
 

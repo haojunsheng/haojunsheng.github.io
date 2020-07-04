@@ -4,7 +4,7 @@ title: "手把手教你编译fabric"
 date: 2019-05-25
 description: "2019-05-25-手把手教你编译fabric"
 categories: fabric
-tag: fabric
+tag: [fabric]
 ---
 
 

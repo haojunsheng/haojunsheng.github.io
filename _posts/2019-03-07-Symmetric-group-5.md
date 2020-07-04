@@ -4,7 +4,7 @@ title: "区块链中的密码学之对称密码的分组模式（五）"
 date: 2019-03-07 
 description: "2019-03-07-区块链中的密码学之对称密码的分组模式（五）"
 categories: 密码学
-tag: 密码学
+tag: [密码学,对称加密算法,分组密码]
 ---
 
 <!--ts-->
@@ -90,7 +90,7 @@ P置换是让明文的统计特征消散在密文中，让明文的每一比特�
 
 将每一轮的比特输入和子密钥进行简单的异或运算,每一轮的子密钥都是通过加密主密钥变换产生的，相互之间应当没有联系。
 
-![006tKfTcly1g1i9w53vrfj31aw07oafo](../images/posts/crypto/006tKfTcly1g1i9w53vrfj31aw07oafo.jpg)
+![006tKfTcly1g1i9w53vrfj31aw07oafo](/images/posts/crypto/006tKfTcly1g1i9w53vrfj31aw07oafo.jpg)
 
 
 
@@ -98,7 +98,7 @@ P置换是让明文的统计特征消散在密文中，让明文的每一比特�
 
 子密钥必须与加密相反的次序使用，子密钥的使用要与p置换一致，来保证正确解密。
 
-![006tKfTcly1g1i9y2wj0hj31b607gted](../images/posts/crypto/006tKfTcly1g1i9y2wj0hj31b607gted.jpg)
+![006tKfTcly1g1i9y2wj0hj31b607gted](/images/posts/crypto/006tKfTcly1g1i9y2wj0hj31b607gted.jpg)
 
 通过替--置换的多次迭代很好的实现混淆与扩散。
 
@@ -116,13 +116,13 @@ P置换是让明文的统计特征消散在密文中，让明文的每一比特�
 
 **Feistel密码结构的设计思想**
 
-![006tKfTcly1g1ia51defkj30wc0lcq9r](../images/posts/crypto/006tKfTcly1g1ia51defkj30wc0lcq9r.jpg)
+![006tKfTcly1g1ia51defkj30wc0lcq9r](/images/posts/crypto/006tKfTcly1g1ia51defkj30wc0lcq9r.jpg)
 
  **Feistel网络的加密结构**：将2w bit明文分成为左右两半、长为1 w bit的段，以L和R表示。然后进行n轮迭代，其第i轮迭代的输入为上一轮（第i-1轮）输出。
 
 轮函数的意义是上一轮的输出。
 
-![006tKfTcly1g1ia5zlu0uj30xe0qiasr](../images/posts/crypto/006tKfTcly1g1ia5zlu0uj30xe0qiasr.jpg)
+![006tKfTcly1g1ia5zlu0uj30xe0qiasr](/images/posts/crypto/006tKfTcly1g1ia5zlu0uj30xe0qiasr.jpg)
 
 **替换操作：**
 
@@ -132,15 +132,15 @@ P置换是让明文的统计特征消散在密文中，让明文的每一比特�
 
 每轮输入的子密钥Ki不同 
 
-<img src="../images/posts/crypto/006tKfTcly1g1ia79hqb5j30mu0mk479.jpg" alt="006tKfTcly1g1ia79hqb5j30mu0mk479" style="zoom:33%;" />
+<img src="/images/posts/crypto/006tKfTcly1g1ia79hqb5j30mu0mk479.jpg" alt="006tKfTcly1g1ia79hqb5j30mu0mk479" style="zoom:33%;" />
 
 
 
-<img src="../images/posts/crypto/006tKfTcly1g1ia7pfy5bj30ks0ocdod.jpg" alt="006tKfTcly1g1ia7pfy5bj30ks0ocdod" style="zoom:33%;" />
+<img src="/images/posts/crypto/006tKfTcly1g1ia7pfy5bj30ks0ocdod.jpg" alt="006tKfTcly1g1ia7pfy5bj30ks0ocdod" style="zoom:33%;" />
 
 
 
-<img src="../images/posts/crypto/006tKfTcly1g1ia84bpqwj30x60putk2.jpg" alt="006tKfTcly1g1ia84bpqwj30x60putk2" style="zoom:33%;" />
+<img src="/images/posts/crypto/006tKfTcly1g1ia84bpqwj30x60putk2.jpg" alt="006tKfTcly1g1ia84bpqwj30x60putk2" style="zoom:33%;" />
 
 # 6.  分组密码的工作模式
 
@@ -152,7 +152,7 @@ P置换是让明文的统计特征消散在密文中，让明文的每一比特�
 
 现代自动分组加密中，加密填充的字符解密时如何检测?
 
-![006tKfTcly1g1iaku6cf3j30vw088760](../images/posts/crypto/006tKfTcly1g1iaku6cf3j30vw088760.jpg)
+![006tKfTcly1g1iaku6cf3j30vw088760](/images/posts/crypto/006tKfTcly1g1iaku6cf3j30vw088760.jpg)
 
 ## 6.2  分组密码的工作模式
 
@@ -162,7 +162,7 @@ P置换是让明文的统计特征消散在密文中，让明文的每一比特�
 
 电子密码本(Electronic Code Book，ECB)是分组密码的基本工作方式，它将长的明文分成大小<u>相等</u>的分组，P=(P1，P2，...，PL)，<u>最后一组</u>在必要时需要进行填充，每组用<u>相同的密钥K</u>进行加密Cj=EK(Pj)，加密后将各组密文合并成密文消息C=(C1，C2，...，CL)。
 
-![006tKfTcly1g1iap56p6xj310o0biwgu](../images/posts/crypto/006tKfTcly1g1iap56p6xj310o0biwgu.jpg)
+![006tKfTcly1g1iap56p6xj310o0biwgu](/images/posts/crypto/006tKfTcly1g1iap56p6xj310o0biwgu.jpg)
 
 **优点：**
 
@@ -180,7 +180,7 @@ P置换是让明文的统计特征消散在密文中，让明文的每一比特�
 
 密码分组链接(Cipher Block Chaining，CBC)模式，将明文分成大小**相等**的分组，将这些分组链接在一起进行加密，加密输入是当前明文分组和前一密文分组的异或，它们形成一条链，每次加密使用相同的**密钥**。
 
-![006tKfTcly1g1iaspw9nrj316c0fedm4](../images/posts/crypto/006tKfTcly1g1iaspw9nrj316c0fedm4.jpg)
+![006tKfTcly1g1iaspw9nrj316c0fedm4](/images/posts/crypto/006tKfTcly1g1iaspw9nrj316c0fedm4.jpg)
 
 **优点**
 
@@ -205,7 +205,7 @@ https://github.com/hyperledger/fabric/blob/release-1.4/bccsp/sw/aes.go
 
 密码反馈模式(Cipher FeedBack Mode)，将明文分成大小**相等的分组**，明文分组和密文分组间只有**异或**。
 
-![006tKfTcly1g1iauztbudj30z40bqqcp](../images/posts/crypto/006tKfTcly1g1iauztbudj30z40bqqcp.jpg)
+![006tKfTcly1g1iauztbudj30z40bqqcp](/images/posts/crypto/006tKfTcly1g1iauztbudj30z40bqqcp.jpg)
 
 **优点**
 
@@ -226,7 +226,7 @@ https://github.com/hyperledger/fabric/blob/release-1.4/bccsp/sw/aes.go
 
 输出反馈模式(output-feedback )，加密算法的输入为前一次加密算法的输出。
 
-![006tKfTcly1g1iaxf1pjsj30sa0emdob](../images/posts/crypto/006tKfTcly1g1iaxf1pjsj30sa0emdob.jpg)
+![006tKfTcly1g1iaxf1pjsj30sa0emdob](/images/posts/crypto/006tKfTcly1g1iaxf1pjsj30sa0emdob.jpg)
 
 **优点**
 
@@ -247,7 +247,7 @@ https://github.com/hyperledger/fabric/blob/release-1.4/bccsp/sw/aes.go
 
 CTR(Counter)模式中， 有一个自增的算子，这个算子用密钥加密之后的输出和明文异或的结果得到密文，相当于一次一密。
 
-![006tKfTcly1g1iazf6joij30l20gs0za](../images/posts/crypto/006tKfTcly1g1iazf6joij30l20gs0za.jpg)
+![006tKfTcly1g1iazf6joij30l20gs0za](/images/posts/crypto/006tKfTcly1g1iazf6joij30l20gs0za.jpg)
 
 **优点：**
 
@@ -267,7 +267,7 @@ CTR(Counter)模式中， 有一个自增的算子，这个算子用密钥加密�
 
 ## 6.3 分组密码运行模式比较
 
-![006tKfTcly1g1ibm6fkyhj311y0mcqtt](../images/posts/crypto/006tKfTcly1g1ibm6fkyhj311y0mcqtt.jpg)
+![006tKfTcly1g1ibm6fkyhj311y0mcqtt](/images/posts/crypto/006tKfTcly1g1ibm6fkyhj311y0mcqtt.jpg)
 
 
 

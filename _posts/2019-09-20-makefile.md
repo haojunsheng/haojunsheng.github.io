@@ -4,7 +4,7 @@ title: "How to write Makefile"
 date: 2019-09-20
 description: "2019-09-20-How to write Makefile"
 categories: 编译原理
-tag: 编译原理
+tag: [编译原理,fabric,makefile]
 ---
 <!--ts-->
    * [前言](#前言)
@@ -107,7 +107,7 @@ tag: 编译原理
       * [注意事项](#注意事项)
    * [后序](#后序)
 
-<!-- Added by: anapodoton, at: 2019年12月 9日 星期一 14时24分44秒 CST -->
+<!-- Added by: anapodoton, at: 2020年 7月 4日 星期六 20时07分14秒 CST -->
 
 <!--te-->
 

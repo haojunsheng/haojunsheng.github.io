@@ -4,12 +4,10 @@ title: "区块链中的密码学系列之数字签名方案（十二）"
 date: 2019-03-25 
 description: "2019-03-25-区块链中的密码学系列之数字签名方案（十二）"
 categories: 密码学
-tag: 密码学
+tag: [密码学,数字签名]
 ---
 <!--ts-->
-Table of Contents
-=================
-
+   * [Table of Contents](#table-of-contents)
    * [1. 前言](#1-前言)
    * [2. DSA](#2-dsa)
    * [3. ECDSA](#3-ecdsa)
@@ -18,6 +16,9 @@ Table of Contents
    * [6. 多重签名](#6-多重签名)
    * [7. 群签名](#7-群签名)
    * [8. 环签名](#8-环签名)
+
+<!-- Added by: anapodoton, at: 2020年 7月 4日 星期六 19时59分46秒 CST -->
+
 <!--te-->
 # 1. 前言
 

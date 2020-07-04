@@ -4,7 +4,7 @@ title: "Linker & Loader"
 date: 2019-12-05
 description: "2019-12-05-Linker & Loader"
 categories: 编译原理
-tag: 编译原理
+tag: [编译原理,内存管理]
 ---
 
 <!--ts-->
@@ -53,7 +53,7 @@ tag: 编译原理
          * [12.2 系统调用的原理](#122-系统调用的原理)
    * [附录](#附录)
 
-<!-- Added by: anapodoton, at: Wed Mar 11 23:13:19 CST 2020 -->
+<!-- Added by: anapodoton, at: 2020年 7月 4日 星期六 20时08分57秒 CST -->
 
 <!--te-->
 # 1. 前言
