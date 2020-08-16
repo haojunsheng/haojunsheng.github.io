@@ -221,7 +221,7 @@ Java中只有值传递。
 - public :表明该成员变量或者方法是对所有类或者对象都是可见的,所有类或者对象都可以直接访问
 - protected:表明成员变量或者方法对类自身,与同在一个包中的其他类可见,其他包下的类不可访问,除非是他的子类
 - default:表明该成员变量或者方法只有自己和其位于同一个包的内可见,其他包内的类不能访问,即便是它的子类。
-- private:表明该成员变量或者方法是私有的,只有当前类对其具有访问权限,除此之外其他类或者对象都没有访问权限.子类也没有访问权限.
+- private:表明该成员变量或者方法是私有的,只有当前类对其具有访问权限,除此之外其他类或者对象都没有访问权限.子类也没有访问权限。
 
 值得注意的是，外部类的作用域只有public和default。因为如果是private，那么别的类就无法对其进行实例化，毫无意义。对于protected，**类B继承类A的前提又是类B可以访问到类A**。继承的核心是继承属性和方法，在说一句，只有可以访问到，才有继承。所以类的修饰符只有public和default。
 
@@ -229,7 +229,7 @@ Java中只有值传递。
 
 [抽象类和接口](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/abstract-class-vs-interface.md)
 
-- 抽象类：对类整个整体抽象。其目的主要是代码重用。除了不能实例化，形式上和一般的Java类并没有太大区别，可以有一个或者多个抽象方法，也可 以没有抽象方法。抽象类大多用于抽取相关Java类的共用方法实现或者是共同成员变量，然后通过继承的方式达到代码复用的目的。Java标准库中，比如collection框架，很多通用 部分就被抽取成为抽象类，例如java.util.AbstractList。
+- 抽象类是不能实例化的类，用abstract关键字修饰class，其目的主要是代码重用。除了不能实例化，形式上和一般的Java类并没有太大区别，可以有一个或者多个抽象方法，也可 以没有抽象方法。抽象类大多用于抽取相关Java类的共用方法实现或者是共同成员变量，然后通过继承的方式达到代码复用的目的。Java标准库中，比如collection框架，很多通用 部分就被抽取成为抽象类，例如java.util.AbstractList。
 - 接口：对行为进行抽象。是抽象方法的集合，利用接口可以达到API定义和实现分离的目的。接口，不能实例化;不能包含任何非常量成员，任何feld都是隐含着public static final的意义;同时，没有非静态方法实现，也就是说要么是抽象方法，要么是静态方法。Java标准类库中，定义了非常多的接口，比如java.util.List。
 
 <img src="../images/posts/java/image-20200305002345628.png" alt="image-20200305002345628" style="zoom: 50%;" />
@@ -266,26 +266,18 @@ public final void wait() throws InterruptedException//跟之前的2个wait方法
 protected void finalize() throws Throwable { }//实例被垃圾回收器回收的时候触发的操作
 ```
 
-- 为什么重写equals时必须重写hashCode方法?
-
-hashCode() 的作用是获取哈希码，也称为散列码;它实际上是返回一个int整数。这个哈希码的作用是确定该对象在 哈希表中的索引位置。hashCode() 定义在JDK的Object.java中，这就意味着Java中的任何类都包含有hashCode() 函 数。另外需要注意的是: Object 的 hashcode 方法是本地方法，也就是用 c 语言或 c++ 实现的，该方法通常用来将 对象的 内存地址 转换为整数之后返回。
-
-- 为什么要有hashCode
-
-当你把对象加入HashSet时，HashSet会先计算对象的hashcode值来判断对象加入的位置，同时也会与其他已经加 入的对象的hashcode值作比较，如果没有相符的hashcode，HashSet会假设对象没有重复出现。但是如果发现有相 同hashcode值的对象，这时会调用equals()方法来检查hashcode相等的对象是否真的相同。如果两者相同， HashSet就不会让其加入操作成功。如果不同的话，就会重新散列到其他位置。这样我们就大大减少了equals的次数，相应就大大提高了执行速度。
-
--  hashCode()与equals()的相关规定
+- hashCode()与equals()的相关规定
 
 1. 如果两个对象相等，则hashcode一定也是相同的
 
-2. 两个对象相等,对两个对象分别调用equals方法都返回true
-3. 两个对象有相同的hashcode值，它们也不一定是相等的
-4. equals方法被覆盖过，则hashCode方法也必须被覆盖
-5. hashCode()的默认行为是对堆上的对象产生独特值。如果没有重写hashCode()，则该class的两个对象无论如何都不会相等(即使这两个对象指向相同的数据)
+2. 两个对象有相同的hashcode值，它们也不一定是相等的。因为hashCode() 所使用的杂凑算法也许刚好会让多个对象传回相同的杂凑值
+3. equals方法被覆盖过，则hashCode方法也必须被覆盖。
 
-- 为什么两个对象有相同的hashcode值,它们也不一定是相等的?
+速度的考量。因为相同对象的hash值必然相等，hashcode用来把对象的地址映射为一个整数,用来定位一个对象。如果不重写，那么两个对象的hash值大概率是不相等的，所以必须重写。
 
-因为hashCode() 所使用的杂凑算法也许刚好会让多个对象传回相同的杂凑值。
+- 为什么要有hashCode
+
+先判断hashcode，如果不相等，可以立即返回。这样我们可以大大减少equals的次数，相应就大大提高了执行速度。
 
 - ==与equals
 
@@ -315,11 +307,18 @@ hashCode() 的作用是获取哈希码，也称为散列码;它实际上是返�
 
 [自动拆箱与装箱](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-auto-unbox.md)
 
-- WHY:为什么需要自动拆装箱? 因为需要在基本数据类型和包装类之类进行转换。为了减少开发人员的工作。
+- WHY:为什么需要自动拆装箱?因为需要在基本数据类型和包装类之类进行转换。为了减少开发人员的工作。
+
+  为什么需要包装类？ 1. 基本类型无法表示null。2. java是面向对象的，很多地方必须使用对象，比如集合，需要使用泛型。
+
 - WHAT:什么是自动拆装箱? 就是将包装类自动转换成对应的基本数据类型。
+
 - HOW:自动拆装箱是如何实现的? 自动装箱：`***.valueOf()`;自动拆箱：xxxValue()
+
 - WHERE:什么地方可能会自动进行自动拆装箱
+  
   - 三目运算符;基本数据类型放到集合类;包装类型和基本类型的大小比较;
+  
 - OTHER:自动拆装箱可能会带来那些问题？
   - Interger的缓存问题：**缓存支持-128到127之间的自动装箱过程**
   - 包装对象的数值比较，不能简单的使用`==`，虽然-128到127之间的数字可以，但是这个范围之外还是需要使用`equals`比较。
@@ -349,10 +348,9 @@ hashCode() 的作用是获取哈希码，也称为散列码;它实际上是返�
   - class常量池是编译期生成的，"a"+"b"这种会在编译期直接优化为"ab"，但是s1+s2在运行期才知道
   - 运行时常量池:class常量池在运行期的，不同的jdk位置也不同
   - 字符串常量池：1.6之后，只存储字面量的引用
-  - intern：使用intern后直接指向字面量所在的位置。1.6之前是在永久代中的。
+  - intern：如果已经有缓存的字符串，就会返回缓存里的实例，否则将其缓存起来。使用intern后直接指向字面量所在的位置。1.6之前是在永久代中的。7放到了堆中。
 
 - 直接使用双引号声明出来的 String 对象会直接存储在常量池中。
-- 如果不是用双引号声明的 String 对象，可以使用 String 提供的 intern 方法。String.intern() 是一个 Native 方法，它的作用是：如果运行时常量池中已经包含一个等于此 String 对象内容的字符串，则返回常量池中该字符串的引用；如果没有，JDK1.7之前（不包含1.7）的处理方式是在常量池中创建与此 String 内容相同的字符串，并返回常量池中创建的字符串的引用，JDK1.7以及之后的处理方式是在常量池中记录此字符串的引用，并返回该引用。
 
 ```java
 String str1 = "abcd";//先检查字符串常量池中有没有"abcd"，如果字符串常量池中没有，则创建一个，然后 str1 指向字符串常量池中的对象，如果有，则直接将 str1 指向"abcd""；
@@ -371,7 +369,7 @@ System.out.println(str2==str3);//false
   - |                | String       | StringBuffer | StringBuilder |
     | -------------- | ------------ | ------------ | ------------- |
     | 可变           | 否,final数组 | 是           | 是            |
-    | 线程安全       | 否           | 是           | 否            |
+    | 线程安全       | 是           | 是           | 否            |
     | 修改创建新对象 | 是           | 否           | 否            |
 
 
@@ -399,8 +397,7 @@ System.out.println(str2==str3);//false
   - 静态变量是随着类加载时被完成初始化的，它在内存中仅有一个，且JVM也只会为它分配一次内存，同时类所有的实例都共享静态变量，可以直接通过类名来访问它。
   - 实例变量则不同，它是伴随着实例的，每创建一个实例就会产生一个实例变量，它与该实例同生共死。
 - static方法: 通过类名对其进行直接调用
-- static代码块
-  - 被static修饰的代码块，我们称之为静态代码块，**静态代码块会随着类的加载一块执行**，而且他可以随意放，可以存在于该了的任何地方。
+- static代码块：被static修饰的代码块，我们称之为静态代码块，**静态代码块会随着类的加载一块执行**，而且他可以随意放，可以存在于的任何地方。
 - 执行顺序: 静态代码块 > 构造代码块(指的是{}括起来的代码块) > 构造函数
 
 ##### 1.1.2.4.3 final  vs finally vs finalize @@@@
@@ -422,7 +419,7 @@ System.out.println(str2==str3);//false
 
 fnally则是Java保证重点代码一定要被执行的一种机制。我们可以使用try-fnally或者try-catch-fnally来进行类似关闭JDBC连接、保证unlock锁等动作。
 
-finalize是基础类java.lang.Object的一个方法，它的设计目的是保证对象在被垃圾收集前完成特定资源的回收。fnalize机制现在已经不推荐使用，并且在JDK 9开始被标记 为deprecated。
+finalize是基础类java.lang.Object的一个方法，它的设计目的是保证对象在被垃圾收集前完成特定资源的回收。fnalize机制现在已经不推荐使用，并且在JDK 9开始被标记 为deprecated。fnalize本质上成为了快速回收的阻碍者，可能 导致你的对象经过多个垃圾收集周期才能被回收。拖慢垃圾收集，导致大量对象堆积。
 
 ##### 1.1.2.4.4 swith
 
@@ -447,8 +444,8 @@ finalize是基础类java.lang.Object的一个方法，它的设计目的是保�
 
 - 数组：数组是**将数字和对象联系起来**，它**保存明确的对象**。（固定大小）
 
-- Collection：保存单一的元素（可扩容）
-  - [list](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#41-arraylist-vs-linkedlist-vs-vector):有序可重复的Collection，注意，**有序指的是放入顺序，而不是大小顺序**。
+- Collection：保存单一的元 素（可扩容）
+  - [list](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#41-arraylist-vs-linkedlist-vs-vector):有序可重复的Collection，**有序指的是放入顺序，而不是大小顺序**。
 
     |          | [ArrayList](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#1-arraylist) | [LinkedList](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#2-linkedlist) | [Vector](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#3-vector) | [Stack](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#stack) | SynchronizedList                                   |
     | -------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | -------------------------------------------------- |
@@ -509,17 +506,17 @@ Arrays.copyOf()调用了System.arraycopy()方法。
 
 - [map](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md)：保存相关联的值键对  
 
-  |            | HashMap                                                      | HashTable              | LinkedHashMap | ConcurrentHashMap                                            |
-  | ---------- | ------------------------------------------------------------ | ---------------------- | ------------- | ------------------------------------------------------------ |
-  | null       | 键和值都可以为null                                           | 键和值都不允许为null   |               | 键和值都不允许为null                                         |
-  | 线程安全   | 否                                                           | 是                     |               | 是                                                           |
-  | 插入顺序   | 否(插入的时候算hash)                                         |                        | 插入有序      |                                                              |
-  | 加锁粒度   |                                                              | 整个table只加了一把锁  |               | jdk7分段来加锁；jdk8取消了Segment分段锁，使用synchronized 和 CAS，只锁定当前链表或红黑二叉树的首节点 |
-  | 继承关系   | AbstractMap                                                  | Dictionary             |               |                                                              |
-  | 容量和扩容 | 初始16，扩容*2                                               | 初始11，扩容old*2+1    |               |                                                              |
-  | hash值     | [重新计算](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md#43-hashmap%E4%B8%AD%E7%9A%84hash%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0) | 直接使用对象的hashCode |               |                                                              |
-  | 遍历方式   | Iterator                                                     | Enumeration，Iterator  |               |                                                              |
-| 加载因子   | 0.75                                                         |                        |               |                                                              |
+  |            | HashMap                                                      | HashTable              | LinkedHashMap      | ConcurrentHashMap                                            |
+  | ---------- | ------------------------------------------------------------ | ---------------------- | ------------------ | ------------------------------------------------------------ |
+  | null       | 键和值都可以为null                                           | 键和值都不允许为null   |                    | 键和值都不允许为null                                         |
+  | 线程安全   | 否                                                           | 是                     |                    | 是                                                           |
+  | 插入顺序   | 否(插入的时候算hash)                                         |                        | 插入有序，双向链表 |                                                              |
+  | 加锁粒度   |                                                              | 整个table只加了一把锁  |                    | jdk7分段来加锁，Segment默认是16，2的幂；jdk8取消了Segment分段锁，使用synchronized 和 CAS，只锁定当前链表或红黑二叉树的首节点 |
+  | 继承关系   | AbstractMap                                                  | Dictionary             |                    |                                                              |
+  | 容量和扩容 | 初始16，扩容*2                                               | 初始11，扩容old*2+1    |                    |                                                              |
+  | hash值     | [重新计算](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md#43-hashmap%E4%B8%AD%E7%9A%84hash%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0) | 直接使用对象的hashCode |                    |                                                              |
+  | 遍历方式   | Iterator                                                     | Enumeration，Iterator  |                    |                                                              |
+| 加载因子   | 0.75                                                         |                        |                    |                                                              |
   
 
 Segment继承了ReentrantLock，所以它就是一种可重入锁（ReentrantLock)。
@@ -557,85 +554,7 @@ Segment继承了ReentrantLock，所以它就是一种可重入锁（ReentrantLoc
 - hash ：该方法主要是将Object转换成一个整型。
 - indexFor ：该方法主要是将hash生成的整型转换成链表数组中的下标。
 
-二叉查找树(BST):
-
-1.**左**子树上所有结点的值均**小于或等于**它的根结点的值。
-
-2.**右**子树上所有结点的值均**大于或等于**它的根结点的值。
-
-3.左、右子树也分别为二叉查找树。
-
-但是可能出现左右子树失衡的情况，有人提出了AVL树，有人提出了红黑树。
-
-平衡二叉树必须具备如下特性：**它是一棵空树或它的左右两个子树的高度差的绝对值不超过1，并且左右两个子树都是一棵平衡二叉树。**
-
-AVL树的特点是，由于非常平衡，在插入和删除的时候，需要不断的调整树结构，很麻烦，所以引入了红黑树。
-
-红黑树：
-
-1.节点是红色或黑色。
-
-2.根节点是黑色。
-
-3.每个叶子节点都是黑色的空节点（NIL节点）。
-
-4 每个红色节点的两个子节点都是黑色。(从每个叶子到根的所有路径上不能有两个连续的红色节点)
-
-5.从任一节点到其每个叶子的所有路径都包含相同数目的黑色节点。
-
-推论：**红黑树从根节点到叶子的最长路径不 会超过最短路径的2倍**。
-
-**本质上我们是使用红色和黑色来追踪树的高度，左旋的本质是增加左树的高度，右旋的本质是增加右树的高度。**
-
-[HashMap的实现](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md#43-hashmap%E4%B8%AD%E7%9A%84hash%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0)；
-
-  [红黑树具有哪些特性](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md#32-%E7%BA%A2%E9%BB%91%E6%A0%91%E6%80%BB%E7%BB%93)
-
-#### 1.1.3.6 fail-fast vs fail-safe @@@@@
-
-[快速失败 vs 安全失败](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#44-fail-fast-vs-fail-safe)
-
-我们都接触 HashMap、ArrayList 这些集合类，这些在 **java.util 包的集合类就都是快速失败**的；而  **java.util.concurrent 包下的类都是安全失败**，比如：ConcurrentHashMap。
-
-集合中的快速失败：当多个线程对部分集合进行结构上的改变的操作时，有可能会产生fail-fast机制，这个时候就会抛出ConcurrentModificationException（后文用CME代替）。
-
-**之所以会抛出CMException异常，是因为我们的代码中使用了增强for循环，而在增强for循环中，集合遍历是通过iterator进行的，但是元素的add/remove却是直接使用的集合类自己的方法。这就导致iterator在遍历的时候（会比较expectedModCount和modCount），会发现有一个元素在自己不知不觉的情况下就被删除/添加了，就会抛出一个异常，用来提示用户，可能发生了并发修改！**
-
-遍历删除List中的元素有很多种方法，当运用不当的时候就会产生问题。下面主要看看以下几种遍历删除List中元素的形式：
-
-1.通过增强的for循环删除符合条件的多个元素(CME)
-
-2.通过增强的for循环删除符合条件的一个元素(正常)
-
-3.通过普通的for删除删除符合条件的多个元素(无异常，但结果可能错误)
-
-**安全失败：**
-
-fail-safe集合的所有对集合的修改都是先拷贝一份副本，然后在副本集合上进行的，并不是直接对原集合进行修改。并且这些修改方法，如add/remove都是通过加锁来控制并发的。
-
-所以，CopyOnWriteArrayList中的迭代器在迭代的过程中不需要做fail-fast的并发检测。（因为fail-fast的主要目的就是识别并发，然后通过异常的方式通知用户）
-
-迭代器遍历的是开始遍历那一刻拿到的集合拷贝，在遍历期间原集合发生的修改迭代器是不知道的。
-
-CopyOnWriteArrayList是怎么保证并发安全的？
-
-Copy-On-Write简称COW，是一种用于程序设计中的优化策略。**其基本思路是，从一开始大家都在共享同一个内容，当某个人想要修改这个内容的时候，才会真正把内容Copy出去形成一个新的内容然后再改，这是一种延时懒惰策略。**
-
-**所以CopyOnWrite容器是一种读写分离的思想，读和写不同的容器。**而Vector在读写的时候使用同一个容器，读写互斥，同时只能做一件事儿。
-
-总结：
-
-- CopyOnWriteArrayList是怎么保证并发安全的？
-  - CopyOnWriteArrayList使用ReentrantLock重入锁加锁，保证线程安全；
-- CopyOnWriteArrayList适用于什么样的场景？
-  - CopyOnWriteArrayList的写操作都要先拷贝一份新数组，在新数组中做修改，修改完了再用新数组替换老数组，所以空间复杂度是O(n)，性能比较低下；
-- CopyOnWriteArrayList的读操作支持随机访问，时间复杂度为O(1)；
-- CopyOnWriteArrayList的实现采用了什么思想？
-  - CopyOnWriteArrayList采用读写分离的思想，读操作不加锁，写操作加锁，且写操作占用较大内存空间，所以适用于读多写少的场合；
-- CopyOnWriteArrayList是不是强一致性的？
-  - CopyOnWriteArrayList只保证最终一致性，不保证实时一致性；
-
-#### 1.1.3.8 set vs list
+#### 1.1.3.2 set vs list
 
 List,Set都是继承自Collection接口。都是用来存储一组相同类型的元素的。
 
@@ -648,7 +567,7 @@ Set特点：元素无放入顺序，元素不可重复。 无顺序，即先放�
 | 顺序 | 有   | 无   |
 | 重复 | 可以 | 不可 |
 
-#### 1.1.3.9 set如何保证元素不重复 @@@@@
+#### 1.1.3.3 set如何保证元素不重复 @@@@@
 
 [Set如何保证元素不重复?](https://gitee.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/set-repetition.md)
 
@@ -705,17 +624,25 @@ Arrays常用方法：
 复制: copyOf()
 ```
 
-### 1.1.5 IO 
+### 1.1.4 IO 
 
-#### 1.1.5.1 I/O模型 @@@@@
+同步、异步是指调用方要不要去主动询问/等待结果返回。阻塞，非阻塞，是描述调用方的。同步不一定阻塞，异步也不一定非阻塞。
+
+首先，传统的java.io包，它基于流模型实现，提供了我们最熟知的一些IO功能，比如File抽象、输入输出流等。交互方式是同步、阻塞的方式，也就是说，在读取输入流或者写入输出流时，在读、写动作完成之前，线程会一直阻塞在那里，它们之间的调用是可靠的线性顺序。java.io包的好处是代码比较简单、直观，缺点则是IO效率和扩展性存在局限性，容易成为应用性能的瓶颈。很多时候，人们也把java.net下面提供的部分网络API，比如Socket、ServerSocket、HttpURLConnection也归类到同步阻塞IO类库，因为网络通信同样是IO行为。
+
+第二，在Java 1.4中引入了NIO框架(java.nio包)，提供了Channel、Selector、Bufer等新的抽象，可以构建多路复用的、同步非阻塞IO程序，同时提供了更接近操作系统底层 的高性能数据操作方式。
+
+第三，在Java 7中，NIO有了进一步的改进，也就是NIO 2，引入了异步非阻塞IO方式，也有很多人叫它AIO(Asynchronous IO)。异步IO操作基于事件和回调机制，可以简单 理解为，应用操作直接返回，而不会阻塞在那里，当后台处理完成，操作系统会通知相应线程进行后续工作。
+
+输入流、输出流(InputStream/OutputStream)是用于读取或写入字节的。而Reader/Writer则是用于操作字符，增加了字符编解码等功能。BuferedOutputStream等带缓冲区的实现，可以避免频繁的磁盘读写，进而提高IO处理效率。这种设计利用了缓冲区，将批量数据进行一次操作。
+
+
+
+#### 1.1.4.1 I/O模型 @@@@@
 
 [同步、异步、阻塞、非阻塞、Linux 5种IO模型](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-io-detail.md#7-%E4%BA%94%E7%A7%8Dio%E6%A8%A1%E5%9E%8B)
 
-[同步、异步](https://github.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/synchronized-vs-asynchronization.md)，是描述被调用方的。
-
-阻塞，非阻塞，是描述调用方的。
-
-同步不一定阻塞，异步也不一定非阻塞。
+![emma_1](../images/posts/java/77752ed5.jpg)
 
 I/O工作模型，一个输入操作通常包括两个不同的阶段：
 
@@ -733,15 +660,17 @@ I/O工作模型，一个输入操作通常包括两个不同的阶段：
 - **信号驱动式I/O模型(sigio)**
 - 异步I/O模型
 
-#### 1.1.5.2 BIO NIO AIO区别 @@@@@
+#### 1.1.4.2 BIO NIO AIO区别 @@@@@
 
 [BIO、NIO和AIO的区别、三种IO的用法与原理](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-io-detail.md#6-bio-vs-nio-vs-aio)
 
 - **BIO (Blocking I/O):** 同步阻塞 I/O 模式，数据的读取写入必须阻塞在一个线程内等待其完成。在活动连接数不是特别高（小于单机 1000）的情况下，这种模型是比较不错的，可以让每一个连接专注于自己的 I/O 并且编程模型简单，也不用过多考虑系统的过载、限流等问题。线程池本身就是一个天然的漏斗，可以缓冲一些系统处理不了的连接或请求。但是，当面对十万甚至百万级连接的时候，传统的 BIO 模型是无能为力的。因此，我们需要一种更高效的 I/O 处理模型来应对更高的并发量。
-- **NIO (Non-blocking/New I/O):** NIO 是一种同步非阻塞的 I/O 模型，在 Java 1.4 中引入了 NIO 框架，对应 java.nio 包，提供了 Channel , Selector，Buffer 等抽象。NIO 中的 N 可以理解为 Non-blocking，不单纯是 New。它支持面向缓冲的，基于通道的 I/O 操作方法。 NIO 提供了与传统 BIO 模型中的 `Socket` 和 `ServerSocket` 相对应的 `SocketChannel` 和 `ServerSocketChannel` 两种不同的套接字通道实现,两种通道都支持阻塞和非阻塞两种模式。阻塞模式使用就像传统中的支持一样，比较简单，但是性能和可靠性都不好；非阻塞模式正好与之相反。对于低负载、低并发的应用程序，可以使用同步阻塞 I/O 来提升开发速率和更好的维护性；对于高负载、高并发的（网络）应用，应使用 NIO 的非阻塞模式来开发
-- **AIO (Asynchronous I/O):** AIO 也就是 NIO 2。在 Java 7 中引入了 NIO 的改进版 NIO 2,它是异步非阻塞的 IO 模型。异步 IO 是基于事件和回调机制实现的，也就是应用操作之后会直接返回，不会堵塞在那里，当后台处理完成，操作系统会通知相应的线程进行后续的操作。AIO 是异步 IO 的缩写，虽然 NIO 在网络操作中，提供了非阻塞的方法，但是 NIO 的 IO 行为还是同步的。对于 NIO 来说，我们的业务线程是在 IO 操作准备好时，得到通知，接着就由这个线程自行进行 IO 操作，IO 操作本身是同步的。查阅网上相关资料，我发现就目前来说 AIO 的应用还不是很广泛，Netty 之前也尝试使用过 AIO，不过又放弃了。
+- **NIO (Non-blocking/New I/O):** NIO 是一种同步非阻塞的 I/O 模型。Bufer，高效的数据容器，除了布尔类型，所有原始数据类型都有相应的Bufer实现。 Channel，类似在Linux之类操作系统上看到的文件描述符，是NIO中被用来支持批量式IO操作的一种抽象。File或者Socket，通常被认为是比较高层次的抽象，而Channel则是更加操作系统底层的一种抽象，这也使得NIO得以充分利用现代操作系统底层机制，获得特定场景的性能优 化，例如，DMA(Direct Memory Access)等。不同层次的抽象是相互关联的，我们可以通过Socket获取Channel，反之亦然。Selector，是NIO实现多路复用的基础，它提供了一种高效的机制，可以检测到注册在Selector上的多Channel中，是否有Channel处于就绪状态，进而实现了单线程对 多Channel的高效管理。
+  - IO都是同步阻塞模式，所以需要多线程以实现多任务处理。
+  - NIO则是利用了单线程轮询事件的机制，通过高效地定位就绪的Channel，来决定做什 么，仅仅select阶段是阻塞的，可以有效避免大量客户端连接时，频繁线程切换带来的问题，应用的扩展能力有了非常大的提高。
+- **AIO (Asynchronous I/O):** AIO 也就是 NIO 2。在 Java 7 中引入了 NIO 的改进版 NIO 2,它是异步非阻塞的 IO 模型。异步 IO 是基于事件和回调机制实现的，也就是应用操作之后会直接返回，不会堵塞在那里，当后台处理完成，操作系统会通知相应的线程进行后续的操作。AIO 是异步 IO 的缩写，虽然 NIO 在网络操作中，提供了非阻塞的方法，但是 NIO 的 IO 行为还是同步的。对于 NIO 来说，我们的业务线程是在 IO 操作准备好时，得到通知，接着就由这个线程自行进行 IO 操作，IO 操作本身是同步的。
 
-### 1.1.6 序列化
+### 1.1.5 序列化
 
 [序列化](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-serialize.md)
 
@@ -751,7 +680,7 @@ I/O工作模型，一个输入操作通常包括两个不同的阶段：
 - 序列化底层原理
   - writeObject和readObject方法
 
-### 1.1.7 异常@@@
+### 1.1.6 异常@@@
 
 [异常](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-execption-learning.md)
 
@@ -793,9 +722,7 @@ finally和return的执行顺序:在return之前是会保证finally执行的。
   - 信号：信号是一种比较复杂的通信方式，用于通知接收进程某一事件已经发生。
   - socket：凭借这种机制，客户/服务器(即要进行通信的进程)系统的开发工作既可以在本地单机上进行，也可以跨网络进行。也就是说它可以让不在同一台计算机但通过网 络连接计算机上的进程进行通信。也因为这样，套接字明确地将客户端和服务器区分开来。
 - 线程间通信
-  - 锁机制
-  - 信号量机制:包括无名线程信号量与有名线程信号量。
-  - 信号机制：类似于进程间的信号处理。
+  - 锁机制；信号量机制:包括无名线程信号量与有名线程信号量。信号机制：类似于进程间的信号处理。
 
 #### 1.2.2.3 线程的状态
 
@@ -896,47 +823,31 @@ finally和return的执行顺序:在return之前是会保证finally执行的。
 
 #### 1.1.2.9 线程池 @@@@@
 
-[线程池](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/4-java-thread-pool.md)
+[线程池](https://tech.meituan.com/2020/04/02/java-pooling-pratice-in-meituan.html)
 
-- 池化技术：提前保存大量的资源。线程池提供了一种限制和管理资源(包括执行一个任务)。 每个线程池还维护一些基本统计信息，例如已完成任务的数量。
+- 池化技术：提前保存大量的资源。线程池提供了一种限制和管理资源(包括执行一个任务)。 
   - 线程池、连接池、内存池、对象池等。
   - 降低资源消耗。 通过重复利用已创建的线程降低线程创建和销毁造成的消耗。
   - 提高响应速度。 当任务到达时，任务可以不需要的等到线程创建就能立即执行。
   - 提高线程的可管理性。 线程是稀缺资源，如果无限制的创建，不仅会消耗系统资源，还会降低系统的稳定性， 使用线程池可以进行统一的分配，调优和监控。
-- 线程池原理：预先创建好多个线程，放在池中，这样可以在需要使用线程的时候直接获取，避免多次重复创建、销毁带来的开销。**线程池本质是一个hashSet**。多余的任务会放在阻塞队列中,只有当阻塞队列满了后，才会触发非核心线程的创建。所以非核心线程只是临时过来打杂的。直到空闲了，然后自己关闭了。线程池原理关键技术：锁（lock,cas）、阻塞队列、hashSet（资源池）
+- 线程池原理：**线程池本质是一个hashSet**。线程池原理关键技术：锁（lock,cas）、阻塞队列、hashSet（资源池）
+  - 首先检测线程池运行状态，如果不是RUNNING，则直接拒绝，线程池要保证在RUNNING的状态下执行任务。
+  - 如果workerCount < corePoolSize，则创建并启动一个线程来执行新提交的任务。
+  - 如果workerCount >= corePoolSize，且线程池内的阻塞队列未满，则将任务添加到该阻塞队列中。
+  - 如果workerCount >= corePoolSize && workerCount < maximumPoolSize，且线程池内的阻塞队列已满，则创建并启动一个线程来执行新提交的任务。
+  - 如果workerCount >= maximumPoolSize，并且线程池内的阻塞队列已满, 则根据拒绝策略来处理该任务, 默认的处理方式是直接抛异常。
   - ThreadPoolExecutor
-    - corePoolSize: 核心线程数量，可以类比正式员工数量，常驻线程数量。
-    - maximumPoolSize: 最大的线程数量，公司最多雇佣员工数量。常驻+临时线程数量。
+    - corePoolSize: 核心线程数量，可以类比正式员工数量。
+      - cpu密集型（加密）：CPU核心数+1
+      - IO密集型：CPU核心数 × (1+平均等待时间/平均工作时间)
     - workQueue：多余任务等待队列，再多的人都处理不过来了，需要等着，在这个地方等。
-    - keepAliveTime：非核心线程空闲时间，就是外包人员等了多久，如果还没有活干，解雇了。
+      - ![img](../images/posts/java/725a3db5114d95675f2098c12dc331c3316963.png)
+    - maximumPoolSize: 最大的线程数量，公司最多雇佣员工数量。
+    - keepAliveTime：非核心线程空闲时间，就是外包人员等了多久，如果还没有活干，解雇了。减少线程数过多造成的浪费。
     - threadFactory: 创建线程的工厂，在这个地方可以统一处理创建的线程的属性。
-    - handler：线程池拒绝策略，什么意思呢？就是当任务实在是太多，人也不够，需求池也排满了，还有任务咋办？默认是不处理，抛出异常告诉任务提交者，我这忙不过来了。
-    - <img src="../images/posts/java/image-20200311110424520.png" alt="image-20200311110424520" style="zoom:33%;" />
-- 实现Runnable接口和Callable接口的区别
-
-如果想让线程池执行任务的话需要实现的Runnable接口或Callable接口。 Runnable接口或Callable接口实现类都可 以被ThreadPoolExecutor或ScheduledThreadPoolExecutor执行。**两者的区别在于 Runnable 接口不会返回结果但 是 Callable 接口可以返回结果。**
-
-- 如何创建线程池
-
-《阿里巴巴Java开发手册》中强制线程池不允许使用 Executors 去创建，而是通过 ThreadPoolExecutor 的方式，这样的处理方式让写的同学更加明确线程池的运行规则，规避资源耗尽的风险。
-
-Executors 返回线程池对象的弊端如下:无法指定最大线程的数量。
-
-- FixedThreadPool 和 SingleThreadExecutor : 允许请求的队列长度为 Integer.MAX_VALUE,可能堆积大量的请求，从而导致OOM。
-- CachedThreadPool 和 ScheduledThreadPool : 允许创建的线程数量为 Integer.MAX_VALUE ，可能会创建大量线程，从而导致OOM。
-
-方式一:通过构造方法实现
-
-![image-20200315211504050](../images/posts/java/image-20200315211504050.png)
-
-方式二:通过Executor 框架的工具类Executors来实现 我们可以创建三种类型的ThreadPoolExecutor:
-
-- SingleThreadExecutor: 方法返回一个只有一个线程的线程池。若多余一个任务被提交到该线程池，任务会被保存在一个任务队列中，待线程空闲，按先入先出的顺序执行队列中的任务。
-- CachedThreadPool: 该方法返回一个可根据实际情况调整线程数量的线程池。线程池的线程数量不确定，但 若有空闲线程可以复用，则会优先使用可复用的线程。若所有线程均在工作，又有新的任务提交，则会创建新 的线程处理任务。所有线程在当前任务执行完毕后，将返回线程池进行复用。
-
-对应Executors工具类中的方法如图所示:
-
-<img src="../images/posts/java/image-20200315211536433.png" alt="image-20200315211536433" style="zoom:50%;" />
+    - handler：线程池拒绝策略。
+      - ![img](../images/posts/java/9ffb64cc4c64c0cb8d38dac01c89c905178456.png)
+- 实现Runnable接口和Callable接口的区别：**两者的区别在于 Runnable 接口不会返回结果但 是 Callable 接口可以返回结果。**
 
 #### 1.1.2.10 锁 @@@@@
 
@@ -958,6 +869,8 @@ Executors 返回线程池对象的弊端如下:无法指定最大线程的数量
     - 存在ABA问题，循环时间长开销大，只能保证一个共享变量的原子操作
       - 使用版本号来解决
       - JDK 1.5 以后的 `AtomicStampedReference 类`就提供了此种能力，其中的 `compareAndSet 方法`就是首先检查当前引用是否等于预期引用，并且当前标志是否等于预期标志，如果全部相等，则以原子方式将该引用和该标志的值设置为给定的更新值。
+    - **循环时间长开销大**。CAS操作如果长时间不成功，会导致其一直自旋，给CPU带来非常大的开销。
+    - **只能保证一个共享变量的原子操作**。1.5之后，可以使用AtomicReference。
   
 - [阻塞锁vs非阻塞锁](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#2-%E8%87%AA%E6%97%8B%E9%94%81-vs-%E9%80%82%E5%BA%94%E6%80%A7%E8%87%AA%E6%97%8B%E9%94%81)：锁住同步资源失败，线程要不要阻塞
 
@@ -988,12 +901,9 @@ Executors 返回线程池对象的弊端如下:无法指定最大线程的数量
 
 - 锁粗化：锁变大。
 
-- [monitor](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/deep-understand-multi-thread.md#4-moniter%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86)
-
 - [死锁？](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/lock.md#6-java%E7%BA%A7%E5%88%AB%E7%9A%84%E6%AD%BB%E9%94%81)
 
-  - 死锁如何排查
-    - **Jstack命令**
+  - 死锁如何排查：jps获取进程id，Jstack获取线程栈：区分线程状态 -> 查看等待目标 -> 对比Monitor等持有状态。
     - **JConsole工具**
   - 死锁的原因：资源竞争
     - 互斥条件：进程要求对所分配的资源进行排它性控制，即在一段时间内某资源仅为一进程所占用。
@@ -1011,7 +921,7 @@ Executors 返回线程池对象的弊端如下:无法指定最大线程的数量
 
 synchronized关键字解决的是多个线程之间访问资源的同步性，synchronized关键字可以保证被**它修饰的方法或者代码块**在任意时刻只能有一个线程执行。
 
-另外，在Java早期版本中，synchronized属于重量级锁，效率低下，因为**监视器锁(monitor)是依赖于底层的操 作系统的 Mutex Lock** 来实现的，Java 的线程是映射到操作系统的原生线程之上的。如果要挂起或者唤醒一个线程， 都需要操作系统帮忙完成，而操作系统实现线程之间的切换时需要从用户态转换到内核态，这个状态之间的转换需要相对比较长的时间，时间成本相对较高，这也是为什么早期的 synchronized 效率低的原因。庆幸的是在 Java 6 之后 Java 官方对从 JVM 层面对synchronized 较大优化，所以现在的 synchronized 锁效率也优化得很不错了。JDK1.6对锁的实现引入了大量的优化，如自旋锁、**适应性自旋锁（自旋的次数不固定**）、锁消除、锁粗化、偏向锁、轻量级锁等技术来减少锁操作的 开销。
+另外，在Java早期版本中，synchronized属于重量级锁，效率低下，因为**监视器锁(monitor)是依赖于底层的操 作系统的 Mutex Lock** 来实现的，Java 的线程是映射到操作系统的原生线程之上的。如果要挂起或者唤醒一个线程， 都需要操作系统帮忙完成，而操作系统实现线程之间的切换时需要从用户态转换到内核态，这个状态之间的转换需要相对比较长的时间，时间成本相对较高，这也是为什么早期的 synchronized 效率低的原因。
 
 synchronized关键字最主要的三种使用方式:
 
@@ -1070,7 +980,7 @@ synchronized 是依赖于 JVM 实现的，前面我们也讲到了 虚拟机团�
 
 4. 性能已不是选择标准
 
-在JDK1.6之前，synchronized 的性能是比 ReenTrantLock 差很多。具体表示为：synchronized 关键字吞吐量岁线程数的增加，下降得非常严重。而ReenTrantLock 基本保持一个比较稳定的水平。我觉得这也侧面反映了， synchronized 关键字还有非常大的优化余地。后续的技术发展也证明了这一点，我们上面也讲了在 JDK1.6 之后 JVM 团队对 synchronized 关键字做了很多优化。**JDK1.6 之后，synchronized 和 ReenTrantLock 的性能基本是持平了。所以网上那些说因为性能才选择 ReenTrantLock 的文章都是错的！JDK1.6之后，性能已经不是选择synchronized和ReenTrantLock的影响因素了！而且虚拟机在未来的性能改进中会更偏向于原生的synchronized，所以还是提倡在synchronized能满足你的需求的情况下，优先考虑使用synchronized关键字来进行同步！优化后的synchronized和ReenTrantLock一样，在很多地方都是用到了CAS操作**。
+**JDK1.6 之后，synchronized 和 ReenTrantLock 的性能基本是持平了。所以网上那些说因为性能才选择 ReenTrantLock 的文章都是错的！JDK1.6之后，性能已经不是选择synchronized和ReenTrantLock的影响因素了！而且虚拟机在未来的性能改进中会更偏向于原生的synchronized，所以还是提倡在synchronized能满足你的需求的情况下，优先考虑使用synchronized关键字来进行同步！优化后的synchronized和ReenTrantLock一样，在很多地方都是用到了CAS操作**。
 
 #### 1.1.2.12 volatile
 
@@ -1597,31 +1507,70 @@ class Customer implements Runnable {
 
 #### 1.1.2.14 AQS @@@@@
 
-AQS的全称为(AbstractQueuedSynchronizer)，这个类在java.util.concurrent.locks包下面。
+AQS的全称为(AbstractQueuedSynchronizer)，这个类在java.util.concurrent.locks包下面。AQS是一种提供了原子式管理同步状态、阻塞和唤醒线程功能以及队列模型的简单框架。
 
-AQS是一个用来构建锁和同步器的框架，使用AQS能简单且高效地构造出应用广泛的大量的同步器，比如我们提到的 ReentrantLock，Semaphore，其他的诸如ReentrantReadWriteLock，SynchronousQueue，FutureTask等等皆是基于AQS的。当然，我们自己也能利用AQS非常轻松容易地构造出符合我们自己需求的同步器。
+![img](../images/posts/java/412d294ff5535bbcddc0d979b2a339e6102264.png)
 
 **AQS核心思想是**，如果被请求的共享资源空闲，则将当前请求资源的线程设置为有效的工作线程，并且将共享资源设置为锁定状态。如果被请求的共享资源被占用，那么就需要一套线程阻塞等待以及被唤醒时锁分配的机制，这个机制 AQS是用CLH队列锁实现的，即将暂时获取不到锁的线程加入到队列中。
 
-<img src="img/image-20200318171246409.png" alt="image-20200318171246409" style="zoom: 33%;" />
+<img src="../images/posts/java/image-20200318171246409.png" alt="image-20200318171246409" style="zoom: 33%;" />
 
 - Exclusive(独占):只有一个线程能执行，如ReentrantLock。又可分为公平锁和非公平锁:
   - 公平锁:按照线程在队列中的排队顺序，先到者先拿到锁
   - 非公平锁:当线程要获取锁时，无视队列顺序直接去抢锁，谁抢到就是谁的 
 - Share(共享):多个线程可同时执行，如Semaphore/CountDownLatch。Semaphore、 CountDownLatCh、 CyclicBarrier、ReadWriteLock 我们都会在后面讲到。
 
-- Semaphore(信号量)-允许多个线程同时访问: synchronized 和 ReentrantLock 都是一次只允许一个线程访问 某个资源，Semaphore(信号量)可以指定多个线程同时访问某个资源。
 
-- CountDownLatch (倒计时器): CountDownLatch是一个同步工具类，用来协调多个线程之间的同步。这 个工具通常用来控制线程等待，它可以让某一个线程等待直到倒计时结束，再开始执行。 CyclicBarrier(循环栅栏): 
-- CyclicBarrier 和 CountDownLatch 非常类似，它也可以实现线程间的技术等待， 但是它的功能比 CountDownLatch 更加复杂和强大。主要应用场景和 CountDownLatch 类似。CyclicBarrier 的字面意思是可循环使用(Cyclic)的屏障(Barrier)。它要做的事情是，让一组线程到达一个屏障(也可以叫 同步点)时被阻塞，直到最后一个线程到达屏障时，屏障才会开门，所有被屏障拦截的线程才会继续干活。 CyclicBarrier默认的构造方法是 CyclicBarrier(int parties)，其参数表示屏障拦截的线程数量，每个线程调用 await方法告诉 CyclicBarrier 我已经到达了屏障，然后当前线程被阻塞。
+### 1.2.2 并发包juc
 
-#### 1.1.2.15 并发包
+提供了比synchronized更加高级的各种同步结构，包括CountDownLatch、CyclicBarrier、Semaphore等，可以实现更加丰富的多线程操作，比如利用Semaphore作为资源。
 
-- Thread、Runnable、Callable、ReentrantLock、ReentrantReadWriteLock、Atomic*、Semaphore、CountDownLatch、、ConcurrentHashMap、Executors
+- CountDownLatch：用来协调多个线程之间的同步。这 个工具通常用来控制线程等待，它可以让某一个线程等待直到倒计时结束，再开始执行。
+- CyclicBarrier：一种辅助性的同步结构，允许多个线程等待到达某个屏障。CyclicBarrier 和 CountDownLatch 非常类似，它也可以实现线程间的技术等待， 但是它的功能比 CountDownLatch 更加复杂和强大。主要应用场景和 CountDownLatch 类似。CyclicBarrier 的字面意思是可循环使用(Cyclic)的屏障(Barrier)。它要做的事情是，让一组线程到达一个屏障(也可以叫 同步点)时被阻塞，直到最后一个线程到达屏障时，屏障才会开门，所有被屏障拦截的线程才会继续干活。 CyclicBarrier默认的构造方法是 CyclicBarrier(int parties)，其参数表示屏障拦截的线程数量，每个线程调用 await方法告诉 CyclicBarrier 我已经到达了屏障，然后当前线程被阻塞。
+- Semaphore(信号量)：Java版本的信号量实现。允许多个线程同时访问: synchronized 和 ReentrantLock 都是一次只允许一个线程访问 某个资源，Semaphore(信号量)可以指定多个线程同时访问某个资源。
+
+控制器，限制同时进行工作的线程数量。 各种线程安全的容器，比如最常见的ConcurrentHashMap、有序的ConcunrrentSkipListMap，或者通过类似快照机制，实现线程安全的动态数组CopyOnWriteArrayList等。
+ 各种并发队列实现，如各种BlockedQueue实现，比较典型的ArrayBlockingQueue、 SynchorousQueue或针对特定场景的PriorityBlockingQueue等。 强大的Executor框架，可以创建各种不同类型的线程池，调度任务运行等，绝大部分情况下，不再需要自己从头实现线程池和任务调度器。
+
+#### 1.2.2.1 ConcurrentHashMap
+
+jdk7分段来加锁，Segment默认是16，2的幂；jdk8取消了Segment分段锁，使用synchronized 和 CAS，只锁定当前链表或红黑二叉树的首节点。
+
+分离锁，也就是将内部进行分段(Segment)，里面则是HashEntry的数组，和HashMap类似，哈希相同的条目也是以链表形式存放。HashEntry内部使用volatile的value字段来保证可见性，也利用了不可变对象的机制以改进利用Unsafe提供的底层能力，比如volatile access，去直接完成部分操作，以最优化 性能，毕竟Unsafe中的很多操作都是JVM intrinsic优化过的。
+
+#### 1.2.2.2 LinkedBlockingQueue
+
+使用到了LinkedBlockingQueue，是一个基于双向链表实现的双向并发阻塞队列，默认容量大小等于Integer.MAX_VALUE。头、尾操作使用不同的锁。
+
+- 若某线程(线程A)要取出数据时，队列正好为空，则该线程会执行notEmpty.await()进行等待；当其它某个线程(线程B)向队列中插入了数据之后，会调用notEmpty.signal()唤醒“notEmpty上的等待线程”。此时，线程A会被唤醒从而得以继续运行。 此外，线程A在执行取操作前，会获取takeLock，在取操作执行完毕再释放takeLock。
+- 若某线程(线程H)要插入数据时，队列已满，则该线程会它执行notFull.await()进行等待；当其它某个线程(线程I)取出数据之后，会调用notFull.signal()唤醒“notFull上的等待线程”。此时，线程H就会被唤醒从而得以继续运行。 此外，线程H在执行插入操作前，会获取putLock，在插入操作执行完毕才释放putLock。
+
+使用到了可重入互斥锁[ReentrantLock](https://www.cnblogs.com/skywang12345/p/3496101.html)，[Condition](https://www.cnblogs.com/skywang12345/p/3496716.html)，Condition中的await()方法相当于Object的[wait()](http://www.cnblogs.com/skywang12345/p/3479224.html)方法，signal()方法相当于notify()方法，signalAll()相当于notifyAll()方法。不同的是，Object中的[wait(),notify(),notifyAll()](http://www.cnblogs.com/skywang12345/p/3479224.html)方法是和["同步锁"(synchronized关键字)](http://www.cnblogs.com/skywang12345/p/3479202.html)捆绑使用的；而Condition是需要与["互斥锁"/"共享锁"](http://www.cnblogs.com/skywang12345/p/3496101.html)捆绑使用的。
+
+CLH(Craig,Landin,and Hagersten)队列是一个虚拟的双向队列（虚拟的双向队列即不存在队列实例，仅存在结
+点之间的关联关系）。AQS是将每条请求共享资源的线程封装成一个CLH锁队列的一个结点（Node）来实现锁。
+
+AQS使用一个int成员变量来表示同步状态，通过内置的FIFO队列来完成获取资源线程的排队工作。AQS使用CAS对该同步状态进行原子操作实现对其值的修改。
+
+#### 1.2.2.3 ConcurrentLinkedQueue
+
+结果的保存用到了ConcurrentLinkedQueue这个集合，是一个非阻塞，无锁，无界，线程安全的集合，采用了CAS。
+
+ConcurrentLinkedQueue 由 head 节点和 tair 节点组成。入队：
+
+- 第一是定位出尾节点。tail 节点并不总是尾节点，所以每次入队都必须先通过 tail 节点来找到尾节点，尾节点可能就是 tail 节点，也可能是 tail 节点的 next 节点。代码中循环体中的第一个 if 就是判断 tail 是否有 next 节点，有则表示 next 节点可能是尾节点。
+- 第二是使用 CAS 算法能将入队节点设置成尾节点的 next 节点，如不成功则重试。
+
+为了优化，加入了hops。
+
+出队：
+
+首先获取头节点的元素，然后判断头节点元素是否为空，如果为空，表示另外一个线程已经进行了一次出队操作将该节点的元素取走，如果不为空，则使用 CAS 的方式将头节点的引用设置成 null，如果 CAS 成功，则直接返回头节点的元素，如果不成功，表示另外一个线程已经进行了一次出队操作更新了 head 节点，导致元素发生了变化，需要重新获取头节点。
+
+#### 1.2.2.4 Atomic 原子类
+
 - locks部分：包含在java.util.concurrent.locks包中，提供显式锁(互斥锁和速写锁)相关功能；
 - atomic部分：包含在java.util.concurrent.atomic包中，提供原子变量类相关的功能，是构建非阻塞算法的基础；
-
-1. 介绍一下Atomic 原子类
 
 Atomic 翻译成中文是原子的意思。在化学上，我们知道原子是构成一般物质的最小单位，在化学反应中是不可分割 的。在我们这里 Atomic 是指一个操作是不可中断的。即使是在多个线程一起执行的时候，一个操作一旦开始，就不 会被其他线程干扰。
 
@@ -1912,9 +1861,9 @@ java的对象模型主要包含对象头，实例数据和对齐填充，主要�
       - 方法区中常量引用的对象
       - native方法医用的对象
   - 四种引用：不同的引用类型，主要体现的是对象不同的可达性(reachable)状态和对垃圾收集的影响。
-    - 强引用：刚被new出来的对象所加的引用
+    - 强引用：刚被new出来的对象所加的引用，表明对象还活着。
     
-    - 软引用：可被回收的对象（如缓存的对象）
+    - 软引用：可被回收的对象（如缓存的对象），内存不足时会去回收。
     
     - 弱引用：弱引用的对象就是一定需要进行垃圾回收的
     
@@ -1971,7 +1920,7 @@ java的对象模型主要包含对象头，实例数据和对齐填充，主要�
 
 **对象创建**
 
-<img src="img/image-20200401155810850.png" alt="image-20200401155810850" style="zoom:33%;" />
+<img src="../images/posts/java/image-20200401155810850.png" alt="image-20200401155810850" style="zoom:33%;" />
 
 双亲委派，破坏双亲委派。
 
@@ -2154,6 +2103,10 @@ cookie是服务器“贴在”客户端身上的标签，由客户端维护的�
 
 #### 1.4.3.1 Spring Bean 的作用域
 
+简单地讲，bean 就 是由 IOC 容器初始化、装配及管理的对象，除此之外，bean 就与应用程序中的其他对象没有什么区别了。而 bean 的定义以及 bean 相互间的依赖关系将通过配置元数据来描述。
+
+Spring中的bean默认都是单例的，这些单例Bean在多线程程序下如何保证线程安全呢? 例如对于Web应用来说， Web容器对于每个用户请求都创建一个单独的Sevlet线程来处理请求，引入Spring框架之后，每个Action都是单例 的，那么对于Spring托管的单例Service Bean，如何保证其安全呢? Spring的单例是基于BeanFactory也就是Spring 容器的，单例Bean在此容器内只有一个，Java的单例是基于 JVM，每个 JVM 内只有一个实例。
+
 <img src="../images/posts/java/image-20200315221512202.png" alt="image-20200315221512202" style="zoom:33%;" />
 
 #### 1.4.3.2 Spring 事务中的隔离级别
@@ -2168,7 +2121,33 @@ TransactionDefinition 接口中定义了五个表示隔离级别的常量:
 
 <img src="../images/posts/java/image-20200317155422017.png" alt="image-20200317155422017" style="zoom:50%;" />
 
+#### 1.4.3.3 Spring事务传播行为
+
+事务传播行为(为了解决业务层方法之间互相调用的事务问题): 当事务方法被另一个事务方法调用时，必须指定 事务应该如何传播。例如:方法可能继续在现有事务中运行，也可能开启一个新事务，并在自己的事务中运行。在 TransactionDefinition定义中包括了如下几个表示传播行为的常量:
+
+支持当前事务的情况：
+
+- TransactionDefinition.PROPAGATION_REQUIRED: 如果当前存在事务，则加入该事务;如果当前没有事务， 则创建一个新的事务。
+-  TransactionDefinition.PROPAGATION_SUPPORTS: 如果当前存在事务，则加入该事务;如果当前没有事务， 则以非事务的方式继续运行。
+- TransactionDefinition.PROPAGATION_MANDATORY: 如果当前存在事务，则加入该事务;如果当前没有事 务，则抛出异常。(mandatory:强制性)
+
+不支持当前事务的情况：
+
+- TransactionDefinition.PROPAGATION_REQUIRES_NEW: 创建一个新的事务，如果当前存在事务，则把当前 事务挂起。
+-  TransactionDefinition.PROPAGATION_NOT_SUPPORTED: 以非事务方式运行，如果当前存在事务，则把当 前事务挂起。
+- TransactionDefinition.PROPAGATION_NEVER: 以非事务方式运行，如果当前存在事务，则抛出异常。
+
+TransactionDefinition 接口中定义了五个表示隔离级别的常量:
+
+- TransactionDefinition.ISOLATION_DEFAULT: 使用后端数据库默认的隔离级别，Mysql 默认采用的 REPEATABLE_READ隔离级别 Oracle 默认采用的 READ_COMMITTED隔离级别.
+- TransactionDefinition.ISOLATION_READ_UNCOMMITTED: 最低的隔离级别，允许读取尚未提交的数据变 更，可能会导致脏读、幻读或不可重复读
+
+TransactionDefinition.ISOLATION_READ_COMMITTED: 允许读取并发事务已经提交的数据，可以阻止脏 读，但是幻读或不可重复读仍有可能发生
+ TransactionDefinition.ISOLATION_REPEATABLE_READ: 对同一字段的多次读取结果都是一致的，除非数据 是被本身事务自己所修改，可以阻止脏读和不可重复读，但幻读仍有可能发生。 TransactionDefinition.ISOLATION_SERIALIZABLE: 最高的隔离级别，完全服从ACID的隔离级别。所有的事 务依次逐个执行，这样事务之间就完全不可能产生干扰，也就是说，该级别可以防止脏读、不可重复读以及幻 读。但是这将严重影响程序的性能。通常情况下也不会用到该级别。
+
 ### 1.4.5 Mybatis
+
+[mybatis](https://mp.weixin.qq.com/s?__biz=MzI4Njg5MDA5NA==&mid=2247483937&idx=1&sn=85727e94ad3d1af1ef99cfefa420520c&chksm=ebd74320dca0ca367f869427202eb029bf3cf8dd4dc71dae26d925aaaabc2c8ea704735b3b87&scene=21###wechat_redirect)
 
 1. `#`符号将传入的数据都当做一个字符串，会对自动传入的数据加一个双引号
 2. `$`符号将传入的数据直接显示生成SQL中。
@@ -2183,15 +2162,9 @@ TransactionDefinition 接口中定义了五个表示隔离级别的常量:
 
 #### 1.4.6.1 为什么要用 redis
 
-主要从“高性能”和“高并发”这两点来看待这个问题。
+高性能:假如用户第一次访问数据库中的某些数据。这个过程会比较慢，因为是从硬盘上读取的。将该用户访问的数据存在数 缓存中，这样下一次再访问这些数据的时候就可以直接从缓存中获取了。操作缓存就是直接操作内存，所以速度相当 快。如果数据库中的对应数据改变的之后，同步改变缓存中相应的数据即可!
 
-高性能:
-
-假如用户第一次访问数据库中的某些数据。这个过程会比较慢，因为是从硬盘上读取的。将该用户访问的数据存在数 缓存中，这样下一次再访问这些数据的时候就可以直接从缓存中获取了。操作缓存就是直接操作内存，所以速度相当 快。如果数据库中的对应数据改变的之后，同步改变缓存中相应的数据即可!
-
-高并发:
-
-直接操作缓存能够承受的请求是远远大于直接访问数据库的，所以我们可以考虑把数据库中的部分数据转移到缓存中 去，这样用户的一部分请求会直接到缓存这里而不用经过数据库。
+高并发:直接操作缓存能够承受的请求是远远大于直接访问数据库的，所以我们可以考虑把数据库中的部分数据转移到缓存中 去，这样用户的一部分请求会直接到缓存这里而不用经过数据库。
 
 #### 1.4.6.2 redis 和 memcached 的区别
 
@@ -2207,7 +2180,7 @@ TransactionDefinition 接口中定义了五个表示隔离级别的常量:
 
 #### 1.4.6.3 redis 常见数据结构以及使用场景分析
 
-<img src="../images/posts/mysql/image-20200315225722103.png" alt="image-20200315225722103" style="zoom:50%;" />
+<img src="../images/posts/mysql/image-20200315225722103.png" alt="image-20200315225722103"  />
 
 #### 1.4.6.4 redis 设置过期时间
 
@@ -2282,7 +2255,7 @@ Redis 通过 MULTI、EXEC、WATCH 等命令来实现事务(transaction)功能。
 
 所谓 Redis 的并发竞争 Key 的问题也就是多个系统同时对一个 key 进行操作，但是最后执行的顺序和我们期望的顺 序不同，这样也就导致了结果的不同!
 
-推荐一种方案:分布式锁(zookeeper 和 redis 都可以实现分布式锁)。(如果不存在 Redis 的并发竞争 Key 问 题，不要使用分布式锁，这样会影响性能)
+推荐一种方案:分布式锁(zookeeper 和 redis 都可以实现分布式锁)。
 
 基于zookeeper临时有序节点可以实现的分布式锁。大致思想为:每个客户端对某个方法加锁时，在zookeeper上的 与该方法对应的指定节点的目录下，生成一个唯一的瞬时有序节点。 判断是否获取锁的方式很简单，只需要判断有 序节点中序号最小的一个。 当释放锁的时候，只需将这个瞬时节点删除即可。同时，其可以避免服务宕机导致的锁 无法释放，而产生的死锁问题。完成业务流程后，删除对应的子节点释放锁。
 
@@ -2294,9 +2267,7 @@ Redis 通过 MULTI、EXEC、WATCH 等命令来实现事务(transaction)功能。
 
 何解决一致性问题?
 
-一般来说，就是如果你的系统不是严格要求缓存+数据库必须一致性的话，缓存可以稍微的跟数据库偶尔有不一致的 情况，最好不要做这个方案，读请求和写请求串行化，串到一个内存队列里去，这样就可以保证一定不会出现不一致 的情况
-
-串行化之后，就会导致系统的吞吐量会大幅度的降低，用比正常情况下多几倍的机器去支撑线上的一个请求。
+一般来说，就是如果你的系统不是严格要求缓存+数据库必须一致性的话，缓存可以稍微的跟数据库偶尔有不一致的 情况，最好不要做这个方案，读请求和写请求串行化，串到一个内存队列里去，这样就可以保证一定不会出现不一致 的情况串行化之后，就会导致系统的吞吐量会大幅度的降低，用比正常情况下多几倍的机器去支撑线上的一个请求。
 
 #### 1.4.6.11 **使用过Redis分布式锁么，它是什么回事？**
 
@@ -2305,6 +2276,18 @@ Redis 通过 MULTI、EXEC、WATCH 等命令来实现事务(transaction)功能。
 这时候对方会告诉你说你回答得不错，然后接着问如果在setnx之后执行expire之前进程意外crash或者要重启维护了，那会怎么样？
 
 这时候你要给予惊讶的反馈：唉，是喔，这个锁就永远得不到释放了。紧接着你需要抓一抓自己得脑袋，故作思考片刻，好像接下来的结果是你主动思考出来的，然后回答：我记得set指令有非常复杂的参数，这个应该是可以同时把setnx和expire合成一条指令来用的！
+
+#### 1.4.6.12 其他
+
+**1. 假如Redis里面有1亿个key，其中有10w个key是以某个固定的已知的前缀开头的，如果将它们全部找出来？**
+
+使用keys指令可以扫出指定模式的key列表。
+
+对方接着追问：如果这个redis正在给线上的业务提供服务，那使用keys指令会有什么问题？
+
+这个时候你要回答redis关键的一个特性：redis的单线程的。keys指令会导致线程阻塞一段时间，线上服务会停顿，直到指令执行完毕，服务才能恢复。这个时候可以使用scan指令，scan指令可以无阻塞的提取出指定模式的key列表，但是会有一定的重复概率，在客户端做一次去重就可以了，但是整体所花费的时间会比直接用keys指令长。
+
+
 
 ### 1.4.7 nginx
 
@@ -2458,17 +2441,7 @@ rebase:提交历史会成一条线；merge：提交历史会变成交织的网�
 
 ## 1.5 liteSpring相关知识 @@@@@
 
-<img src="../images/posts/java/image-20200326111644506.png" alt="image-20200326111644506" style="zoom:33%;" />
-
-- 静态代理：目标类和代理对象都要实现某个接口，代理对象只能为一个目标对象服务。如果为所有对象创建代理，用静态代理要写很多类，而且每个代理对象要写一份增强逻辑，如果使用动态代理，就不用写一个代理类，相同的逻辑用同一个invokeHandler就可以了。
-- **AspectJ 是编译时增强，**基于字节码操作(Bytecode Manipulation)。如果我们的切面比较少，那么两者性能差异不大。但是，当切面太多的话，最好选择 AspectJ ，它比Spring AOP 快很多。
-- JDK Proxy动态代理：目标类需要实现接口，但是代理对象不需要实现接口，是目标类的兄弟类，通过反射来实现的。
-  - 最小化依赖关系，减少依赖意味着简化开发和维护;
-- CGLIB：是目标类的子类，通过字节码增强技术来实现的。不需要实现接口。
-
-IOC，AOP的知识。
-
-- IOC：控制反转，是一种**设计思想**，就是 **将原本在程序中手动创建对象的控制权，交由Spring框架来管理。** 若要使用某个对象，只需要从 Spring 容器中获取需要使用的对象，不关心对象的创建过程。将对象之间的相互依赖关系交给 IoC 容器来管理，并由 IoC 容器完成对象的注入。这样可以很大程度上简化应用的开发，把应用从复杂的依赖关系中解放出来。 **IoC 容器就像是一个工厂一样，当我们需要创建一个对象的时候，只需要配置好配置文件/注解即可，完全不用考虑对象是如何被创建出来的。** 在实际项目中一个 Service 类可能有几百甚至上千个类作为它的底层，假如我们需要实例化这个 Service，你可能要每次都要搞清这个 Service 所有底层类的构造函数，这可能会把人逼疯。如果利用 IoC 的话，你只需要配置好，然后在需要的地方引用就行了，这大大增加了项目的可维护性且降低了开发难度。
+- IOC：控制反转，是一种**设计思想**，就是 **将原本在程序中手动创建对象的控制权，交由Spring框架来管理**，不关心对象的创建过程。将对象之间的相互依赖关系交给 IoC 容器来管理】。 **IoC 容器就像是一个工厂一样，当我们需要创建一个对象的时候，只需要配置好配置文件/注解即可，完全不用考虑对象是如何被创建出来的。** 在实际项目中一个 Service 类可能有几百甚至上千个类作为它的底层，假如我们需要实例化这个 Service，你可能要每次都要搞清这个 Service 所有底层类的构造函数，这可能会把人逼疯。如果利用 IoC 的话，你只需要配置好，然后在需要的地方引用就行了，这大大增加了项目的可维护性且降低了开发难度。
 - AOP：能够将那些与业务无关，**却为业务模块所共同调用的逻辑或责任（例如事务处理、日志管理、权限控制等）封装起来**，便于**减少系统的重复代码**，**降低模块间的耦合度**，并**有利于未来的可拓展性和可维护性。**指 Spring 创建对象的过程中，将对象依赖属性（简单值，集合，对象）通过配置设值给该对象。
 
 从最简单的结构（也就是基于XML的BeanFadctory，只有缺省构造函数的Bean）开始，一步步扩展到setter注入， 有参数的构造函数，注解，auto-scan ， 用cglib实现AOP，用java动态代理实现AOP。
@@ -2502,7 +2475,7 @@ beanDefinitionMap 存放beanID 和 BeanDefinition的映射,然后使可以获取
 
 3. 为了方便使用，使用SimpleMetadataReader对ASM进行了封装。
 
-4. 接着，实现scanner，把标记为@Component 的类，创建ScannedGenericBeanDefinition 来表示扫描出来的类的信息，
+4. 接着，实现scanner，把标记为@Component 的类，创建ScannedGenericBeanDefinition 来表示扫描出来的类的信息。
 
 5. 但是问题是我们没有BeanID，所以需要生成BeanID，我们定义了AnnotationBeanNameGenerator用来生成beanID。综上：我们使用ClassPathBeanDefinitionScanner从包下获得BeanDefinition，使用ScannedGenericBeanDefinition获得元数据。
 
@@ -2517,6 +2490,17 @@ beanDefinitionMap 存放beanID 和 BeanDefinition的映射,然后使可以获取
 到现在实现了IOC，最后来实现AOP。
 
 我们首先来看下，我们为什么需要AOP，因为我们想要使用xml或注解的形式来表示业务代码和日志代码的关系。
+
+反射机制是Java语言提供的一种基础功能，赋予程序在运行时自省的能力。通过反射我们可以直接操作类或者对象，比如获取某个对象的类定义，获取类声明的属性和方法，调用方法或者构造对象，甚至可以运行时修改类定义。
+
+**AspectJ 是编译时增强，**基于字节码操作(Bytecode Manipulation)。如果我们的切面比较少，那么两者性能差异不大。但是，当切面太多的话，最好选择 AspectJ ，它比Spring AOP 快很多。
+
+<img src="../images/posts/java/image-20200326111644506.png" alt="image-20200326111644506" style="zoom:33%;" />
+
+- 静态代理：让调用者和实现者进行解耦。目标类和代理对象都要实现某个接口，代理对象只能为一个目标对象服务。如果为所有对象创建代理，用**静态代理要写很多类**，如果接口变化，那么代理类和目标对象都要变化。如果使用动态代理，就不用写一个代理类，相同的逻辑用同一个invokeHandler就可以了。
+- 动态代理
+  - JDK Proxy动态代理（反射）：目标类需要实现接口，但是代理对象不需要实现接口，是目标类的兄弟类，通过反射来实现的。最小化依赖关系，减少依赖意味着简化开发和维护;
+  - CGLIB：是目标类的子类，通过字节码增强技术来实现的。不需要实现接口。 
 
 那么我们怎么实现AOP呢，在编译期来做显然是不可能的，因为我们需要业务源码，所以只能在运行期来做，但是我们知道的是java字节码一旦装入方法区就无法修改。所以我们必须漫天过海，动态生成一个类，一个方法是继承原来的类(CGLIB)，另外一个是使用动态代理，定义一个接口，然后实现其兄弟类。我们必须掌握AOP定义出来的一些术语：
 
@@ -2570,18 +2554,7 @@ Spring是如何解决循环依赖的？
 1. 构造器的循环依赖（无法处理，因为对象都还在创建中）
 2. field 属性的循环依赖setter方式（因为都是先初始化了实例再填充字段值的）
 
-对于构造器的循环依赖，Spring 是无法解决的，只能抛出 BeanCurrentlyInCreationException 异常表示循环依赖，所以下面我们分析的都是基于 field 属性的循环依赖。 在博客 [【死磕 Spring】----- IOC 之开启 bean 的加载](http://cmsblogs.com/?p=2806) 中提到，Spring 只解决 scope 为 singleton 的循环依赖，对于scope 为 prototype 的 bean Spring 无法解决，直接抛出 BeanCurrentlyInCreationException 异常。为什么 Spring 不处理 prototype bean，其实如果理解 Spring 是如何解决 singleton bean 的循环依赖就明白了。这里先卖一个关子，我们先来关注 Spring 是如何解决 singleton bean 的循环依赖的。
-
-```java
-  /** Cache of singleton objects: bean name --> bean instance */
-    private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>(256);
-
-    /** Cache of singleton factories: bean name --> ObjectFactory */
-    private final Map<String, ObjectFactory<?>> singletonFactories = new HashMap<>(16);
-
-    /** Cache of early singleton objects: bean name --> bean instance */
-    private final Map<String, Object> earlySingletonObjects = new HashMap<>(16);
-```
+对于构造器的循环依赖，Spring 是无法解决的，只能抛出 BeanCurrentlyInCreationException 异常表示循环依赖，所以下面我们分析的都是基于 field 属性的循环依赖。 在博客 [【死磕 Spring】----- IOC 之开启 bean 的加载](http://cmsblogs.com/?p=2806) 中提到，Spring 只解决 scope 为 singleton 的循环依赖。
 
 意义如下：
 
@@ -2600,7 +2573,7 @@ Spring 在创建 bean 的时候并不是等它完全完成，而是在创建过�
 
 # 3. mysql
 
-[关系型 mysql](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-interview/mysql-interview.md)
+[参考](https://mp.weixin.qq.com/s/qHJiTjpvDikFcdl9SRL97Q)
 
 ## 3.1 三大范式
 
@@ -2608,7 +2581,7 @@ Spring 在创建 bean 的时候并不是等它完全完成，而是在创建过�
 
 ## 3.2 索引
 
-<img src="../images/posts/mysql/image-20200317143417271.png" alt="image-20200317143417271" style="zoom: 67%;" />
+![image-20200816142924106](../images/posts/java/image-20200816142924106.png)
 
 ### 3.2.1 概述
 
@@ -2618,98 +2591,65 @@ Spring 在创建 bean 的时候并不是等它完全完成，而是在创建过�
 2. 索引需要占物理空间，除了数据表占数据空间之外，每一个索引还要占一定的物理空间，如果要建立聚簇索 引，那么需要的空间就会更大。
 3. 创建索引和维护索引要耗费时间，这种时间随着数据量的增加而增加。
 
-**说一下使用索引的注意事项**
-
-1. 避免 where 子句中对字段施加函数，这会造成无法命中索引。
-
-2. 在使用InnoDB时使用与业务无关的自增主键作为主键，即使用逻辑主键，而不要使用业务主键。
-
-3. 将打算加索引的列设置为 NOT NULL ，否则将导致引擎放弃使用索引而进行全表扫描
-
-4. 删除长期未使用的索引，不用的索引的存在会造成不必要的性能损耗 MySQL 5.7 可以通过查询 sys 库的
-
-   chema_unused_indexes 视图来查询哪些索引从未被使用
-
-5. 在使用 limit offset 查询缓慢时，可以借助索引来提高性能
-
 ### 3.2.2 索引的分类
 
-B+树索引分为聚集索引（叶子节点存放一整行信息）和辅助索引。
+**每一个索引在 InnoDB 里面对应一棵 B+ 树**。根据叶子节点的内容，索引类型分为主键索引和非主键索引。
 
-- 聚集索引：按照每张表的主键构造一颗B+树，叶子节点（数据页）存放整张表的行记录数据；是唯一的；逻辑上是连续的；主键的查找很快；
-- 辅助索引（非聚集索引）：叶子节点不包含行记录的全部数据（先找到主键，在找到对应行）；
+- 主键索引的叶子节点存的是整行数据。在 InnoDB 里，主键索引也被称为聚簇索引 (clustered index)。
+- 非主键索引的叶子节点内容是主键的值。在InnoDB里，非主键索引也被称为二级索引 (secondary index)。MyISAM也是非聚簇索引(叶子节点存放记录的物理地址)。先根据索引查主键，在根据主键查数据，过程被称为回表，基于非主键索引的查询需要多扫描一棵索引树。
 
-<img src="../images/posts/mysql/image-20200514213934499.png" alt="image-20200514213934499" style="zoom:25%;" />
+mysql会默认根据主键建立索引，会生成一颗B+树。  如果我们用其他字段建立索引的话，也会生成一颗B+树，为了节省空间，其他索引不用包含所有字段的信息，再去主键索引表中去查即可。
 
 B+树索引的使用：
 
-- 联合索引：对表上的多个列进行索引。
-- 覆盖索引：从辅助索引中可以得到查询的记录，不需要去查询聚集索引。不包含整行信息，小于聚集索引，减少I/O操作。
-- 前缀索引：前缀索引只适用于字符串类型的数据。前缀索引是对文本的前几个字符创建索引，相比普通索引建立的数据更小， 因为只取前几个字符。
+- 覆盖索引：避免回表。辅助索引中包含了查询的需求，不需要去查询聚集索引。减少搜索次数。
+- 联合索引：对表上的多个列进行索引，减少回表次数。最左前缀原则。
+  - 需要考虑索引复用能力。如果通过调整顺序，可以少维护一个索引，那么这个顺序往往就是需要优先考虑采用的。
+  - 空间。name 字段是比 age 字段大的 ，那我就建议你创建一个(name,age) 的联合索引和一个 (age) 的单字段 索引。
+- 最左前缀索引：可以是联合索引的最左 N 个字段，也可以是字符串索引的最左 M 个字符。
 - 倒排索引（全文检索）：
 
-### 3.3.3 什么时候建索引
+### 3.3.3 建索引的原则
 
 1. 较频繁的作为查询条件的字段应该创建索引；
 2. 唯一性太差的字段不适合单独创建索引，即使该字段频繁作为查询条件；（如男女）
 3. 更新非常频繁的字段不适合创建索引。
 4. 不为null的字段
 
-### 3.3.4 索引优化
 
-- 独立的列
-- 多列索引：在需要使用多个列作为条件进行查询时，使用多列索引比使用多个单列索引性能更好。
-- 索引列的顺序：让选择性最强的索引列放在前面。
-- 前缀索引：对于 BLOB、TEXT 和 VARCHAR 类型的列
-  - 在对一个比较长的字符串进行索引时,可以仅索引开始的一部分字符,这样可以大大的节约索引空间,从而提高索引效率.但是这样也会降低索引的选择性.
-- 联合索引：
-  - 一般我们都是有`对多个列进行索引`的需求的,因为查询的需求多种多样.这个时候我们可以选择建立多个独立的索引或者建立一个联合索引.大多数时候都是联合索引更加合适一些.
-- 覆盖索引：索引包含所有需要查询的字段的值。
+
+1.最左前缀匹配原则，非常重要的原则，mysql会一直向右匹配直到遇到范围查询(>、<、between、like)就停止匹配，比如a = 1 and b = 2 and c > 3 and d = 4 如果建立(a,b,c,d)顺序的索引，d是用不到索引的，如果建立(a,b,d,c)的索引则都可以用到，a,b,d的顺序可以任意调整。
+
+2.=和in可以乱序，比如a = 1 and b = 2 and c = 3 建立(a,b,c)索引可以任意顺序，mysql的查询优化器会帮你优化成索引可以识别的形式。
+
+3.尽量选择区分度高的列作为索引，区分度的公式是count(distinct col)/count(*)，表示字段不重复的比例，比例越大我们扫描的记录数越少，唯一键的区分度是1，而一些状态、性别字段可能在大数据面前区分度就是0，那可能有人会问，这个比例有什么经验值吗？使用场景不同，这个值也很难确定，一般需要join的字段我们都要求是0.1以上，即平均1条扫描10条记录。
+
+4.索引列不能参与计算，保持列“干净”，比如from_unixtime(create_time) = ’2014-05-29’就不能使用到索引，原因很简单，b+树中存的都是数据表中的字段值，但进行检索时，需要把所有元素都应用函数才能比较，显然成本太大。所以语句应该写成create_time = unix_timestamp(’2014-05-29’)。
+
+5.尽量的扩展索引，不要新建索引。比如表中已经有a的索引，现在要加(a,b)的索引，那么只需要修改原来的索引即可。
 
 ### 3.3.5 索引数据结构：B+树
 
 - 数据库的索引为什么采用树？因为查询效率高，而且有序。
+- 为什么不用哈希算法？存在hash冲突的问题，且没办法做数据高效范围查找,只可以做等值查询。
+- 为什么没有采用二叉查找树？极端情况下会退化为线性链表，失衡。
 
-- 为什么不用哈希算法？没办法做数据高效范围查找
-
-- 为什么没有采用二叉查找树？因为二叉查找树的高度可能过高。
+索引不止存在内存中，还要写到磁盘上。访问一行数据需要logn次磁盘IO，所以采用n叉树(n差不多是1200)来降低树的高度。一般来讲，3层的b+树可以表示上百万的数据，时间复杂度为常量级别。
 
 - 为什么不采用红黑树？数量过大，二叉树总是不太低,每次IO只能查询到一个节点上的数（一个节点只存一个）
-
 - 为什么不采用AVL
 
   - 优点：不错的查找性能（O（logn）），不存在极端的低效查找的情况。可以实现范围查找、数据排序。
   - 缺点：每一个树节点只存储了一个数据，我们一次磁盘 IO 只能取出来一个节点上的数据加载到内存里。
-
+- 为什么不采用B-树？B-树是多路平衡查找树，k阶（k取决于磁盘页大小）B-树。和二叉查找树相比，B-树在查找中的次数并不比BST少，但是内存中的比较耗时相比IO要快。
 - <img src="../images/posts/java/image-20200312173737650.png" alt="image-20200312173737650" style="zoom:50%;" />
-
 - Mysql为什么采用B+树？![image-20200312173110222](../images/posts/java/image-20200312173110222.png)
-
-  - **底层数据结构是B+树：**
-    在数据结构中，我们最为常见的搜索结构就是**二叉搜索树和AVL树**(高度平衡的二叉搜索树，为了提高二叉搜索树的效率，减少树的平均搜索长度)了。然而，无论二叉搜索树还是AVL树，当数据量比较大时，都会由于树的深度过大而造成I/O读写过于频繁，进而导致查询效率低下，因此对于索引而言，多叉树结构成为不二选择。特别地，B-Tree的各种操作能使B树保持较低的高度，从而保证高效的查找效率。
+  
 
   - B树和B+树区别
-
-    - B 树一个节点里存的是数据，而 B+树存储的是索引（地址），所以 B 树里一个节点存不了很多个数据，但是 B+树一个节点能存很多索引，B+树叶子节点存所有的数据。
-  - B+树的叶子节点是数据阶段用了一个链表串联起来，便于范围查找。
-    
-  - **使用B+树的原因：**
-
-    1.有k个子树的中间节点包含有k个元素（B树中是k-1个元素），每个元素不保存数据，只用来索引，所有数据都保存在叶子节点。
-
-    2.所有的叶子结点中包含了全部元素的信息，及指向含这些元素记录的指针，且叶子结点本身依关键字的大小自小而大顺序链接。
-
-    3.所有的中间节点元素都同时存在于子节点，在子节点元素中是最大（或最小）元素。
-
-  - 比B-树更加高效
-
-  - B+树的中间节点没有卫星数据，同样大小的磁盘页可以容纳更多的节点元素。数据量相同时，B+更加高效。
-
-  - B+树的查找**性能稳定**，因为每次都需要查找到叶子节点。
-
-  - B-树的范围查询，比较繁琐。B+树的范围查询只需要遍历链表即可。
-
-- 如何达到索引开销和性能的平衡，用了一个表去举例。（方法就是，根据情境看经常做的查询是哪些，然后依次是什么查询条件，保证最高效索引的同时，也保证索引不失效，避免无效开销，并且根据show profile和explain功能进行对比分析）
+  - B+树中间节点包含更多的信息，叶子节点包含所有元素的信息。叶子节点形成一个有序链表，便于范围查找。
+    - B 树一个节点里存的是数据，而 B+树存储的是索引。同样大小的磁盘页B+树可以存放更多的节点元素。一旦放到内层节点，磁盘块的数据项会大幅度下降，导致树增高。当数据项等于1时将会退化成线性表。IO次数取决于b+数的高度h，假设当前数据表的数据为N，每个磁盘块的数据项的数量是m，则有h=㏒(m+1)N，当数据量N一定的情况下，m越大，h越小；而m = 磁盘块的大小 / 数据项的大小，磁盘块的大小也就是一个数据页的大小，是固定的，如果数据项占的空间越小，数据项的数量越多，树的高度越低。
+    - B树查找性能不稳定，B+树查找性能稳定，必须查找到根节点。
 
 ## 3.3 数据库的锁
 
@@ -2729,23 +2669,18 @@ MVCC 的概念，时间戳版本号，快照版本与当前版本，适用场景
 - 隔离性（Isolation）：多个事务并发执行时，一个事务的执行不应影响其他事务的执行
 - 持久性（Durability）：一个事务一旦提交，对数据库的修改应该永久保存
 
-| 隔离级别                     | 脏读（Dirty Read） | 不可重复读（NonRepeatable Read） | 幻读（Phantom Read） |
-| :--------------------------- | :----------------- | :------------------------------- | :------------------- |
-| 未提交读（Read uncommitted） | 可能               | 可能                             | 可能                 |
-| 已提交读（Read committed）   | 不可能             | 可能                             | 可能                 |
-| 可重复读（Repeatable read）  | 不可能             | 不可能                           | 可能                 |
-| 串行化（Serializable ）      | 不可能             | 不可能                           | 不可能               |
+隔离级别，依次解决的问题（脏读、不可重复读、幻读）
 
-- 隔离级别，依次解决的问题（脏读、不可重复读、幻读）
-
-  - 读未提交（READ UNCOMMITTED）：在这种事务隔离级别下，一个事务可以读到另外一个事务未提交的数据。最低级别的隔离，通常又称为**dirty read**
-  - 读已提交（READ COMMITTED）：在一个事务中只允许对其它事务已经 commit 的记录可见，该隔离级别不能避免**不可重复读**问题（两次读的结果不同）；可以解决脏读。
-  - 可重复读（REPEATABLE READ）：在一个事务开始后，其他事务对数据库的修改（**插入仍然可见**）在本事务中不可见，直到本事务 commit 或 rollback。有**幻读**的问题(其他事务的插入是可见的)。
-  - 序列化（SERIALIZABLE）：最高级别的隔离，只允许事务串行执行。解决幻读。
+- 读未提交（READ UNCOMMITTED）：事务1第二次读数据的时候，读到了事务2未提交的数据。通常又称为**dirty read**。
+- 读已提交（READ COMMITTED）：在一个事务中只允许对其它事务已经 commit 的记录可见，该隔离级别不能避免**不可重复读**问题（两次读的结果不同）；
+- 可重复读（REPEATABLE READ）：在一个事务开始后，其他事务对数据库的修改（**插入仍然可见**）在本事务中不可见，直到本事务 commit 或 rollback。有**幻读**的问题(其他事务的插入是可见的)，两次查询到的个数不用。
+- 串行化（SERIALIZABLE）：最高级别的隔离，只允许事务串行执行。解决幻读。
 
 MVCC(多版本并发控制)，是一种不利用锁机制实现的隔离级别，主要实现了在保证数据的一致性的前提下，实现了读写的并行。mvcc的原理是给每一数据的更新都有一个版本号。当写事务正在进行时，此时过来一个读事务，读事务会首先生成一个版本号，即该事物想读取哪一个版本的数据。然后，写事务更新数据，读事务读取之前相应版本的数据，而保证了不出现不可重复读和脏读的情况。
 
 ## 3.5 优化（explain，慢查询，show profile）
+
+**rows是核心指标，绝大部分rows小的语句执行一定很快。**
 
 0.先运行看看是否真的很慢，注意设置SQL_NO_CACHE。
 
@@ -2762,32 +2697,41 @@ MVCC(多版本并发控制)，是一种不利用锁机制实现的隔离级别�
 6.观察结果，不符合预期继续从0分析。
 
 - 为查询缓存优化你的查询
-
 - 通过explain查询和分析SQL的执行计划
 
   - 知道MySQL是如何处理你的SQL语句的，索引主键被如何利用的，你的数据表是如何被搜索和排序的。
-
 - 当只要一行数据时使用 LIMIT 1
-
 - 为搜索字段建索引：索引并不一定就是给主键或是唯一的字段。如果在你的表中，有某个字段你总要会经常用来做搜索，那么，请为其建立索引吧。
-
 - 在Join表的时候使用相当类型的例，并将其索引。如果你的应用程序有很多 JOIN 查询，你应该确认两个表中Join的字段是被建过索引的。这样，MySQL内部会启动为你优化Join的SQL语句的机制。
-
 - 不要使用select *
-
 - 永远为每张表设置一个ID：我们应该为数据库里的每张表都设置一个ID做为其主键，而且最好的是一个INT型的（推荐使用UNSIGNED），并设置上自动增加的AUTO_INCREMENT标志。
-
 - 使用 ENUM 而不是 VARCHAR
+
+explain可以列出执行计划。
+
+- select_type: SELECT 查询的类型.simple是最常见的，表示此查询不包含 UNION 查询或子查询。
+- type: 全表扫描还是索引扫描。
+- rows: 显示此查询一共扫描了多少行. 这个是一个估计值.
 
 
 ## 3.6 引擎对比（MyISAM，InnoDB）
 
-|        | MyISAM         | InnoDB           |
-| ------ | -------------- | ---------------- |
-| 锁粒度 | 表级锁         | 行级锁和表级锁   |
-| 事务   | 不支持         | 支持，还支持MVCC |
-| 外键   | 不支持         | 支持             |
-| 场景   | 读写分离时常用 | 写               |
+|        | MyISAM         | InnoDB                                 |
+| ------ | -------------- | -------------------------------------- |
+| 锁粒度 | 表级锁         | 行级锁和表级锁                         |
+| 事务   | 不支持         | 支持事务和崩溃后的安全恢复，还支持MVCC |
+| 外键   | 不支持         | 支持                                   |
+| 场景   | 读写分离时常用 | 写                                     |
+
+innodb采用聚集索引（索引和数据放在一块），Myisam是非聚集索引，数据和索引进行分开存放。都是B+树。
+
+<img src="../images/posts/java/640.jpeg" alt="img" style="zoom:50%;" />
+
+Innodb 创建表后生成的文件有：frm:创建表的语句；idb:表里面的数据+索引文件；
+
+Myisam 创建表后生成的文件有：frm:创建表的语句;MYD:表里面的数据文件（myisam data）;MYI:表里面的索引文件（myisam index）。
+
+
 
 ## 3.7 数据库中的连接
 
@@ -2799,7 +2743,7 @@ MVCC(多版本并发控制)，是一种不利用锁机制实现的隔离级别�
 返回匹配的记录，以及表 B 多余的记录，这叫右连接（right join）。
 返回匹配的记录，以及表 A 和表 B 各自的多余记录，这叫全连接（full join）。
 
-## 3.8 sql语法（join，union，子查询，having，group by
+## 3.8 sql语法（join，union，子查询，having，group by）
 
 - char：定长数组
 - varchar：变长数组，最大是n
@@ -2817,10 +2761,6 @@ MVCC(多版本并发控制)，是一种不利用锁机制实现的隔离级别�
 前面讲数据查询语句，不管怎么查询，其实并不影响原生的表结构，即原来的表是按照什么逻辑写的数据，查询结果里的数据也是基于这种逻辑，只是筛选了局部数据而已。但数据聚合与连接就不一样了，**聚合会在纵向上改变原生表结构，连接则在横向上拓展了表结构。**
 
 前面讲数据查询语句，不管怎么查询，其实并不影响原生的表结构，即原来的表是按照什么逻辑写的数据，查询结果里的数据也是基于这种逻辑，只是筛选了局部数据而已。但数据聚合与连接就不一样了，**聚合会在纵向上改变原生表结构，连接则在横向上拓展了表结构。**
-
-**数据连接：** 对两张表或者N张表做连接，是SQL里面非常重要的一个内容，也是最容易埋坑的一个坑点。尽管数据连接只涉及四种方式，七个语法，但其仍然是绝大部分SQL脚本的核心内容。**选择合适的可靠的数据连接方式，应该是一个SQL运动员的基本功了。**
-
-<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/image-20200625234218801.png" alt="image-20200625234218801" style="zoom: 33%;" />
 
 # 4. 计算机网络
 
@@ -2840,7 +2780,7 @@ socket是对TCP/IP的抽象， 网络编程肯定绕不过socket，绝大部分�
 
 [基础网络概念](https://gitee.com/haojunsheng/NetworkLearning/blob/master/vbird.md)
 
-好多面试官会问7层：应用层，表示层，会话层，传输层，网络层，数据链路层和物理层。但其实工程上的实现都是5层。
+应用层，表示层，会话层，传输层，网络层，数据链路层和物理层。
 
 URL到网络显示的过程：
 
@@ -2853,21 +2793,23 @@ URL到网络显示的过程：
 - 服务器处理请求
 - 服务器返回html，浏览器渲染html
 
-- 链接层：
-  - 需要了解MAC (Media Access Control) ，是网卡的编号。
-  - MTU (Maximum Transmission Unit, 最大传输单位)
-- 网络层IP@@@@@![image-20200308230126610](../images/posts/network/image-20200308230126610.png)
-  - 网络层的字段及其含义
-  - 主要关注：TTL(**存活时间**,最大值255，每经过一个路由器，减一，减为0时，丢弃), Protocol, 来源地址与目标地址
-  - ARP (Address Resolution Protocol, 网络地址解析) ,根据IP地址获取物理地址
-  - NAT(Network Address Translation，网络地址转换),公网和内网IP地址之间进行转换
-  - DHCP(动态主机配置协议)
+链接层：
+
+- 需要了解MAC (Media Access Control) ，是网卡的编号。
+- MTU (Maximum Transmission Unit, 最大传输单位)
+
+网络层IP@@@@@![image-20200308230126610](../images/posts/network/image-20200308230126610.png)
+- 主要关注：TTL(**存活时间**,最大值255，每经过一个路由器，减一，减为0时，丢弃), Protocol, 来源地址与目标地址
+- ARP (Address Resolution Protocol, 网络地址解析) ,根据IP地址获取物理地址
+- NAT(Network Address Translation，网络地址转换),公网和内网IP地址之间进行转换
+- DHCP(动态主机配置协议)
+
 - [传输层TCP/UDP](https://gitee.com/haojunsheng/NetworkLearning/blob/master/TCP.md)
   - <img src="../images/posts/network/image-20200315212757727.png" alt="image-20200315212757727" style="zoom:50%;" />
   - TCP的表头结构<img src="../images/posts/network/image-20200308224612504.png" alt="image-20200308224612504" style="zoom:50%;" />
     - **Sequence Number**是包的序号，**用来解决网络包乱序（reordering）问题。**
     - **Acknowledgement Number**就是ACK——用于确认收到，**用来解决不丢包的问题**。
-    - **Window又叫Advertised-Window**，也就是著名的滑动窗口（Sliding Window），**用于解决流控的**。
+    - **Window又叫Advertised-Window**，著名的滑动窗口（Sliding Window），**用于解决流控的**。**流量控制是为了控制发送方发送速率，保证接收方来得及接收。**接收方发送的确认报文中的窗口字段可以用来控制发送方窗口大小，从而影响发送方的发送速率。将窗口字段设置为 0，则发送方不能发送数据。
     - **TCP Flag** (Code)，也就是包的类型，**主要是用于操控TCP的状态机的**。
       - URG(Urgent)：若为 1 则代表该封包为紧急封包， 接收端应该要紧急处理。
       - ACK(Acknowledge)：若为 1 代表这个封包为响应封包。
@@ -2877,45 +2819,40 @@ URL到网络显示的过程：
       - FIN(Finish)：若为 1 ，表示传送结束，所以通知对方数据传毕， 是否同意断线，只是发送者还在等待对方的响应而已。
     - Checksum(确认检查码) 当数据要由发送端送出前，会进行一个检验的动作，并将该动作的检验值标注在这个字段上； 而接收者收到这个封包之后，会再次的对封包进行验证，并且比对原发送的 Checksum 值是否相符，如果相符就接受，若不符就会假设该封包已经损毁，进而要求对方重新发送此封包！
   - 三次握手
-    - <img src="../images/posts/network/image-20200309115922635.png" alt="image-20200309115922635" style="zoom: 33%;" />
+
+    <img src="../images/posts/network/image-20200309115922635.png" alt="image-20200309115922635" style="zoom: 33%;" />
+
     - 主要是要初始化Sequence Number 的初始值。通信的双方要互相通知对方自己的初始化的Sequence Number（缩写为ISN：Inital Sequence Number）——所以叫SYN，全称Synchronize Sequence Numbers。
     - SYN Flood攻击，利用建连接时SYN超时。server端接到了clien发的SYN后回了SYN-ACK后client掉线了，server端没有收到client回来的ACK，那么，这个连接处于一个中间状态，即没成功，也没失败。于是，server端如果在一定时间内没有收到的TCP会重发SYN-ACK。然后服务端会重试，63s后TCP才会断开链接。
   - 四次挥手的详细细节
     - 因为TCP是全双工的，所以发送方和接收方都需要Fin和Ack。
     - **ISN的初始化**,Maximum Segment Lifetime,包的最大存活时间。
-    - 在TCP的状态图中，从TIME_WAIT状态到CLOSED状态，有一个超时设置，这个超时设置是 2*MSL。TIME-WAIT=2*MSL。TIME_WAIT确保有足够的时间让对端收到了ACK，如果被动关闭的那方没有收到Ack，就会触发被动端重发Fin，一来一去正好2个MSL(2个来回)；
-  - TCP的重传机制：SeqNum和Ack是以字节数为单位，所以ack的时候，不能跳着确认，只能确认最大的连续收到的包
-    - 超时重传机制
-    - 快速重传机制：如果发送方连续收到3次相同的ack，就重传。
+    - 在TCP的状态图中，从TIME_WAIT状态到CLOSED状态，有一个超时设置，这个超时设置是 2*MSL。TIME-WAIT=2*MSL。TIME_WAIT确保有足够的时间让对端收到了ACK，如果被动关闭的那方没有收到Ack，就会触发被动端重发Fin，一来一去正好2个MSL(2个来回,Maximum Segment Lifetime)；
+  - TCP的重传机制：SeqNum和Ack是以字节数为单位，所以ack的时候，不能跳着确认，只能确认最大的连续收到的包。超时重传机制;快速重传机制。
   - TCP滑动窗口机制
     - TCP必需要知道网络实际的数据处理带宽或是数据处理速度，这样才不会引起网络拥塞，导致丢包。
     - \#1已收到ack确认的数据。#2发还没收到ack的。#3在窗口中还没有发出的（接收方还有空间）。#4窗口以外的数据（接收方没空间）
-    - 需要依赖于连接的发送端和接收端，其并不知道网络中间发生了什么。
-  - 拥塞处理机制：
+    - 需要依赖于连接的发送端和接收端，其并不知道网络中间发生了什么
+    
+  - 拥塞处理机制，探测到网络阻塞的时候，降低发送速率
     - 慢热启动算法 – Slow Start
       - 连接建好的开始先初始化cwnd = 1
       - 每当收到一个ACK，cwnd++; 呈线性上升
-      - 每当过了一个RTT，cwnd = cwnd*2; 呈指数让升
+      - 每当过了一个RTT（一个数据包从发出去到回来的时间），cwnd = cwnd*2; 呈指数让升
     - 拥塞避免
       - 当cwnd >= ssthresh时，就会进入“拥塞避免算法”
       - 收到一个ACK时，cwnd = cwnd + 1/cwnd
       - 当每过一个RTT时，cwnd = cwnd + 1
-    - 快速重传，快速恢复
+    - 快速重传：如果发送方连续收到3次相同的ack，就重传。
+    - 快速恢复
   - UDP：无连接，尽力而为，面向报文，无各种控制，一对一，一对多，多对多，首部大小及结构，校验和计算过程（求和，溢出回卷，反码，校验等）
+
 - [应用层](https://haojunsheng.github.io/2019/12/http-learning/)
   - http演化过程
     - 0.9/1.0
-      - 0.9只支持get
-      - 1.0加了版本号，header，状态码，Content-Type
+      - 0.9只支持get；1.0加了版本号，header，状态码，Content-Type
     - 1.1，解决性能
-      - keepalive，复用TCP，长连接
-      - pipeline网络传输
-      - 支持 Chunked Responses，也称作**服务端Push模型**，客户端就不能断连接，直到收到服务端的EOF标识
-      -  cache control 机制
-      - 增加了HOST字段，一台服务器部署多个应用
-      - 加入了 `OPTIONS` 方法，用于跨域
-      - 支持TLS
-      - 支持传统的短链接，重用TCP的的长链接模型，服务端push的模型，WebSocket模型。
+      - keepalive，复用TCP，长连接；pipeline网络传输；支持 Chunked Responses，也称作**服务端Push模型**，客户端就不能断连接，直到收到服务端的EOF标识；cache control 机制；增加了HOST字段，一台服务器部署多个应用；加入了 `OPTIONS` 方法，用于跨域；支持TLS；支持传统的短链接，重用TCP的的长链接模型，服务端push的模型，WebSocket模型。
     - 2：二进制直接传输，一个TCP可以并发HTTP
     
   - cookie和Session
@@ -2964,6 +2901,7 @@ URL到网络显示的过程：
   - 浏览器生成随机的对称密钥，用服务器的公钥加密
   - 服务器用私钥进行解密，得到对称密钥
   - 进行通信
+
 - 对称加密的密钥如何在不可信的网络中分发，结合非对称，生成对称密钥后，通过非对称密钥来传输。但是客户端向服务端发公钥的时候，可能被拦截替换，存在中间人攻击。引入了PKI体系，有一个根CA，会把个人信息和公钥进行hash，然后把hash的结果进行签名，这样就无法篡改了。
 
 ## 4.2 Unix网络编程 @@@@@
@@ -3043,11 +2981,7 @@ HTTP也有其缺点，这是与其优点相对应的。首先是**有用信息�
 
 说了用户态和系统态之后，那么什么是系统调用呢？
 
-我们运行的程序基本都是运行在用户态，如果我们调用操作系统提供的系统态级别的子功能咋办呢？那就需要系统调用了！
-
-也就是说在我们运行的用户程序中，凡是与系统态级别的资源有关的操作，都必须通过系统调用方式向操作系统提出服务请求，并由操作系统代为完成。
-
-线程创建完全在用户空间中完成，并且一个应用程序中的多个用户级线程被映射到一些内核级线程上，相当于是一种折中方案。
+我们运行的程序基本都是运行在用户态，如果我们调用操作系统提供的系统态级别的子功能咋办呢？也就是说在我们运行的用户程序中，凡是与系统态级别的资源有关的操作，都必须通过系统调用方式向操作系统提出服务请求，并由操作系统代为完成。线程创建完全在用户空间中完成，并且一个应用程序中的多个用户级线程被映射到一些内核级线程上，相当于是一种折中方案。
 
 这些系统调用按功能大致可分为如下几类：
 
@@ -3061,9 +2995,15 @@ fork，子进程返回0，父进程返回子进程ID。
 
 ### 5.1.1 进程和线程
 
-进程是资源分配（内存空间、I/O 设备）的基本单位，拥有自己的地址空间。进程控制块 (Process Control Block, PCB) 描述进程的基本信息和运行状态，所谓的创建进程和撤销进程，都是指对 PCB 的操作。
+进程是资源分配的基本单位，拥有自己的地址空间。进程控制块 (Process Control Block, PCB) 描述进程的基本信息和运行状态，所谓的创建进程和撤销进程，都是指对 PCB 的操作。
 
 线程是独立调度的基本单位。一个进程中可以有多个线程，它们共享进程资源。
+
+进程的创建和切换需要内核的帮助，开销比较大，线程切换时只需保存和设置少量寄存器内容，开销很小。
+
+进程通信需要IPC，线程共享同一个地址空间，可以通过直接读写同一进程中的数据进行通信。
+
+一个线程死掉，整个进程死掉。
 
 ### 5.1.2 进程通信IPC
 
@@ -3072,10 +3012,10 @@ fork，子进程返回0，父进程返回子进程ID。
 - 进程同步：控制多个进程按一定顺序执行，对资源使用的协调。
 - 进程通信：进程间传输信息。
 
-进程通信是一种手段，而进程同步是一种目的。也可以说，为了能够达到进程同步的目的，需要让进程进行通信，传输一些进程同步所需要的信息。
+进程通信是一种手段，而进程同步是一种目的。
 
-1. **管道/匿名管道(Pipes)** ：用于具有亲缘关系的父子进程间或者兄弟进程之间的通信。
-2. **有名管道(Names Pipes)** : 匿名管道由于没有名字，只能用于亲缘关系的进程间通信。为了克服这个缺点，提出了有名管道。有名管道严格遵循**先进先出(first in first out)**。有名管道以磁盘文件的方式存在，可以实现本机任意两个进程通信。
+1. **管道/匿名管道(Pipes)** ：管道是内核缓冲区，用于具有亲缘关系的父子进程间或者兄弟进程之间的通信。半双工，数据单向流动，
+2. **有名管道(Names Pipes)** : 匿名管道只能用于亲缘关系的进程间通信。为了克服这个缺点，提出了有名管道。有名管道严格遵循**先进先出(first in first out)**。有名管道以磁盘文件的方式存在，可以实现本机任意两个进程通信。
 3. **信号(Signal)** ：信号是一种比较复杂的通信方式，用于通知接收进程某个事件已经发生；
 4. **消息队列(Message Queuing)** ：消息队列是消息的链表,具有特定的格式,存放在内存中并由消息队列标识符标识。管道和消息队列的通信数据都是先进先出的原则。与管道（无名管道：只存在于内存中的文件；命名管道：存在于实际的磁盘介质或者文件系统）不同的是消息队列存放在内核中，只有在内核重启(即，操作系统重启)或者显示地删除一个消息队列时，该消息队列才会被真正的删除。消息队列可以实现消息的随机查询,消息不一定要以先进先出的次序读取,也可以按消息的类型读取.比FIFO更有优势。**消息队列克服了信号承载信息量少，管道只能承载无格式字 节流以及缓冲区大小受限等缺。**
 5. **信号量(Semaphores)** ：信号量是一个计数器，用于多进程对共享数据的访问，信号量的意图在于进程间同步。这种通信方式主要用于解决与同步相关的问题并避免竞争条件。
@@ -3088,7 +3028,6 @@ fork，子进程返回0，父进程返回子进程ID。
 
 1. **互斥量(Mutex)**：采用互斥对象机制，只有拥有互斥对象的线程才有访问公共资源的权限。因为互斥对象只有一个，所以可以保证公共资源不会被多个线程同时访问。比如 Java 中的 synchronized 关键词和各种 Lock 都是这种机制。
 2. **信号量(Semphares)** ：它允许同一时刻多个线程访问同一资源，但是需要控制同一时刻访问此资源的最大线程数量。 P 和 V 操作
-3. **事件(Event)** :Wait/Notify：通过通知操作的方式来保持多线程同步，还可以方便的实现多线程优先级的比较操作。
 
 
 
@@ -3282,6 +3221,43 @@ Consumer()
 
 ## 5.2 linux常用命令
 
+[常见命令](https://mp.weixin.qq.com/s?__biz=MzI4Njg5MDA5NA==&mid=2247485440&idx=1&sn=85b40c173d66b62b3e870dd0e095c72c&chksm=ebd74901dca0c01727ed2cff30acc5d39948eda5bf4252f1d96526f951591f69edcfccbbad29&token=2078489135&lang=zh_CN###rd)
+
+### 5.2.1 文件系统相关
+
+- 查看日志相关：
+
+cat,tail,vim，head，more。
+
+文件过大，需要配合grep使用。
+
+- 查进程和端口
+
+ps -ef和ps aux。如ps aux | grep java.
+
+一般不要使用kill -9,最好使用kill -15。
+
+查端口：netstat -lntup。查询端口的详细信息：lsof -i:4000。
+
+
+
+查看挂载的文件系统：cat /proc/filesystems
+查看目录的使用情况：df -h //-h表示以G为单位查看
+查看文件或目录大小：df -sh
+查看文件夹的磁盘使用情况：du -a // -a表示全部目录下每个文件所占的磁盘空间
+
+显示所有文件及目录 (ls内定将文件名或目录名称开头为"."的视为隐藏档，不会列出)：ls -a
+除文件名称外，亦将文件型态、权限、拥有者、文件大小等资讯详细列出：ls -l
+将文件以相反次序显示(原定依英文字母次序)；ls -r
+将文件依建立时间之先后次序列出：ls -t
+递归列出文件夹中的文件：ls -R
+
+显示文件的前n行或后n行：head -n; tail -n;
+修改文件拥有者：chown -R path
+统计文件字数：wc -c file // -l表示行数; -w表示单词数; -c表示字符数
+
+
+
 df:显示磁盘空间的使用情况，h 以方便阅读的方式显示信息。
 
 du:是对文件和目录磁盘使用的空间的查看。
@@ -3370,6 +3346,10 @@ top 命令输出的第一部分：显示系统的概括。
 
 # 6. 设计模式
 
+- 创建型模式，是对对象创建过程的各种问题和解决方案的总结，包括各种工厂模式(Factory、Abstract Factory)、单例模式(Singleton)、构建器模式(Builder)、原型模式(ProtoType )。 
+- 结构型模式，是针对软件设计结构的总结，关注于类、对象继承、组合方式的实践经验。常见的结构型模式，包括桥接模式(Bridge)、适配器模式(Adapter)、装饰者模式(Decorator)、代理模式(Proxy)、组合模式(Composite)、外观模式(Facade)、享元模式(Flyweight)等。
+- 行为型模式，是从类或对象之间交互、职责划分等角度总结的模式。比较常见的行为型模式有策略模式(Strategy)、解释器模式(Interpreter)、命令模式(Command)、观察者模式(Observer)、迭代器模式(Iterator)、模板方法模式(Template Method)、访问者模式(Visitor)。
+
 ## 五大原则
 
 S: 单一职责原则:一个类，最好只做一件事，只有一个引起它的变化。
@@ -3383,6 +3363,9 @@ I：接口隔离原则：
 D：依赖倒置原则（AOP）
 
 ## 6.1 单例模式 @@@@@
+
+- 对于频繁使用的对象，可以省略创建对象所花费的时间，这对于那些重量级对象而言，是非常可观的一笔系统 开销;
+-  由于 new 操作的次数减少，因而对系统内存的使用频率也会降低，这将减轻 GC 压力，缩短 GC 停顿时间。
 
 [单例模式的实现方法](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/seven-singleton-pattern.md)
 
@@ -3966,6 +3949,38 @@ KLedger基于Fabric进行二次开发。参与国密算法的改造，修改并�
 多机部署，容器编排，增删组织 ，增删节点，证书管理，节点监测，节点迁移，日志处理等功能。
 
 增删组织可以说一下，这个挺复杂的，当时做的时候，基本没有什么参考资料，根据加入通道的逻辑，自己来实现的。先生成证书，然后获取配置区块，把配置区块改为json，然后添加新组织的信息，在转回pb格式，计算差值，进行签名，发送交易请求。
+
+
+
+## 9.6 阿里IP商业化
+
+工程提效：为降低学习成本，要从Webx切换到Pandora Boot;为降低改造成本，采取新人新办法;为降低机器成本，通过改造Aone脚本来让新旧两个应用运行在同一台机器上，并且提供一键接入的能力。降低了50%的机器资源。
+
+IP探针是阿里巴巴IP地理库的一个重要组成部分，可以主动的探测全球的IP地址，为数据和算法同学做聚类分析，模型训练提供了重要的数据支撑。
+
+可以用来做内容投放，黑灰产打击等。
+
+不买的原因是：权威的whois无法满足业务需求。第三方的服务存在自主可控的风险。
+
+理论依据是：终端的上一跳往往是城市的中心点。
+
+面临的挑战：traceroute比较耗时，每天的任务高达数百万。避免进程调用浪费资源。
+
+ODPS-》OSS（弹内/弹外）-》阿里云redis集群 -》无状态探针。
+
+为什么用redis不用消息队列？
+
+消息队列的场景是异步处理削峰填谷，还有就是解耦系统。我们的系统属于快产快消类型的，不存在高峰期和低谷期。
+
+此外，探针是无状态的，所以可扩展性比较好。
+
+为了提高阿里巴巴IP库的质量，使用Traceroute来主动探测IP。面临着每天几百万的IP任务，通过优化 Traceroute把单任务的时间降为原来的1/2，并设计了分布式调度系统来均衡分发任务。项目架构分为前端 展示，监控，ODPS/OSS转换，任务调度，任务处理几大模块。参与了分布式调度系统的设计和实现，该系 统支持任务的优先级，能够感知agent的运行状况，并且及时的把任务进行重新分配，此外，还考虑到系统 的可扩展性，包括国外IP的处理，whois服务的接入。
+
+
+
+不关注消息的取出顺序，lpop一次只可以取出一个值，spop可以取出多个值。
+
+
 
 # 10. 其他
 
