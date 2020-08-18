@@ -13,53 +13,44 @@ tag: 面试
       * [1.1 java基础](#11-java基础)
          * [1.1.1 面向对象](#111-面向对象)
             * [1.1.1.1 什么是面向对象？@@@](#1111-什么是面向对象)
-            * [1.1.1.2 平台无关性](#1112-平台无关性)
-            * [1.1.1.3 值传递](#1113-值传递)
-            * [1.1.1.4 重载（Overloading）和重写（Overriding）@@@](#1114-重载overloading和重写overriding)
-            * [1.1.1.5 组合和继承 @@@](#1115-组合和继承-)
-            * [1.1.1.6成员变量和方法的作用域](#1116成员变量和方法的作用域)
-            * [1.1.1.7 抽象类和接口](#1117-抽象类和接口)
-            * [1.1.1.8 内部类](#1118-内部类)
-            * [1.1.1.9  Object类相关题目 @@@@@](#1119--object类相关题目-)
+            * [1.1.1.2 值传递](#1112-值传递)
+            * [1.1.1.3 组合和继承 @@@](#1113-组合和继承-)
+            * [1.1.1.4 成员变量和方法的作用域](#1114-成员变量和方法的作用域)
+            * [1.1.1.5 抽象类和接口](#1115-抽象类和接口)
+            * [1.1.1.6 内部类](#1116-内部类)
+            * [1.1.1.7  Object类相关题目 @@@@@](#1117--object类相关题目-)
          * [1.1.2 基础知识](#112-基础知识)
-            * [1.1.2.1 基本数据类型](#1121-基本数据类型)
-            * [1.1.2.2 自动拆装箱 @@@](#1122-自动拆装箱-)
+            * [1.1.2.1 自动拆装箱 @@@](#1121-自动拆装箱-)
             * [1.1.2.3 String相关 @@@@@](#1123-string相关-)
             * [1.1.2.4 java关键字](#1124-java关键字)
                * [1.1.2.4.1 transient](#11241-transient)
                * [1.1.2.4.2 staic @@@@](#11242-staic-)
                * [1.1.2.4.3 final  vs finally vs finalize @@@@](#11243-final--vs-finally-vs-finalize-)
-               * [1.1.2.4.4 equals和hashcode的协同工作 @@@@](#11244-equals和hashcode的协同工作-)
-               * [1.1.2.4.5 swith](#11245-swith)
-               * [1.1.2.4.6 java中的深拷贝和浅拷贝](#11246-java中的深拷贝和浅拷贝)
+               * [1.1.2.4.4 swith](#11244-swith)
+               * [1.1.2.4.5 java中的深拷贝和浅拷贝](#11245-java中的深拷贝和浅拷贝)
          * [1.1.3 集合@@@@@](#113-集合)
             * [1.1.3.1 常用集合类的使用](#1131-常用集合类的使用)
-            * [1.1.3.6 fail-fast vs fail-safe @@@@@](#1136-fail-fast-vs-fail-safe-)
-            * [1.1.3.8 set vs list](#1138-set-vs-list)
-            * [1.1.3.9 set如何保证元素不重复 @@@@@](#1139-set如何保证元素不重复-)
-            * [1.1.3.10 Collections和Arrays区别](#11310-collections和arrays区别)
-         * [1.1.5 IO](#115-io)
-            * [1.1.5.1 I/O模型 @@@@@](#1151-io模型-)
-            * [1.1.5.2 BIO NIO AIO区别 @@@@@](#1152-bio-nio-aio区别-)
-         * [1.1.6 反射](#116-反射)
-         * [1.1.7 序列化](#117-序列化)
-         * [1.1.8 注解](#118-注解)
-         * [1.1.9 异常@@@](#119-异常)
+            * [1.1.3.2 Collections和Arrays区别](#1132-collections和arrays区别)
+         * [1.1.4 IO  BIO NIO AIO @@@](#114-io--bio-nio-aio-)
+         * [1.1.5 序列化](#115-序列化)
+         * [1.1.6 异常@@@](#116-异常)
       * [1.2 并发编程 @@@@@](#12-并发编程-)
          * [1.2.1 线程 @@@@@](#121-线程-)
-            * [1.2.2.1 线程的实现](#1221-线程的实现)
-            * [1.2.2.2 线程和进程的区别@@@@@](#1222-线程和进程的区别)
-            * [1.2.2.3 线程的状态](#1223-线程的状态)
-            * [1.2.2.5 线程调度](#1225-线程调度)
-            * [1.2.2.6 创建线程的多种方式](#1226-创建线程的多种方式)
-            * [1.1.2.8 ThreadLocal](#1128-threadlocal)
-            * [1.1.2.9 线程池 @@@@@](#1129-线程池-)
+            * [1.2.2.1 线程的状态](#1221-线程的状态)
+            * [1.2.2.2 线程调度](#1222-线程调度)
+            * [1.2.2.3 创建线程的多种方式](#1223-创建线程的多种方式)
+            * [1.1.2.4 ThreadLocal](#1124-threadlocal)
+            * [1.1.2.5 线程池 @@@@@](#1125-线程池-)
             * [1.1.2.10 锁 @@@@@](#11210-锁-)
             * [1.1.2.11 synchronized @@@@@](#11211-synchronized-)
             * [1.1.2.12 volatile](#11212-volatile)
             * [1.1.2.13 写代码来解决生产者消费者问题（实现线程的顺序打印）@@@@@](#11213-写代码来解决生产者消费者问题实现线程的顺序打印)
             * [1.1.2.14 AQS @@@@@](#11214-aqs-)
-            * [1.1.2.15 并发包](#11215-并发包)
+         * [1.2.2 并发包juc](#122-并发包juc)
+            * [1.2.2.1 ConcurrentHashMap](#1221-concurrenthashmap)
+            * [1.2.2.2 LinkedBlockingQueue](#1222-linkedblockingqueue)
+            * [1.2.2.3 ConcurrentLinkedQueue](#1223-concurrentlinkedqueue)
+            * [1.2.2.4 Atomic 原子类](#1224-atomic-原子类)
       * [1.3 jvm @@@@@](#13-jvm-)
          * [1.3.1 jvm内存结构 @@@@@](#131-jvm内存结构-)
          * [1.3.2 Java内存模型 @@@@@](#132-java内存模型-)
@@ -70,23 +61,25 @@ tag: 面试
       * [1.4 Java EE @@@@@](#14-java-ee-)
          * [1.4.1 Servlet](#141-servlet)
          * [1.4.2 Cookie和Session有什么区别？](#142-cookie和session有什么区别)
+         * [1.4.3 转发和重定向](#143-转发和重定向)
          * [1.4.3 Spring](#143-spring)
             * [1.4.3.1 Spring Bean 的作用域](#1431-spring-bean-的作用域)
             * [1.4.3.2 Spring 事务中的隔离级别](#1432-spring-事务中的隔离级别)
+            * [1.4.3.3 Spring事务传播行为](#1433-spring事务传播行为)
          * [1.4.5 Mybatis](#145-mybatis)
          * [1.4.6 redis](#146-redis)
             * [1.4.6.1 为什么要用 redis](#1461-为什么要用-redis)
-            * [1.4.6.2 为什么要用 redis 而不用 map/guava 做缓存?](#1462-为什么要用-redis-而不用-mapguava-做缓存)
-            * [1.4.6.3 redis 和 memcached 的区别](#1463-redis-和-memcached-的区别)
-            * [1.4.6.4 redis 常见数据结构以及使用场景分析](#1464-redis-常见数据结构以及使用场景分析)
-            * [1.4.6.5 redis 设置过期时间](#1465-redis-设置过期时间)
-            * [1.4.6.6 redis 内存淘汰机制](#1466-redis-内存淘汰机制)
-            * [1.4.6.7 redis 持久化机制](#1467-redis-持久化机制)
-            * [1.4.6.8 redis 事务](#1468-redis-事务)
-            * [1.4.6.9 缓存雪崩和缓存穿透问题解决方案](#1469-缓存雪崩和缓存穿透问题解决方案)
-            * [1.4.6.10 如何解决 Redis 的并发竞争 Key 问题](#14610-如何解决-redis-的并发竞争-key-问题)
-            * [1.4.6.11 如何保证缓存与数据库双写时的数据一致性](#14611-如何保证缓存与数据库双写时的数据一致性)
-            * [1.4.6.12 <strong>使用过Redis分布式锁么，它是什么回事？</strong>](#14612-使用过redis分布式锁么它是什么回事)
+            * [1.4.6.2 redis 和 memcached 的区别](#1462-redis-和-memcached-的区别)
+            * [1.4.6.3 redis 常见数据结构以及使用场景分析](#1463-redis-常见数据结构以及使用场景分析)
+            * [1.4.6.4 redis 设置过期时间](#1464-redis-设置过期时间)
+            * [1.4.6.5 redis 内存淘汰机制](#1465-redis-内存淘汰机制)
+            * [1.4.6.6 redis 持久化机制](#1466-redis-持久化机制)
+            * [1.4.6.7 redis 事务](#1467-redis-事务)
+            * [1.4.6.8 缓存雪崩和缓存穿透问题解决方案](#1468-缓存雪崩和缓存穿透问题解决方案)
+            * [1.4.6.9 如何解决 Redis 的并发竞争 Key 问题](#1469-如何解决-redis-的并发竞争-key-问题)
+            * [1.4.6.10 如何保证缓存与数据库双写时的数据一致性](#14610-如何保证缓存与数据库双写时的数据一致性)
+            * [1.4.6.11 <strong>使用过Redis分布式锁么，它是什么回事？</strong>](#14611-使用过redis分布式锁么它是什么回事)
+            * [1.4.6.12 其他](#14612-其他)
          * [1.4.7 nginx](#147-nginx)
          * [1.4.8 消息队列](#148-消息队列)
             * [1.4.8.1 介绍一下消息队列MQ的应用场景/使用消息队列的好处](#1481-介绍一下消息队列mq的应用场景使用消息队列的好处)
@@ -101,15 +94,14 @@ tag: 面试
       * [3.2 索引](#32-索引)
          * [3.2.1 概述](#321-概述)
          * [3.2.2 索引的分类](#322-索引的分类)
-         * [3.3.3 什么时候建索引](#333-什么时候建索引)
-         * [3.3.4 索引优化](#334-索引优化)
+         * [3.3.3 建索引的原则](#333-建索引的原则)
          * [3.3.5 索引数据结构：B 树](#335-索引数据结构b树)
       * [3.3 数据库的锁](#33-数据库的锁)
       * [3.4 事务的ACID](#34-事务的acid)
       * [3.5 优化（explain，慢查询，show profile）](#35-优化explain慢查询show-profile)
       * [3.6 引擎对比（MyISAM，InnoDB）](#36-引擎对比myisaminnodb)
       * [3.7 数据库中的连接](#37-数据库中的连接)
-      * [3.8 sql语法（join，union，子查询，having，group by](#38-sql语法joinunion子查询havinggroup-by)
+      * [3.8 sql语法（join，union，子查询，having，group by）](#38-sql语法joinunion子查询havinggroup-by)
    * [4. 计算机网络](#4-计算机网络)
       * [4.1 基础网络概念@@@@@](#41-基础网络概念)
       * [4.2 Unix网络编程 @@@@@](#42-unix网络编程-)
@@ -125,6 +117,7 @@ tag: 面试
          * [5.1.7 内存管理](#517-内存管理)
          * [5.1.8 特殊进程](#518-特殊进程)
       * [5.2 linux常用命令](#52-linux常用命令)
+         * [5.2.1 文件系统相关](#521-文件系统相关)
             * [5.2.2.4 压缩文件的操作命令](#5224-压缩文件的操作命令)
             * [5.2.2.5 grep、sed 以及 awk 命令](#5225-grepsed-以及-awk-命令)
             * [5.2.2.6 监测程序命令：ps、top](#5226-监测程序命令pstop)
@@ -150,6 +143,7 @@ tag: 面试
       * [9.3 跨链](#93-跨链)
       * [9.4 国密改造](#94-国密改造)
       * [9.5 KLedger-Auto](#95-kledger-auto)
+      * [9.6 阿里IP商业化](#96-阿里ip商业化)
    * [10. 其他](#10-其他)
       * [10.1 海量数据问题](#101-海量数据问题)
          * [10.1.1 分而治之](#1011-分而治之)
@@ -159,7 +153,7 @@ tag: 面试
          * [10.1.5 Bloom Filter](#1015-bloom-filter)
       * [10.2 计算机网络相关问题](#102-计算机网络相关问题)
 
-<!-- Added by: anapodoton, at: 2020年 8月 1日 星期六 10时45分09秒 CST -->
+<!-- Added by: anapodoton, at: 2020年 8月19日 星期三 00时41分53秒 CST -->
 
 <!--te-->
 
@@ -175,9 +169,11 @@ tag: 面试
 - 什么是面向对象:对象是属性和行为的集合体。把问题分解成一个一个步骤，每个步骤都是对象及对象的行为调用，这样的编程思想就是面向对象。
 -  二者区别：面向过程以过程为中心，关注问题的解决过程顺序，而面向对象以对象为中心，将问题分解并抽象成多个对象，关注对象及对象之间的关系。
 - 三大基本特征：
-  - [封装](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#21-%E5%B0%81%E8%A3%85)：所谓封装，也就是把客观事物封装成抽象的类，并且类可以把自己的数据和方法只让可信的类或者对象操作，对不可信的进行信息隐藏。封装是面向对象的特征之一，是对象和类概念的主要特性。通过这种方式，对象对内部数据提供了不同级别的保护，以防止程序中无关的部分意外的改变或错误的使用了对象的私有部分。
-  - [继承](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#22-%E7%BB%A7%E6%89%BF):继承是指这样一种能力：它可以使用现有类的所有功能，并在无需重新编写原来的类的情况下对这些功能进行扩展。继承的过程，就是从一般到特殊的过程。要实现继承，可以通过“继承”（Inheritance）和“组合”（Composition）来实现。
-  - [多态](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#23-%E5%A4%9A%E6%80%81):所谓多态就是指一个类实例的相同方法在不同情形有不同表现形式。多态机制使具有不同内部结构的对象可以共享相同的外部接口。这意味着，虽然针对不同对象的具体操作不同，但通过一个公共的类，它们（那些操作）可以通过相同的方式予以调用。最常见的多态就是将子类传入父类参数中，运行时调用父类方法时通过传入的子类决定具体的内部结构或行为。
+  - [封装](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#21-%E5%B0%81%E8%A3%85)：把客观事物封装成抽象的类，并且类可以把自己的数据和方法只让可信的类或者对象操作。封装是面向对象的特征之一，是对象和类概念的主要特性。通过这种方式，对象对内部数据提供了不同级别的保护，以防止程序中无关的部分意外的改变或错误的使用了对象的私有部分。
+  - [继承](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#22-%E7%BB%A7%E6%89%BF):可以使用现有类的所有功能，并在无需重新编写原来的类的情况下对这些功能进行扩展。继承的过程，就是从一般到特殊的过程。
+  - [多态](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#23-%E5%A4%9A%E6%80%81):所谓多态就是指一个类实例的相同方法在不同情形有不同表现形式。多态机制使具有不同内部结构的对象可以共享相同的外部接口。这意味着，虽然针对不同对象的具体操作不同，但通过一个公共的类，它们可以通过相同的方式予以调用。最常见的多态就是将子类传入父类参数中，运行时调用父类方法时通过传入的子类决定具体的内部结构或行为。
+    - 重载（Overloading）：签名不一样，编译期。函数的返回值不同不可以构成重载。
+    - 重写（Overriding）：子类重写父类，签名一样，运行期。
 - [五大原则](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#3-%E4%BA%94%E5%A4%A7%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99):
   - S：单一职责原则:一个类，最好只做一件事，只有一个引起它的变化。
   - O：开放封闭原则:软件实体应该是可扩展的，而不可修改的。也就是，对扩展开放，对修改封闭的。
@@ -192,14 +188,7 @@ Java中只有值传递。
 - 形参和实参：前者是用于接收实参内容的参数，后者是真正传递的内容。
 - 值传递和引用传递的区别在于：**传递后会不会影响实参的值**，前者会创建副本，后者不会创建副本。
 
-#### 1.1.1.4 重载（Overloading）和重写（Overriding）@@@
-
-[重载与重写](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-keyword/deep-analyze-override-overloading.md)
-
-- 重载：签名不一样，编译期。函数的返回值不同不可以构成重载。
-- 重写：子类重写父类，签名一样，运行期。
-
-#### 1.1.1.5 组合和继承 @@@
+#### 1.1.1.3 组合和继承 @@@
 
 [组合和继承](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/combination-vs-inheritance.md)
 
@@ -214,7 +203,7 @@ Java中只有值传递。
 | 缺点：整体类不能自动获得和局部类同样的接口                   | 优点：子类能自动继承父类的接口                               |
 | 缺点：创建整体类的对象时，需要创建所有局部类的对象           | 优点：创建子类的对象时，无须创建父类的对象                   |
 
-#### 1.1.1.6成员变量和方法的作用域
+#### 1.1.1.4 成员变量和方法的作用域
 
 [参考](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/object-oriented-detail.md#4-%E5%9B%9B%E7%A7%8D%E8%AE%BF%E9%97%AE%E7%BA%A7%E5%88%AB)
 
@@ -223,9 +212,9 @@ Java中只有值传递。
 - default:表明该成员变量或者方法只有自己和其位于同一个包的内可见,其他包内的类不能访问,即便是它的子类。
 - private:表明该成员变量或者方法是私有的,只有当前类对其具有访问权限,除此之外其他类或者对象都没有访问权限.子类也没有访问权限。
 
-值得注意的是，外部类的作用域只有public和default。因为如果是private，那么别的类就无法对其进行实例化，毫无意义。对于protected，**类B继承类A的前提又是类B可以访问到类A**。继承的核心是继承属性和方法，在说一句，只有可以访问到，才有继承。所以类的修饰符只有public和default。
+外部类的作用域只有public和default。因为如果是private，那么别的类就无法对其进行实例化，毫无意义。对于protected，**类B继承类A的前提又是类B可以访问到类A**。继承的核心是继承属性和方法，在说一句，只有可以访问到，才有继承。所以类的修饰符只有public和default。
 
-#### 1.1.1.7 抽象类和接口
+#### 1.1.1.5 抽象类和接口
 
 [抽象类和接口](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/abstract-class-vs-interface.md)
 
@@ -239,7 +228,7 @@ Java中只有值传递。
 1. 如果要创建不带任何方法定义和成员变量的基类，那么就应该选择接口而不是抽象类。
 2. 如果知道某个类应该是基类，那么第一个选择的应该是让它成为一个接口，只有在必须要有方法定义和成员变量的时候，才应该选择抽象类。因为抽象类中允许存在一个或多个被具体实现的方法，只要方法没有被全部实现该类就仍是抽象类。
 
-#### 1.1.1.8 内部类
+#### 1.1.1.6 内部类
 
 [内部类](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/object-oriented/inner-class.md)
 
@@ -250,7 +239,7 @@ Java中只有值传递。
 - 内部类并没有令人迷惑的“is-a”关系，他就是一个独立的实体。
 - 内部类提供了更好的封装，除了该外围类，其他类都不能访问。
 
-#### 1.1.1.9  Object类相关题目 @@@@@
+#### 1.1.1.7  Object类相关题目 @@@@@
 
 ```java
 public final native Class<?> getClass()//native方法，用于返回当前运行时对象的Class对象，使用了 final关键字修饰，故不允许子类重写。
@@ -290,20 +279,7 @@ protected void finalize() throws Throwable { }//实例被垃圾回收器回收�
 
 ### 1.1.2 基础知识
 
-#### 1.1.2.1 基本数据类型
-
-[7种基本类型](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-basic-data-type.md)
-
-- byte：8位有符号的以二进制补码表示的整数
-- short：16 位有符号的以二进制补码表示的整数
-- int：32位有符号的以二进制补码表示的整数
-- long：64 位有符号的以二进制补码表示的整数
-- float：单精度、32位、符合IEEE 754标准的浮点数
-- double：双精度、64 位、符合IEEE 754标准的浮点数
-- char：单个16位Unicode字符
-- boolean：true|false
-
-#### 1.1.2.2 自动拆装箱 @@@
+#### 1.1.2.1 自动拆装箱 @@@
 
 [自动拆箱与装箱](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-auto-unbox.md)
 
@@ -333,22 +309,18 @@ protected void finalize() throws Throwable { }//实例被垃圾回收器回收�
 
 - [JDK 6和JDK 7中substring的原理及区别](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#71-substring-%E7%9A%84%E4%BD%9C%E7%94%A8)
 
-  - jdk6仍然指向原字符串，会造成内存泄露的问题;
-  - jdk7会创建一个新的字符串;
-
+  - jdk6仍然指向原字符串，会造成内存泄露的问题;jdk7会创建一个新的字符串;
+  
 - [String对“+”的重载](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#158-string%E5%AF%B9%E7%9A%84%E9%87%8D%E8%BD%BD)、字符串拼接的几种方式和区别
   - +是唯一重载的运算符。使用了StringBuilder以及他的append、toString两个方法。
   - "a"+"b"是在编译期完成的，s1+"b"和s1+s2是在运行期完成的。
 
-- [String.valueOf和Integer.toString的区别](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#159-stringvalueof%E5%92%8Cintegertostring%E7%9A%84%E5%8C%BA%E5%88%AB)
-- `String.valueOf(i)`也是调用`Integer.toString(i)`来实现的
-  
 - 字符串池、常量池（运行时常量池、Class常量池）、intern
 
   - class常量池是编译期生成的，"a"+"b"这种会在编译期直接优化为"ab"，但是s1+s2在运行期才知道
   - 运行时常量池:class常量池在运行期的，不同的jdk位置也不同
   - 字符串常量池：1.6之后，只存储字面量的引用
-  - intern：如果已经有缓存的字符串，就会返回缓存里的实例，否则将其缓存起来。使用intern后直接指向字面量所在的位置。1.6之前是在永久代中的。7放到了堆中。
+  - intern：如果已经有缓存的字符串，就会返回缓存里的实例，否则将其缓存起来。使用intern后直接指向字面量所在的位置。1.6之前是在永久代中的。7放到了堆中,jdk8本地内存元数据区。
 
 - 直接使用双引号声明出来的 String 对象会直接存储在常量池中。
 
@@ -356,13 +328,15 @@ protected void finalize() throws Throwable { }//实例被垃圾回收器回收�
 String str1 = "abcd";//先检查字符串常量池中有没有"abcd"，如果字符串常量池中没有，则创建一个，然后 str1 指向字符串常量池中的对象，如果有，则直接将 str1 指向"abcd""；
 String str2 = new String("abcd");//堆中创建一个新的对象
 String str3 = new String("abcd");//堆中创建一个新的对象
+String str4 = new String("abcd").intern();
 System.out.println(str1==str2);//false
 System.out.println(str2==str3);//false
+System.out.ptrintln(str1==str4);//true
 ```
 
 第一种方式是在常量池中拿对象；第二种方式是直接在堆内存空间创建一个新的对象。
 
- String s1 = new String("abc");创建几个对象。将创建 1 或 2 个字符串。如果池中已存在字符串常量“abc”，则只会在堆空间创建一个字符串常量“abc”。如果池中没有字符串常量“abc”，那么它将首先在池中创建，然后在堆空间中创建，因此将创建总共 2 个字符串对象。
+ String s1 = new String("abc");创建几个对象。将创建 1 或 2 个。如果池中已存在字符串常量“abc”，则只会在堆空间创建一个字符串常量“abc”。如果池中没有字符串常量“abc”，那么它将首先在池中创建，然后在堆空间中创建，因此将创建总共 2 个字符串对象。
 
 - [String、StringBuffer、StringBuilder区别](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#114-%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8stringstringbufferstringbuilder)
 
@@ -388,6 +362,8 @@ System.out.println(str2==str3);//false
 3）被transient关键字修饰的变量不再能被序列化，一个静态变量不管是否被transient修饰，均不能被序列化。
 
 **序列化的本质是序列化对象，而不是类相关的信息。**  
+
+Arraylist会用到。
 
 ##### 1.1.2.4.2 staic @@@@
 
@@ -427,7 +403,7 @@ finalize是基础类java.lang.Object的一个方法，它的设计目的是保�
 
 整型：直接比较整数的值; 字符：比较ASCII码 ;字符串：equals和hashcode
 
-##### 1.1.2.4.6 java中的深拷贝和浅拷贝
+##### 1.1.2.4.5 java中的深拷贝和浅拷贝
 
 一个拷贝引用，另外一个重新分配空间。
 
@@ -444,7 +420,7 @@ finalize是基础类java.lang.Object的一个方法，它的设计目的是保�
 
 - 数组：数组是**将数字和对象联系起来**，它**保存明确的对象**。（固定大小）
 
-- Collection：保存单一的元 素（可扩容）
+- Collection：保存单一的元素（可扩容）
   - [list](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#41-arraylist-vs-linkedlist-vs-vector):有序可重复的Collection，**有序指的是放入顺序，而不是大小顺序**。
 
     |          | [ArrayList](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#1-arraylist) | [LinkedList](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#2-linkedlist) | [Vector](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#3-vector) | [Stack](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/list-detail.md#stack) | SynchronizedList                                   |
@@ -472,34 +448,45 @@ Arrays.copyOf()调用了System.arraycopy()方法。
   | 加载因子 | 0.75    |
   | 扩容     | 2倍     |
 
-  HashSet基于HashMap。
+  List,Set都是继承自Collection接口。都是用来存储一组相同类型的元素的。
 
-  1. HashSet怎么保证添加元素不重复？
-
-     HashSet内部使用HashMap的key存储元素，以此来保证元素不重复；当你把对象加入`HashSet`时，HashSet会先计算对象的`hashcode`值来判断对象加入的位置，同时也会与其他加入的对象的hashcode值作比较，如果没有相符的hashcode，HashSet会假设对象没有重复出现。但是如果发现有相同hashcode值的对象，这时会调用`equals()`方法来检查hashcode相等的对象是否真的相同。如果两者相同，HashSet就不会让加入操作成功。
-
-  2. HashSet是有序的吗？
-
-     HashSet是无序的，因为HashMap的key是无序的；
-
-  3. HashSet是否允许null元素？
-
-     HashSet中允许有一个null元素，因为HashMap允许key为null；
-
-  4. HashSet是非线程安全的；
-
+  |      | List | Set  |
+| ---- | ---- | ---- |
+  | 顺序 | 有   | 无   |
+| 重复 | 可以 | 不可 |
+  
+HashSet基于HashMap。
+  
+1. Set怎么保证添加元素不重复？
+  
+   在Java的Set体系中，根据实现方式不同主要分为两大类。HashSet和TreeSet。
+  
+   1）TreeSet 是二叉树实现的,Treeset中的数据是自动排好序的，不允许放入null值 
+  
+   2）HashSet 是哈希表实现的,HashSet中的数据是无序的，可以放入null，但只能放入一个null。
+  
+   HashSet内部使用HashMap的key存储元素，以此来保证元素不重复；当你把对象加入`HashSet`时，HashSet会先计算对象的`hashcode`值来判断对象加入的位置，同时也会与其他加入的对象的hashcode值作比较，如果没有相符的hashcode，HashSet会假设对象没有重复出现。但是如果发现有相同hashcode值的对象，这时会调用`equals()`方法来检查hashcode相等的对象是否真的相同。如果两者相同，HashSet就不会让加入操作成功。
+  
+   TreeSet的底层是TreeMap的keySet()，而TreeMap是基于红黑树实现的，红黑树是一种平衡二叉查找树，它能保证任何一个节点的左右子树的高度差不会超过较矮的那棵的一倍。
+  
+   TreeMap是按key排序的，元素在插入TreeSet时compareTo()方法要被调用，所以TreeSet中的元素要实现Comparable接口。TreeSet作为一种Set，它不允许出现重复元素。TreeSet是用compareTo()来判断重复元素的。
+  
+2. HashSet是有序的吗？HashSet是无序的，因为Hashset的值保存在hashmap的key中。
+  
+3. HashSet是否允许null元素？HashSet中允许有一个null元素，因为HashMap允许key为null；
+  
+4. HashSet是非线程安全的；
+  
   5. HashSet是没有get()方法的；
-
+  
   6. LinkedHashSet的底层使用LinkedHashMap存储元素。
-
-  7. LinkedHashSet是有序的吗？怎么个有序法？
-
-     LinkedHashSet是有序的，它是按照插入的顺序排序的。
-
-  9. TreeSet是有序的；
-
-  10. TreeSet是非线程安全的；
-
+  
+  7. LinkedHashSet是有序的吗？怎么个有序法？LinkedHashSet是有序的，它是按照插入的顺序排序的。
+  
+  8. TreeSet是有序的；
+  
+  9. TreeSet是非线程安全的；
+  
   
 
 <img src="../images/posts/java/image-20200315203832949.png" alt="image-20200315203832949" style="zoom: 33%;" />
@@ -509,7 +496,7 @@ Arrays.copyOf()调用了System.arraycopy()方法。
   |            | HashMap                                                      | HashTable              | LinkedHashMap      | ConcurrentHashMap                                            |
   | ---------- | ------------------------------------------------------------ | ---------------------- | ------------------ | ------------------------------------------------------------ |
   | null       | 键和值都可以为null                                           | 键和值都不允许为null   |                    | 键和值都不允许为null                                         |
-  | 线程安全   | 否                                                           | 是                     |                    | 是                                                           |
+  | 线程安全   | 否                                                           | 是                     | 否                 | 是                                                           |
   | 插入顺序   | 否(插入的时候算hash)                                         |                        | 插入有序，双向链表 |                                                              |
   | 加锁粒度   |                                                              | 整个table只加了一把锁  |                    | jdk7分段来加锁，Segment默认是16，2的幂；jdk8取消了Segment分段锁，使用synchronized 和 CAS，只锁定当前链表或红黑二叉树的首节点 |
   | 继承关系   | AbstractMap                                                  | Dictionary             |                    |                                                              |
@@ -521,7 +508,7 @@ Arrays.copyOf()调用了System.arraycopy()方法。
 
 Segment继承了ReentrantLock，所以它就是一种可重入锁（ReentrantLock)。
 
-（1）HashMap是一种散列表，采用（数组(也称为桶) + 链表 + 红黑树）的存储结构；
+（1）HashMap是一种散列表，采用（数组+ 链表 + 红黑树）的存储结构；
 
 （2）HashMap的默认初始容量为16（1<<4），默认装载因子为0.75f，容量总是2的n次方；取余(%)操作中如果除数是2的幂次则等价于与其 除数减一的与(&)操作(也就是说 hash%length==hash&(length-1)的前提是 length 是2的 n 次方;
 
@@ -538,8 +525,7 @@ Segment继承了ReentrantLock，所以它就是一种可重入锁（ReentrantLoc
 **HashMap的核心概念**：
 
 - size 和 capacity:
-  - Size记录了Map中KV对的个数,数组的长度(实际的长度)
-  - capacity:最多装的元素
+  - size记录了Map中KV对的个数,数组的长度(实际的长度)；capacity:最多装的元素
 - loadFactor和
   - loadFactor：用来衡量HashMap满的程度，loadFactor的默认值为0.75f
     - 0.75有一个好处，那就是**0.75正好是3/4，而capacity又是2的幂。所以，两个数的乘积都是整数**。
@@ -554,36 +540,7 @@ Segment继承了ReentrantLock，所以它就是一种可重入锁（ReentrantLoc
 - hash ：该方法主要是将Object转换成一个整型。
 - indexFor ：该方法主要是将hash生成的整型转换成链表数组中的下标。
 
-#### 1.1.3.2 set vs list
-
-List,Set都是继承自Collection接口。都是用来存储一组相同类型的元素的。
-
-List特点：元素有放入顺序，元素可重复 。 有顺序，即先放入的元素排在前面。
-
-Set特点：元素无放入顺序，元素不可重复。 无顺序，即先放入的元素不一定排在前面。 不可重复，即相同元素在set中只会保留一份。所以，有些场景下，set可以用来去重。 
-
-|      | List | Set  |
-| ---- | ---- | ---- |
-| 顺序 | 有   | 无   |
-| 重复 | 可以 | 不可 |
-
-#### 1.1.3.3 set如何保证元素不重复 @@@@@
-
-[Set如何保证元素不重复?](https://gitee.com/hollischuang/toBeTopJavaer/blob/master/basics/java-basic/set-repetition.md)
-
-在Java的Set体系中，根据实现方式不同主要分为两大类。HashSet和TreeSet。
-
-1、TreeSet 是二叉树实现的,Treeset中的数据是自动排好序的，不允许放入null值 
-
-2、HashSet 是哈希表实现的,HashSet中的数据是无序的，可以放入null，但只能放入一个null。
-
-在HashSet中，基本的操作都是有HashMap底层实现的，因为HashSet底层是用HashMap存储数据的。当向HashSet中添加元素的时候，首先计算元素的hashcode值，然后通过扰动计算和按位与的方式计算出这个元素的存储位置，如果这个位置位空，就将元素添加进去；如果不为空，则用equals方法比较元素是否相等，相等就不添加，否则找一个空位添加。
-
-TreeSet的底层是TreeMap的keySet()，而TreeMap是基于红黑树实现的，红黑树是一种平衡二叉查找树，它能保证任何一个节点的左右子树的高度差不会超过较矮的那棵的一倍。
-
-TreeMap是按key排序的，元素在插入TreeSet时compareTo()方法要被调用，所以TreeSet中的元素要实现Comparable接口。TreeSet作为一种Set，它不允许出现重复元素。TreeSet是用compareTo()来判断重复元素的。
-
-#### 1.1.3.10 Collections和Arrays区别
+#### 1.1.3.2 Collections和Arrays区别
 
 [参考](https://gitee.com/SnailClimb/JavaGuide/blob/master/docs/java/basic/Arrays,CollectionsCommonMethods.md)
 
@@ -624,7 +581,7 @@ Arrays常用方法：
 复制: copyOf()
 ```
 
-### 1.1.4 IO  BIO NIO AIO
+### 1.1.4 IO  BIO NIO AIO @@@
 
 同步、异步是指调用方要不要去主动询问/等待结果返回。阻塞，非阻塞，是描述调用方的。同步不一定阻塞，异步也不一定非阻塞。
 
@@ -660,6 +617,8 @@ Arrays常用方法：
 
 [异常](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/java-execption-learning.md)
 
+异常和错误的区别:异常能被程序本身可以处理，错误是无法处理。
+
 finally和return的执行顺序:在return之前是会保证finally执行的。
 
 <img src="../images/posts/java/image-20200324211336299.png" alt="image-20200324211336299" style="zoom: 50%;" />
@@ -668,7 +627,7 @@ finally和return的执行顺序:在return之前是会保证finally执行的。
 
 ### 1.2.1 线程 @@@@@
 
-#### 1.2.2.3 线程的状态
+#### 1.2.2.1 线程的状态
 
 [线程的状态](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#3-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81)
 
@@ -682,7 +641,7 @@ finally和return的执行顺序:在return之前是会保证finally执行的。
 - notify 和 notifyAll
   - notify是随机唤醒一个，notifyAll是唤醒全部
 
-#### 1.2.2.5 线程调度
+#### 1.2.2.2 线程调度
 
 [线程调度](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#4-%E7%BA%BF%E7%A8%8B%E7%9A%84%E8%B0%83%E5%BA%A6) 
 
@@ -691,7 +650,7 @@ finally和return的执行顺序:在return之前是会保证finally执行的。
 - 抢占式调度(java默认模型)
 - 线程调度的时候保存的上下文是什么：TCB
 
-#### 1.2.2.6 创建线程的多种方式
+#### 1.2.2.3 创建线程的多种方式
 
 [创建线程的多种方式](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/3-java-thread-create-four-way.md)
 
@@ -753,7 +712,7 @@ finally和return的执行顺序:在return之前是会保证finally执行的。
           });
   ```
 
-#### 1.1.2.8 ThreadLocal
+#### 1.1.2.4 ThreadLocal
 
 [ThreadLocal](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#7-threadlocal)
 
@@ -765,7 +724,7 @@ finally和return的执行顺序:在return之前是会保证finally执行的。
 
 <img src="../images/posts/java/image-20200401150152532.png" alt="image-20200401150152532" style="zoom:33%;" />
 
-#### 1.1.2.9 线程池 @@@@@
+#### 1.1.2.5 线程池 @@@@@
 
 [线程池](https://tech.meituan.com/2020/04/02/java-pooling-pratice-in-meituan.html)
 
