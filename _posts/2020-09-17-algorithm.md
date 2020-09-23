@@ -1,3 +1,11 @@
+---
+layout: post
+title: "算法总结"
+date: 2020-09-17
+description: "2020-09-17-算法"
+categories: algorithm
+tag: [algorithm,leetocde]
+---
 <!--ts-->
    * [1.概述](#1概述)
    * [2.数组](#2数组)
