@@ -229,6 +229,7 @@ Java中只有值传递。
 - 创建内部类对象的时刻并不依赖于外围类对象的创建。
 - 内部类并没有令人迷惑的“is-a”关系，他就是一个独立的实体。
 - 内部类提供了更好的封装，除了该外围类，其他类都不能访问。
+- 匿名内部类无显示引用。
 
 #### 1.1.1.7  Object类相关题目 @@@@@
 
@@ -303,7 +304,7 @@ protected void finalize() throws Throwable { }//实例被垃圾回收器回收�
   - jdk6仍然指向原字符串，会造成内存泄露的问题;jdk7会创建一个新的字符串;
   
 - [String对“+”的重载](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/String-detail.md#158-string%E5%AF%B9%E7%9A%84%E9%87%8D%E8%BD%BD)、字符串拼接的几种方式和区别
-  - +是唯一重载的运算符。使用了StringBuilder以及他的append、toString两个方法。
+  - +是唯一重载的运算符。每次都会new StringBuilder，使用了StringBuilder以及他的append、toString两个方法。
   - "a"+"b"是在编译期完成的，s1+"b"和s1+s2是在运行期完成的。
 
 - 字符串池、常量池（运行时常量池、Class常量池）、intern
@@ -352,9 +353,7 @@ System.out.ptrintln(str1==str4);//true
 
 3）被transient关键字修饰的变量不再能被序列化，一个静态变量不管是否被transient修饰，均不能被序列化。
 
-**序列化的本质是序列化对象，而不是类相关的信息。**  
-
-Arraylist会用到。
+**序列化的本质是序列化对象，而不是类相关的信息。**  Arraylist会用到。
 
 ##### 1.1.2.4.2 staic @@@@
 
@@ -507,18 +506,16 @@ HashSet无序，Hashmap无序，LinkedHasmap可以按照插入顺序，也可以
   | 线程安全   | 否                                                           | 是                     | 否                                           | 是                                                           |
   | 插入顺序   | 否(插入的时候算hash)                                         |                        | 插入有序(也可以按照访问顺序来排序)，双向链表 |                                                              |
   | 加锁粒度   |                                                              | 整个table只加了一把锁  |                                              | jdk7分段来加锁，Segment默认是16，2的幂；jdk8取消了Segment分段锁，使用synchronized 和 CAS，只锁定当前链表或红黑二叉树的首节点 |
-  | 继承关系   | AbstractMap                                                  | Dictionary             |                                              |                                                              |
   | 容量和扩容 | 初始16，扩容*2                                               | 初始11，扩容old*2+1    |                                              |                                                              |
   | hash值     | [重新计算](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-collection/map-detail.md#43-hashmap%E4%B8%AD%E7%9A%84hash%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0) | 直接使用对象的hashCode |                                              |                                                              |
   | 遍历方式   | Iterator                                                     | Enumeration，Iterator  |                                              |                                                              |
-| 加载因子   | 0.75                                                         |                        |                                              |                                                              |
   
 
 Segment继承了ReentrantLock，所以它就是一种可重入锁（ReentrantLock)。
 
 （1）HashMap是一种散列表，采用（数组+ 链表 + 红黑树）的存储结构；
 
-（2）HashMap的默认初始容量为16（1<<4），默认装载因子为0.75f，容量总是2的n次方；取余(%)操作中如果除数是2的幂次则等价于与其 除数减一的与(&)操作(也就是说 hash%length==hash&(length-1)的前提是 length 是2的 n 次方;
+（2）HashMap的默认初始容量为16（1<<4），默认装载因子为0.75f，容量总是2的n次方；
 
 （3）HashMap扩容时每次容量变为原来的两倍；
 
@@ -532,11 +529,10 @@ Segment继承了ReentrantLock，所以它就是一种可重入锁（ReentrantLoc
 
 **HashMap的核心概念**：
 
-- size 和 capacity:
-  - size记录了Map中KV对的个数,数组的长度(实际的长度)；capacity:最多装的元素
-- loadFactor和
-  - loadFactor：用来衡量HashMap满的程度，loadFactor的默认值为0.75f
-    - 0.75有一个好处，那就是**0.75正好是3/4，而capacity又是2的幂。所以，两个数的乘积都是整数**。
+- size 和 capacity:size记录了Map中KV对的个数,数组的长度(实际的长度)；capacity:最多装的元素
+- loadFactor
+  - 用来衡量HashMap满的程度，loadFactor的默认值为0.75f
+    - 0.75有一个好处，那就是**0.75正好是3/4，而capacity又是2的幂。所以，两个数的乘积都是整数**。一个bucket空或者非空，由牛顿二项式可得，负载因子的值为log2,约为0.693,又因为必须是2的倍数，所以是0.75
   - threshold：临界值，当实际KV个数超过threshold时，HashMap会将容量扩容，threshold＝容量*加载因子。
 
 **HashMap 的长度为什么是2的幂次方**
@@ -614,23 +610,13 @@ Arrays常用方法：
 
 ### 1.1.4 IO  BIO NIO AIO @@@
 
-同步、异步是指调用方要不要去主动询问/等待结果返回。阻塞，非阻塞，是描述调用方的。同步不一定阻塞，异步也不一定非阻塞。
+同步异步关注消息通信机制，在发起调用后，前者是指直到有结果产生才返回，后者是指立刻无结果的返回，真正的处理结果通过通知/回调的形式。阻塞，非阻塞，是指调用方线程会不会放弃CPU。同步不一定阻塞，异步也不一定非阻塞。
 
-首先，传统的java.io包，它基于流模型实现，提供了我们最熟知的一些IO功能，比如File抽象、输入输出流等。交互方式是同步、阻塞的方式，也就是说，在读取输入流或者写入输出流时，在读、写动作完成之前，线程会一直阻塞在那里，它们之间的调用是可靠的线性顺序。java.io包的好处是代码比较简单、直观，缺点则是IO效率和扩展性存在局限性，容易成为应用性能的瓶颈。很多时候，人们也把java.net下面提供的部分网络API，比如Socket、ServerSocket、HttpURLConnection也归类到同步阻塞IO类库，因为网络通信同样是IO行为。
-
-第二，在Java 1.4中引入了NIO框架(java.nio包)，提供了Channel、Selector、Bufer等新的抽象，可以构建多路复用的、同步非阻塞IO程序，同时提供了更接近操作系统底层 的高性能数据操作方式。
-
-第三，在Java 7中，NIO有了进一步的改进，也就是NIO 2，引入了异步非阻塞IO方式，也有很多人叫它AIO(Asynchronous IO)。异步IO操作基于事件和回调机制，可以简单 理解为，应用操作直接返回，而不会阻塞在那里，当后台处理完成，操作系统会通知相应线程进行后续工作。输入流、输出流(InputStream/OutputStream)是用于读取或写入字节的。而Reader/Writer则是用于操作字符，增加了字符编解码等功能。BuferedOutputStream等带缓冲区的实现，可以避免频繁的磁盘读写，进而提高IO处理效率。这种设计利用了缓冲区，将批量数据进行一次操作。
-
-
-
-[BIO、NIO和AIO的区别、三种IO的用法与原理](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-io-detail.md#6-bio-vs-nio-vs-aio)
-
-- **BIO (Blocking I/O):** 同步阻塞 I/O 模式，数据的读取写入必须阻塞在一个线程内等待其完成。在活动连接数不是特别高（小于单机 1000）的情况下，这种模型是比较不错的，可以让每一个连接专注于自己的 I/O 并且编程模型简单，也不用过多考虑系统的过载、限流等问题。线程池本身就是一个天然的漏斗，可以缓冲一些系统处理不了的连接或请求。但是，当面对十万甚至百万级连接的时候，传统的 BIO 模型是无能为力的。因此，我们需要一种更高效的 I/O 处理模型来应对更高的并发量。
-- **NIO (Non-blocking/New I/O):** NIO 是一种**同步非阻塞**的 I/O 模型。Bufer，高效的数据容器，除了布尔类型，所有原始数据类型都有相应的Buffer实现。 Channel，类似在Linux之类操作系统上看到的文件描述符，是NIO中被用来支持批量式IO操作的一种抽象。File或者Socket，通常被认为是比较高层次的抽象，而Channel则是更加操作系统底层的一种抽象，这也使得NIO得以充分利用现代操作系统底层机制，获得特定场景的性能优 化，例如，DMA(Direct Memory Access)等。不同层次的抽象是相互关联的，我们可以通过Socket获取Channel，反之亦然。Selector，是NIO实现多路复用的基础，它提供了一种高效的机制，可以检测到注册在Selector上的多Channel中，是否有Channel处于就绪状态，进而实现了单线程对 多Channel的高效管理。
+- **BIO (Blocking I/O):** **同步阻塞 I/O 模式，数据的读取写入必须阻塞在一个线程内等待其完成**。在活动连接数不是特别高的情况下，这种模型是比较不错的，可以让每一个连接专注于自己的 I/O 并且编程模型简单，也不用过多考虑系统的过载、限流等问题。但是，当面对十万甚至百万级连接的时候，传统的 BIO 模型是无能为力的。
+- **NIO (Non-blocking/New I/O):** NIO 是一种**同步非阻塞**的 I/O 模型。 Channel，类似在Linux之类操作系统上看到的文件描述符，是NIO中被用来支持批量式IO操作的一种抽象。File或者Socket，通常被认为是比较高层次的抽象，而Channel则是更加操作系统底层的一种抽象，这也使得NIO得以充分利用现代操作系统底层机制，获得特定场景的性能优化，例如，DMA(Direct Memory Access)等。不同层次的抽象是相互关联的，我们可以通过Socket获取Channel，反之亦然。Selector，是NIO实现多路复用的基础，它提供了一种高效的机制，可以检测到注册在Selector上的多Channel中，是否有Channel处于就绪状态，进而实现了单线程对 多Channel的高效管理。
   - IO都是同步阻塞模式，所以需要多线程以实现多任务处理。
-  - NIO则是利用了单线程轮询事件的机制，通过高效地定位就绪的Channel，来决定做什 么，仅仅select阶段是阻塞的，可以有效避免大量客户端连接时，频繁线程切换带来的问题，应用的扩展能力有了非常大的提高。
-- **AIO (Asynchronous I/O):** AIO 也就是 NIO 2。在 Java 7 中引入了 NIO 的改进版 NIO 2,它是**异步非阻塞**的 IO 模型。异步 IO 是基于事件和回调机制实现的，也就是应用操作之后会直接返回，不会堵塞在那里，当后台处理完成，操作系统会通知相应的线程进行后续的操作。AIO 是异步 IO 的缩写，虽然 NIO 在网络操作中，提供了非阻塞的方法，但是 NIO 的 IO 行为还是同步的。对于 NIO 来说，我们的业务线程是在 IO 操作准备好时，得到通知，接着就由这个线程自行进行 IO 操作，IO 操作本身是同步的。
+  - **NIO则是利用了单线程轮询事件的机制**，通过高效地定位就绪的Channel，来决定做什 么，仅仅select阶段是阻塞的，可以有效避免大量客户端连接时，频繁线程切换带来的问题，应用的扩展能力有了非常大的提高。
+- **AIO (Asynchronous I/O):** AIO 也就是 NIO 2。在 Java 7 中引入了 NIO 的改进版 NIO 2,它是**异步非阻塞**的 IO 模型。异步 IO 是基于**事件和回调机制实现的**，也就是应用操作之后会直接返回，不会堵塞在那里，当后台处理完成，操作系统会通知相应的线程进行后续的操作。AIO 是异步 IO 的缩写，虽然 NIO 在网络操作中，提供了非阻塞的方法，但是 NIO 的 IO 行为还是同步的。
 
 ### 1.1.5 序列化
 
@@ -664,7 +650,7 @@ finally和return的执行顺序:在return之前是会保证finally执行的。
 
 [线程的状态](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#3-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81)
 
-- 新建(new)，就绪(需要时间片runnable)，运行(running)，阻塞(需要资源，blocked)，等待阻塞(需要其他线程通，分为wait和time_wait)，终止(dead)
+- 新建(new)，就绪(需要时间片runnable)，运行(running)，同步阻塞(需要资源，blocked)，等待阻塞(需要其他线程通，分为wait和time_wait)，终止(dead)
 - sleep和wait
   - sleep不释放锁，wait会释放锁。wait 通常被用于线程间交互/通信，sleep 通常被用于暂停执行。
 - **sleep()方法和yield()**
@@ -678,6 +664,22 @@ finally和return的执行顺序:在return之前是会保证finally执行的。
   - 调用start会使线程进入就绪状态，run只是一个普通的方法调用，还是在主线程去执行。
 
 ![img](../images/posts/java/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3pob3U5MjA3ODYzMTI=,size_16,color_FFFFFF,t_70.png)
+
+线程池的状态：
+
+<img src="../images/posts/java/image-20200920104454839.png" alt="image-20200920104454839" style="zoom:33%;" />
+
+RUNNING:初始化为RUNNING，可以接收新任务，并对任务进行处理。
+
+SHUTDOWN:不再接收新任务，可以处理已添加的任务。
+
+stop：不接受新任务，不处理已添加任务。
+
+TIDYING：任务全部执行完，可以重载terminated()函数进行处理。
+
+TERMINATED：彻底终止。
+
+
 
 常见问题：
 
@@ -902,7 +904,7 @@ synchronized关键字最主要的三种使用方式:
 
 - **修饰实例方法**，作用于当前**对象实例加锁**，进入同步代码前要获得当前对象实例的锁 ,**通过ACC_SYNCHRONIZED标识。**
 - **修饰静态方法**，作用于当前类对象加锁，进入同步代码前要获得当前类对象的锁 。也就是给当前类加锁，会作 用于类的所有对象实例，因为静态成员不属于任何一个实例对象，是类成员( static 表明这是该类的一个静态 资源，不管new了多少个对象，只有一份，所以对该类的所有对象都加了锁)。所以如果一个线程A调用一个实 例对象的非静态 synchronized 方法，而线程B需要调用这个实例对象所属类的静态 synchronized 方法，是允 许的，不会发生互斥现象，因为访问静态 synchronized 方法占用的锁是当前类的锁，而访问非静态 synchronized 方法占用的锁是当前实例对象锁。 
-- 修饰代码块，**（通过monitorenter 和 monitorexit 指令）**指定加锁对象，对给定对象加锁，进入同步代码库前要获得给定对象的锁。 当执行 monitorenter 指令时，线程试图 获取锁也就是获取 monitor(monitor对象存在于每个Java对象的对象头中，synchronized 锁便是通过这种方式获取 锁的，也是为什么Java中任意对象可以作为锁的原因) 的持有权.当计数器为0则可以成功获取，获取后将锁计数器设 为1也就是加1。相应的在执行 monitorexit 指令后，将锁计数器设为0，表明锁被释放。如果获取对象锁失败，那当 前线程就要阻塞等待，直到锁被另外一个线程释放为止。
+- 修饰代码块，**（通过monitorenter 和 monitorexit 指令）**指定加锁对象，对给定对象加锁，进入同步代码库前要获得给定对象的锁。 当执行 monitorenter 指令时，线程试图 获取锁也就是获取 monitor(monitor对象存在于每个Java对象的对象头中，synchronized 锁便是通过这种方式获取锁的，也是为什么Java中任意对象可以作为锁的原因) 的持有权.当计数器为0则可以成功获取，获取后将锁计数器设 为1也就是加1。相应的在执行 monitorexit 指令后，将锁计数器设为0，表明锁被释放。如果获取对象锁失败，那当前线程就要阻塞等待，直到锁被另外一个线程释放为止。
 
 **java 1.6之后对锁的优化**
 
@@ -934,13 +936,13 @@ JDK1.6 对锁的实现引入了大量的优化，如偏向锁、轻量级锁、�
 
 2. synchronized 依赖于 JVM 而 ReenTrantLock 依赖于 API
 
-synchronized 是依赖于 JVM 实现的。ReenTrantLock 是 JDK 层面实现的(也就 是 API 层面，需要 lock() 和 unlock 方法配合 try/finally 语句块来完成)。
+synchronized 是依赖于 JVM 实现的。ReenTrantLock 是 JDK 层面实现的(需要 lock() 和 unlock 方法配合 try/finally 语句块来完成)。
 
 3. ReenTrantLock 比 synchronized 增加了一些高级功能
 
 - 等待可中断。ReenTrantLock提供了一种能够中断等待锁的线程的机制，通过lock.lockInterruptibly()来实现这个机制。也 就是说正在等待的线程可以选择放弃等待，改为处理其他事情。
 -  ReenTrantLock可以指定是公平锁还是非公平锁。而synchronized只能是非公平锁。所谓的公平锁就是先等 待的线程先获得锁。 ReenTrantLock默认情况是非公平的，可以通过 ReenTrantLock类的
-- 可实现选择性通知(锁可以绑定多个条件)。synchronized关键字与wait()和notify/notifyAll()方法相结合可以实现等待/通知机制，ReentrantLock类当然也可以实现，但是需要借助于Condition接口与newCondition() 方法。Condition是JDK1.5之后才有的，它具有很好的灵活性，比如可以实现多路通知功能也就是在一个Lock对象中可以创建多个Condition实例（即对象监视器），**线程对象可以注册在指定的Condition中，从而可以有选择性的进行线程通知，在调度线程上更加灵活。 在使用notify/notifyAll()方法进行通知时，被通知的线程是由 JVM 选择的，用ReentrantLock类结合Condition实例可以实现“选择性通知”** ，这个功能非常重要，而且是Condition接口默认提供的。而synchronized关键字就相当于整个Lock对象中只有一个Condition实例，所有的线程都注册在它一个身上。如果执行notifyAll()方法的话就会通知所有处于等待状态的线程这样会造成很大的效率问题，而Condition实例的signalAll()方法 只会唤醒注册在该Condition实例中的所有等待线程。
+- 可实现选择性通知。synchronized关键字与wait()和notify/notifyAll()方法相结合可以实现等待/通知机制，ReentrantLock类当然也可以实现，但是需要借助于Condition接口与newCondition() 方法。Condition是JDK1.5之后才有的，它具有很好的灵活性，比如可以实现多路通知功能也就是在一个Lock对象中可以创建多个Condition实例（即对象监视器），**线程对象可以注册在指定的Condition中，从而可以有选择性的进行线程通知，在调度线程上更加灵活。 在使用notify/notifyAll()方法进行通知时，被通知的线程是由 JVM 选择的，用ReentrantLock类结合Condition实例可以实现“选择性通知”** ，这个功能非常重要，而且是Condition接口默认提供的。而synchronized关键字就相当于整个Lock对象中只有一个Condition实例，所有的线程都注册在它一个身上。如果执行notifyAll()方法的话就会通知所有处于等待状态的线程这样会造成很大的效率问题，而Condition实例的signalAll()方法 只会唤醒注册在该Condition实例中的所有等待线程。
 
 #### 1.1.2.8 volatile
 
@@ -1540,9 +1542,7 @@ ConcurrentLinkedQueue 由 head 节点和 tair 节点组成。入队：
 
 #### 1.2.2.5 Atomic 原子类
 
-Atomic 翻译成中文是原子的意思。即使是在多个线程一起执行的时候，一个操作一旦开始，就不会被其他线程干扰。
-
-所以，所谓原子类说简单点就是具有原子/原子操作特征的类。
+Atomic 翻译成中文是原子的意思。即使是在多个线程一起执行的时候，一个操作一旦开始，就不会被其他线程干扰。所以，所谓原子类说简单点就是具有原子/原子操作特征的类。
 
 2. JUC 包中的原子类是哪4类?
 
@@ -1674,9 +1674,7 @@ Java 虚拟机所管理的内存中最大的一块，Java 堆是所有线程共�
 
 方法区与 Java 堆一样，是各个线程共享的内存区域，它用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。虽然 **Java 虚拟机规范把方法区描述为堆的一个逻辑部分**，但是它却有一个别名叫做 **Non-Heap（非堆）**，目的应该是与 Java 堆区分开来。所以我们把**类的信息，以及一些实例无关的信息(即编译器被确定的值)**放到了方法区。
 
-在来看堆与栈，**栈是用来存储局部变量和计算的过程，堆用来存储实例**。
-
-这些的区分一定是为了效率。需要考虑变量的生命周期，访问的速度，空间大小，使用过程中是否保持有序。
+在来看堆与栈，**栈是用来存储局部变量和计算的过程，堆用来存储实例**。这些的区分一定是为了效率。需要考虑变量的生命周期，访问的速度，空间大小，使用过程中是否保持有序。
 
 - [方法区和运行时常量池](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/method-area-constants-pool.md)
 
@@ -1770,7 +1768,9 @@ java的对象模型主要包含对象头，实例数据和对齐填充，主要�
 
 ### 1.3.4 Java的垃圾回收机制 @@@@
 
-内存泄露：**程序在申请内存后，无法释放已申请的内存空间**；
+内存泄露：**程序在申请内存后，无法释放已申请的内存空间**；如jdk7的substring方法，解决办法：
+
+1. 用jmap生成head dump; 2. 用分析工具MAT找出内存占用超出预期的嫌疑对象；3.根据情况，分析嫌疑对象和其他对象的引用关系；4. 分析程序的源代码，找出嫌疑对象数量过多的原因；
 
 内存溢出：无法申请足够的内存；
 
@@ -1778,11 +1778,11 @@ java的对象模型主要包含对象头，实例数据和对齐填充，主要�
 
 - [哪些内存需要回收](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/garbage-collection.md#12-%E5%93%AA%E4%BA%9B%E5%9E%83%E5%9C%BE%E9%9C%80%E8%A6%81%E5%9B%9E%E6%94%B6)
   
-  - 主要回收堆内存，方法区或者堆中的永久代（不同的jdk版本不同）也有可能回收。
+  - 主要回收堆内存，方法区或者堆中的永久代也有可能回收。
 - [什么时候回收](https://gitee.com/haojunsheng/JavaLearning/blob/master/jvmLearning/garbage-collection.md#13-%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E8%BF%9B%E8%A1%8C%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6)：
   - 我们需要先判断一个对象有没有存活？
-    - 引用计数法：当两个对象**相互引用**，但是二者已经没有作用时，按照常规，应该对其进行垃圾回收，但是其相互引用，又不符合垃圾回收的条件，因此无法完美处理这块内存清理。
-    - 可达性分析算法:从一个叫GC Roots的对象开始，向下搜索，如果一个对象不能到达GC Roots对象的时候，说明它已经不再被引用，即可被进行垃圾回收。（当一个对象不再被引用时，并没有完全“死亡”，如果类重写了finalize()方法，且没有被系统调用过，那么系统会调用一次finalize()方法，以完成最后的工作，在这期间，如果可以将对象重新与任何一个和GC Roots有引用的对象相关联，则该对象可以“重生”，如果不可以，那么就说明彻底可以被回收了）
+    - 引用计数法：当两个对象**相互引用**，但是二者已经没有作用时，应该对其进行垃圾回收，但是其相互引用，又不符合垃圾回收的条件。
+    - 可达性分析算法:从一个叫GC Roots的对象开始，向下搜索，如果一个对象不能到达GC Roots对象的时候，说明它已经不再被引用，即可被进行垃圾回收。（当一个对象不再被引用时，如果类重写了finalize()方法，且没有被系统调用过，那么系统会调用一次finalize()方法，以完成最后的工作，在这期间，如果可以将对象重新与任何一个和GC Roots有引用的对象相关联，则该对象可以“重生”，如果不可以，那么就说明彻底可以被回收了。带来的问题是垃圾回收变慢，拖累jvm的性能）
       - 虚拟机栈中引用的对象
       - 方法区中静态属性引用的对象
       - 方法区中常量引用的对象
@@ -1797,9 +1797,9 @@ java的对象模型主要包含对象头，实例数据和对齐填充，主要�
     - 虚引用：唯一作用就是做一些跟踪记录，辅助finalize函数的使用。
     
       <img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20200718003503.png" alt="image-20200718003453153" style="zoom:25%;" />
-- Minor Gc和Full GC 有什么不同呢
-  - Minor GC：老年代。
-  - Full GC：整个堆。
+  
+- Minor GC：年轻代；Major GC:老年代；Full GC：整个堆。
+
 - 如何回收
   - 堆内存分块，jdk7之前，7之后移除了永久代
   - ![image-20200817224042774](../images/posts/java/image-20200817224042774.png)
@@ -1885,12 +1885,6 @@ GC日志显示，高峰期CMS在重标记（Remark）阶段耗时1.39s。Remark�
 
 **类加载器**简言之，就是用于把`.class`文件中的**字节码信息**转化为具体`的java.lang.Class`**对象**的过程的工具。
 
-具体过程：
-
-1. 在实际类加载过程中，`JVM`会将所有的`.class`字节码文件中的**二进制数据**读入内存中，导入运行时数据区的**方法区**中。
-2. 当一个类首次被**主动加载**或**被动加载**时，类加载器会对此类执行类加载的流程 – **加载**、**连接**（**验证**、**准备**、**解析**）、**初始化**。
-3. 如果类加载成功，**堆内存**中会产生一个新的`Class`对象，`Class`对象封装了类在**方法区**内的**数据结构**。
-
 加载，连接（验证，准备和解析），初始化。
 
 - 加载：查找并加载类的**二进制数据**的过程。
@@ -1960,11 +1954,11 @@ javac 、javap 、jps、jstack,jinfo、jstat 、jmap 、jhat
 
 jinfo：Java 配置信息工具。查看虚拟机各项参数，使用 `jps -v` 可查看虚拟机启动时显式指定的参数，但如果想知道未显式指定的参数只能使用 `jinfo -flag`。
 
-[jmap](http://www.hollischuang.com/archives/303):打印内存映射,制作堆Dump。`jmap` 的作用并不仅仅是为了获取 dump 文件，它还可以查询 finalizer 执行队列、Java 堆和永久代的详细信息，如空间使用率、当前使用的是哪种收集器等。
-
-[jstat](http://www.hollischuang.com/archives/481):性能监控工具。( JVM Statistics Monitoring Tool）: 用于收集 HotSpot 虚拟机各方面的运行数据。比如 `jstat -gc -h3 31736 1000 10`表示分析进程 id 为 31736 的 gc 情况，每隔 1000ms 打印一次记录，打印 10 次停止，每 3 行后打印指标头部。
+[jmap](http://www.hollischuang.com/archives/303):打印内存映射,制作堆Dump。其中主要包括**系统信息**、**虚拟机属性**、**完整的线程Dump**、**所有类和对象的状态**等。`jmap` 的作用并不仅仅是为了获取 dump 文件，它还可以查询 finalizer 执行队列、Java 堆和永久代的详细信息，如空间使用率、当前使用的是哪种收集器等。eclipse一般用MAT插件进行分析jmap文件，idea一般用**JProfiler**来分析jmap文件。
 
 [jhat](http://www.hollischuang.com/archives/1047):内存分析工具。**`jhat`** 用于分析 heapdump 文件，它会建立一个 HTTP/HTML 服务器，让用户可以在浏览器上查看分析结果。
+
+[jstat](http://www.hollischuang.com/archives/481):性能监控工具。( JVM Statistics Monitoring Tool）: 用于收集 HotSpot 虚拟机各方面的运行数据。比如 `jstat -gc -h3 31736 1000 10`表示分析进程 id 为 31736 的 gc 情况，每隔 1000ms 打印一次记录，打印 10 次停止，每 3 行后打印指标头部。
 
 ## 1.4 Java EE @@@@@
 
@@ -2707,7 +2701,10 @@ mysql会默认根据主键建立索引，会生成一颗B+树。  如果我们�
   - 需要考虑索引复用能力。如果通过调整顺序，可以少维护一个索引，那么这个顺序往往就是需要优先考虑采用的。
   - 空间。name 字段是比 age 字段大的 ，那我就建议你创建一个(name,age) 的联合索引和一个 (age) 的单字段索引。
 - 最左前缀索引：可以是联合索引的最左 N 个字段，也可以是字符串索引的最左 M 个字符。索引的选择性，即N的估计方法：不重复的索引值和数据表的记录总数的比值。SELECT count(DISTINCT(address,length))/count(*)  FROM info; 值越接近1,说明选择性越好。
-- 倒排索引（全文检索）：原来是文档中搜索关键词，现在变为由关键词查出所需的文档，搜索引擎的原理。
+- 倒排索引（全文检索）：原来是文档中搜索关键词，现在是维护关键词在哪些文档中出现过，这就是搜索引擎的原理。
+
+<img src="../images/posts/java/image-20200922153437969.png" alt="image-20200922153437969" style="zoom:33%;" />
+
 - 唯一索引：索引列唯一
 
 ### 3.3.3 建索引的原则
@@ -2863,22 +2860,80 @@ Myisam 创建表后生成的文件有：frm:创建表的语句;MYD:表里面的�
 
 [参考](https://how2playlife.com/2019/09/01/MySQL/%E9%87%8D%E6%96%B0%E5%AD%A6%E4%B9%A0Mysql%E6%95%B0%E6%8D%AE%E5%BA%931%EF%BC%9A%E6%97%A0%E5%BA%9F%E8%AF%9DMySQL%E5%85%A5%E9%97%A8/)
 
-- char：定长数组
-- varchar：变长数组，最大是n
-- text：文本，速度慢，只能前缀索引
-- blob：二进制大对象
+```
+整型：TINYINT-1字节 SMALLINT-2字节 MEDIUMINT-3字节 INT-4字节 BIGINT-8字节
+浮点型：float-4个字节，double-8个字节
+日期：year：1，time：3，date:4,datetime：8，timestamp：4
+char：定长数组
+varchar：变长数组
+text：文本，速度慢，只能前缀索引
+blob：二进制大对象
+```
 
-**数据增删：** 除了一些常规的每日运行的计算任务外，很多时候我们只是单纯地想对一张表进行处理，比如**插入几条数据，更新某个字段值，或者剔除几条数据**。这些操作往往是单次的，局部的，目的清晰，所以掌握几个关键字就可以实现，如INSERT/UPDATE/DELETE等。
+常用命令:
 
-**视图应用：** 视图的引入，相当于在统计逻辑和实际库表之间提供了一种折中的方案。完成这个功能，逻辑上是必须有这么几道工序的，但又不想在每一道工序里都落地一张实际的数据表，显得繁琐而臃肿，那就引入视图吧，**把这些中间的工序用视图的形式去实现和替代**。
+```mysql
+# 创建数据库
+create database [if not exists] db_name；
+# 修改数据库
+alter database db_name;
+# 删除数据库
+drop database [if exitsts] db_name;
+create table <表名>
+( 
+ 列名1 数据类型[列级别约束条件][默认值],
+ 列名2 数据类型[列级别约束条件][默认值],
+ ...
+ [表级别约束条件]
+);
+# group分组
+select sex from readerinfo group by sex;
+# count统计
+# order排序
+order by 列名 [asc|desc]
+# limit限制数量
+select * from bookinfo limit 3;
+# 连接
+SELECT a.runoob_id, a.runoob_author, b.runoob_count FROM runoob_tbl a INNER JOIN tcount_tbl b ON a.runoob_author = b.runoob_author;
+```
 
-**关键字：** 其实SQL真的是一门很简洁的语言，市面上也不会有大本的书籍专门讲述SQL的书写方式，因为相对于其它语言来说，SQL归根到底，只是围绕着几个关键字的一些基础语句而已。**只要把这几个关键字掌握了，SQL的大部分内容其实就已经展开了。**
+所有课程都大于80分的学生,每个学生有多门成绩，我们可以先找任意一门课小于80分的学生，然后排除掉这些学生即可。
 
-![img](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/640.png)
+```mysql
+select distinct name from aa where name not in (select distinct name from aa where fengshu<=80)
+```
 
-前面讲数据查询语句，不管怎么查询，其实并不影响原生的表结构，即原来的表是按照什么逻辑写的数据，查询结果里的数据也是基于这种逻辑，只是筛选了局部数据而已。但数据聚合与连接就不一样了，**聚合会在纵向上改变原生表结构，连接则在横向上拓展了表结构。**
+## 3.9 mysql约束
 
-前面讲数据查询语句，不管怎么查询，其实并不影响原生的表结构，即原来的表是按照什么逻辑写的数据，查询结果里的数据也是基于这种逻辑，只是筛选了局部数据而已。但数据聚合与连接就不一样了，**聚合会在纵向上改变原生表结构，连接则在横向上拓展了表结构。**
+[参考](https://mp.weixin.qq.com/s/lUs7de48LFCqVRciCRqKqw)
+
+| 非空约束   | 主键约束      | 唯一约束 | 默认约束  | 外键约束      |
+| :--------- | :------------ | :------- | :-------- | :------------ |
+| `not null` | `primary key` | `unique` | `default` | `foreign key` |
+
+主键约束：要求主键列的数据唯一，并且不允许为空，主键能够唯一地标识表中的一条记录。类型分为主键分为**单字段主键**和**多字段联合主键**。
+
+唯一约束：唯一约束要求该列唯一，允许为空，唯一约束可以确保一列或者几列不出现重复值。
+
+默认约束：默认值。
+
+外键约束：外键是用来在两个表的数据之间建立链接，可以是一列或者多列，一个表可以有一个或者多个外键。保持数据的一致性，完整性。
+
+```sql
+图书类别表(父表)
+CREATE TABLE bookcategory(
+ category_id INT PRIMARY KEY,
+ category VARCHAR(20),
+ parent_id INT
+);
+
+图书信息表(子表)
+CREATE TABLE bookinfo(
+ book_id INT PRIMARY KEY,
+ book_category_id  INT,
+ CONSTRAINT fk_cid FOREIGN KEY(book_category_id) REFERENCES bookcategory(category_id)
+);
+```
 
 # 4. 计算机网络
 
@@ -2902,7 +2957,7 @@ socket是对TCP/IP的抽象， 网络编程肯定绕不过socket，绝大部分�
 
 URL到网络显示的过程：
 
-- 浏览器查找域名（DNS解析）：浏览器缓存，路由器缓存，DNS缓存。
+- 浏览器查找域名：浏览器缓存，host文件，路由器缓存，DNS缓存（递归去查找，局部DNS没有，则去根DNS查找）。
 - 建立TCP连接
   - 网络层使用IP协议
   - 路由器使用OPSF协议（Open Shortest Path First开放式最短路径优先）
@@ -3024,7 +3079,7 @@ URL到网络显示的过程：
     - 2**：响应结果表明请求被正常处理。200代表成功。204代表处理成功，但是没有可返回的资源。**206 Partial Content 表示返回部分数据。
     - 3**重定向类的，**表明浏览器需要执行某些特殊的处理以正确处理请求。301 Moved Permanently，永久性重定向(客户端来做)。302临时性重定向（服务端来做）。
     - 4客户端错误的。**400 Bad Request** ，表示请求报文中存在语法错误；**401 Unauthorized** ；**403 Forbidden** ；**404 Not Found** 。
-    - 5服务器错误。**500 Internal Server Error** ；**503 Service Unavailable** 。
+    - 5服务器错误。**500 Internal Server Error** ；502是网关错误。**503 Service Unavailable** 。
     
   - 缓存
     - If-Modified-Since，如果在xx时间(此时间即为If-Modified-Since的值)之后内容没有变化，服务器会回应一个 `304NotModified`（缓存命中）。和Last-Modified结合使用，获取资源的更新时间。
@@ -3058,12 +3113,11 @@ URL到网络显示的过程：
     <img src="../images/posts/java/v2-aeb20c0cd2ecf1d81fc0a199cd0fffd0_r.jpg" alt="preview" style="zoom:50%;" />
   
 - 问题
-    - XSS攻击：恶意攻击者往Web页面里插入恶意html代码，当用户浏览该页之时，嵌入其中Web里面的html代码会被执行，从而达到恶意用户的特殊目的。
+    - XSS攻击：跨站脚本。恶意攻击者往Web页面里插入恶意html代码，当用户浏览该页时，嵌入其中Web里面的html代码会被执行，从而达到恶意用户的特殊目的。
     - CSRF攻击：跨站请求伪造。攻击者诱导受害者进入第三方网站，在第三方网站中，向被攻击网站发送跨站请求。利用受害者在被攻击网站已经获取的注册凭证，绕过后台的用户验证，达到冒充用户对被攻击的网站执行某项操作的目的。
   
-- 对称加密的密钥如何在不可信的网络中分发，结合非对称，生成对称密钥后，通过非对称密钥来传输。但是客户端向服务端发公钥的时候，可能被拦截替换，存在中间人攻击。引入了PKI体系，有一个根CA，会把个人信息和公钥进行hash，然后把hash的结果进行签名，这样就无法篡改了。
+- 对称加密的密钥如何在不可信的网络中分发，结合非对称，生成对称密钥后，通过非对称密钥来传输。但是客户端向服务端发公钥的时候，可能被拦截替换，存在中间人攻击。引入了PKI体系，有一个根CA，会把个人信息和公钥进行hash，然后把hash的结果进行签名，这样就无法篡改了。数字证书：主体信息+数字签名，验证人的身份的
 
-    - 数字证书：主体信息+数字签名，验证人的身份的
 
 ## 4.2 Unix网络编程 @@@@@
 
@@ -3432,6 +3486,7 @@ Consumer()
 - **FIFO页面置换算法（先进先出页面置换算法）**
 - **LRU页面置换算法（最近未使用页面置换算法）** ：LRU（Least Currently Used）
 - **LFU页面置换算法（最少使用页面排序算法）** : LFU（Least Frequently Used）
+- 最佳置换算法
 
 ### 5.1.8 特殊进程
 
@@ -3444,6 +3499,12 @@ Consumer()
 1. 32bit系统和64bit系统有哪些不同？
 
 核心是CPU的通用寄存器的宽度不同，即数据总线；外在表现是数据处理能力与内存寻址能力不同。
+
+2. [零拷贝](https://juejin.im/post/6844903949359644680)
+
+传统IO拷贝方式，通过 read() 函数读取文件到缓存区中，然后通过 write() 方法把缓存中的数据输出到网络端口。发生2次CPU拷贝，2次DMA拷贝。零拷贝是通过来减少拷贝次数。
+
+<img src="../images/posts/java/image-20200920140545607.png" alt="image-20200920140545607" style="zoom:33%;" />
 
 ## 5.2 linux常用命令
 
@@ -3570,6 +3631,15 @@ kill -9 表示强制删除，kill -15表示等待程序中的任务执行完毕�
 telnet探测TCP类型的端口是否开放，netcat用来探测TCP，udp类型的端口是否开放；
 
 free查看内存占用；
+
+
+
+实战：linux系统卡顿的排查过程：
+
+1. 使用w命令查看系统负载。一般这个值不超过cpu核数就可以。
+2. 使用top命令来进一步确定
+3. iostat打印io情况
+4. 
 
 ## 5.2 docker
 
@@ -3935,27 +4005,23 @@ PoW算法致力于寻找一个值，使得它SHA256的hash值以若干个0开始
     - 多次列置换
   - 分组模式
     - 原因：对称加密算法只能加密固定长度的明文。如果我们想加密任意长度的明文，则需要对明文进行分组，然后对每组进行加密。迭代产生的密文在每一轮中使用不同的子密钥，而这些子密钥由原密钥生成。
-- DES
+- DES：分组加密算法，输入的明文为64位，密钥为64位。
   
-- 特点：分组加密算法，输入的明文为64位，密钥为64位。
-  
-- AES
-  
-- 特点：数据块长度和密钥长度都可独立地选定为大于等于128位且小于等于256位的32位的任意倍数。而美国颁布AES时却规定数据块的长度为128位，密钥的长度可分别选择为128位、192位或256位。
+- AES：数据块长度和密钥长度都可独立地选定为大于等于128位且小于等于256位的32位的任意倍数。而美国颁布AES时却规定数据块的长度为128位，密钥的长度可分别选择为128位、192位或256位。
   
 - 非对称加密
   - 大数质因子分解（RSA）
   - 离散对数，幂模运算y=α^d(mod p)，(Diffie-Hellman，ElGamal)
   - 基于对椭圆曲线上特定点进行特殊乘法逆运算难（ECC）
 
-- DH算法密钥协商（协商一个对称密钥），借助于幂模运算。 @@@@@
-  - 双方协商公共参数g和n（底数和模 数）
+- DH算法密钥协商，借助于幂模运算。 @@@@@
+  - 双方协商公共参数g和n（底数和模数）
   - Alice和Bob分别在0到n-1之间随机生成xa,xb作为各自的私钥，这个私钥是要保密的；
   - Alice和Bob分别计算ya=g^xa mod n，yb=g^xb mod n作为各自的公钥；
   - Alice和Bob将各自的公钥发送给对方；
   - 此时Alice收到了Bob发来的yb，Bob收到了Alice发来的ya，然后分别计算ka=yb^xa mod n,kb=ya^xb mod n，并分别使用ka和kb作为对称密码的密钥。（因为ka=kb）<img src="../images/posts/crypto/image-20200318104931511.png" alt="image-20200318104931511" style="zoom:33%;" />
 
-- RSA（RSA） @@@@@
+- RSA @@@@@
   - 随机地选择两个大素数p和q，而且保密
   
   - 计算n=pq，将n公开
@@ -4015,9 +4081,7 @@ PoW算法致力于寻找一个值，使得它SHA256的hash值以若干个0开始
 
 在采用时间戳固证的过程中，我们除了从时间戳授权中心获得时间外，还需要“电脑截屏、录屏、外设录像”三位一体的取证方式。事实上比较麻烦。
 
-区块链技术存证的基本原理是借助分布式存储方式，将时间戳文件挂载到区块链。
-
-作为一个新兴技术，区块链最有法学价值之处就在于，它为法学界和法律实务界引入了一种有别于传统电子证据论证模式的“证据自证”模式。
+区块链技术存证的基本原理是借助分布式存储方式，将时间戳文件挂载到区块链。作为一个新兴技术，区块链最有法学价值之处就在于，它为法学界和法律实务界引入了一种有别于传统电子证据论证模式的“证据自证”模式。
 
 ## 9.3 跨链
 
@@ -4026,8 +4090,6 @@ KCross负责在不同区块链之间传输数据。基于中心化公证人的�
 做了哪些事情，本地事务+分布式事务。
 
 先来看数据库的本地事务，而事务的ACID是通过InnoDB日志和锁来保证。事务的**隔离性**是通过数据库锁的机制实现的，**持久性**通过**redo log**（重做日志，用于数据库的崩溃恢复）来实现，原子性和一致性通过**Undo log**（主要记录的是数据的逻辑变化，为了在发生错误时回滚之前的操作，需要将之前的操作都记录下来，然后在发生错误时才可以回滚。）来实现。UndoLog的原理很简单，为了满足事务的原子性，在操作任何数据之前，首先将数据备份到一个地方（这个存储数据备份的地方称为UndoLog）。然后进行数据的修改。如果出现了错误或者用户执行了ROLLBACK语句，系统可以利用Undo Log中的备份将数据恢复到事务开始之前的状态。 和Undo Log相反，RedoLog记录的是新数据的备份。在事务提交前，只要将RedoLog持久化即可，不需要将数据持久化。当系统崩溃时，虽然数据没有持久化，但是RedoLog已经持久化。系统可以根据RedoLog的内容，将所有数据恢复到最新的状态。
-
-
 
 分布式事务的核心是**冻结资源**和**幂等性**。
 
@@ -4223,8 +4285,7 @@ MapReduce致力于解决大规模数据处理的问题，因此在设计之初�
 Bloom Filter，空间效率很高的随机数据结构，以bitmap为基础。应用场景如url去重，垃圾邮箱地址过滤。
 
 - 当一个元素被加入集合时，通过K个Hash函数将这个元素映射成一个位阵列中的K个点，把它们置为1。检索时，我们只要看看这些点是不是都是1就知道集合中有没有它了：
-  - 如果这些点有任何一个0，则被检索元素一定不在；
-  - 如果都是1，则被检索元素很可能在。
+  - 如果这些点有任何一个0，则被检索元素一定不在；如果都是1，则被检索元素很可能在。
 
 降低误判率：扩大bitmap的空间，多做几次hash。
 
