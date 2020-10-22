@@ -11,8 +11,8 @@ title: 关于我
 
 Github Repositories: https://github.com/haojunsheng
 
-也可以关注我的微信公众号和头条号「区块链指北」，我会不定期来更新的：
+也可以关注我的微信公众号和头条号「俊语」，我会不定期来更新的：
 
-<img src="images/official-account.png" style="zoom:50%;" />
+<img src="https://cdn.jsdelivr.net/gh/haojunsheng/ImageHost/img/20201022192455.png" style="zoom:50%;" />
 
 {% include comments.html %}

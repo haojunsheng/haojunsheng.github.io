@@ -668,9 +668,9 @@ finally和return的执行顺序:在return之前是会保证finally执行的。
 
 [线程的状态](https://gitee.com/haojunsheng/JavaLearning/blob/master/Java-basic/Java-concurrent-programming/2-deep-learning-thread.md#3-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81)
 
-- 新建(new)，就绪(需要时间片runnable)，运行(running)，同步阻塞(需要资源，blocked)，等待阻塞(需要其他线程通知，分为wait和time_wait)，终止(dead)
+- 新建(new)，runnable（可运行/运行），休眠（BLOCKED阻塞状态，WAITING无时限等待，TIMED_WAITING有时限等待），TERMINATED终止。
 - sleep和wait
-  - sleep不释放锁，wait会释放锁。wait通常被用于线程间交互/通信，sleep 通常被用于暂停执行。
+  - sleep不释放锁，wait会释放锁。wait通常被用于线程间交互/通信，sleep 通常被用于暂停执行。wait只能在同步方法和同步块中使用，而sleep任何地方都可以;wait无需捕捉异常，而sleep需要;sleep是Thread的方法，而wait是Object类的方法;
 - **sleep()方法和yield()**
   - sleep()方法给其他线程运行机会时不考虑线程的优先级，yield()方法只会给相同优先级或更高优先级的线程以运行的机会；
   - 线程执行sleep()方法后转入阻塞（blocked）状态，而执行yield()方法后转入就绪（ready）状态，让出CPU。
