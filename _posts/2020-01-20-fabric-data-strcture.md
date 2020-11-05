@@ -22,7 +22,7 @@ tag: fabric
                   * [ChaincodeEndorsedAction](#chaincodeendorsedaction)
       * [BlockMetadata](#blockmetadata)
 
-<!-- Added by: anapodoton, at: Wed Feb 19 23:50:05 CST 2020 -->
+<!-- Added by: anapodoton, at: 2020年11月 5日 星期四 21时33分01秒 CST -->
 
 <!--te-->
 
