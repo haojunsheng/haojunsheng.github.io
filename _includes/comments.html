@@ -1,22 +1,21 @@
 <section class="post-comments">
 
-  {% if site.comment.lv %}
-    <div id="lv-container" data-id="city" data-uid="MTAyMC80Nzg4MC8yNDM3Nw==">
-    <script type="text/javascript">
-   (function(d, s) {
-       var j, e = d.getElementsByTagName(s)[0];
+  {% if site.comment.livere %}
 
-       if (typeof LivereTower === 'function') { return; }
+      <div id="lv-container" data-id="city" data-uid="{{site.comment.livere}}">
+      <script type="text/javascript">
+         (function(d, s) {
+             var j, e = d.getElementsByTagName(s)[0];
 
-       j = d.createElement(s);
-       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-       j.async = true;
-
-       e.parentNode.insertBefore(j, e);
-   })(document, 'script');
-  </script>
-    <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
-    </div>
+             if (typeof LivereTower === 'function') { return; }
+             j = d.createElement(s);
+             j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+             j.async = true;
+             e.parentNode.insertBefore(j, e);
+         })(document, 'script');
+      </script>
+      <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>
 
   {% elsif site.comment.disqus %}
     <div id="disqus_thread"></div>
@@ -37,21 +36,6 @@
     </script>
     <noscript>要查看<a href="http://disqus.com/?ref_noscript"> Disqus </a>评论，请启用 JavaScript</noscript>
     
-
-  {% elsif site.comment.gitment %}
-    <div id="gitmentContainer"></div>
-    <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
-    <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
-    <script>
-    var gitment = new Gitment({
-        owner: 'anapodoton',
-        repo: 'https://github.com/anapodoton/anapodoton.github.io',
-        oauth: {
-            client_id: 'b64d8a0c35a5a1da56aa',
-            client_secret: '1cb164c89fd208e194562232191c6227b8beafdf',
-        },
-    });
-    gitment.render('gitmentContainer');
-    </script>
   {% endif %}
+
 </section>

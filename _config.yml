@@ -8,15 +8,14 @@ avatarTitle: 俊语
 avatarDesc: 区块链/ Java/ 分布式
 url: "http://haojunsheng.github.io"
 
+# 博客是否自动生成目录，false为不生成
+enableToc: true
+
 # Comment
 comment:
-    lv: haojs1995
-    #gitment: anapodoton.github.io
-    #uyan: 2143225  # 有言id,登录有言官网申请
-
-comment_gitment_repo: haojunsheng.github.io
-comment_gitment_clientId: e03746f1f25f97a7b766
-comment_gitment_clientSecret: cef15f1e424275920776e1d82dfa21b03af3f5e8
+    livere: MTAyMC80Nzg4MC8yNDM3Nw  # https://www.livere.com
+    # disqus: leopard
+    # uyan: 2143225  # 有言id,登录有言官网申请
 
 # Social
 social:
