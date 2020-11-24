@@ -3,9 +3,9 @@ title: 郝俊生
 subtitle: 个人站
 description: 欢迎来到我的个人站~
 # 头像里面的标题
-avatarTitle: Anapodoton
+avatarTitle: 俊语
 # 头像里面的描述
-avatarDesc: 区块链/ 密码学/ 分布式
+avatarDesc: 区块链/ Java/ 分布式
 url: "http://haojunsheng.github.io"
 
 # Comment
@@ -22,11 +22,11 @@ comment_gitment_clientSecret: cef15f1e424275920776e1d82dfa21b03af3f5e8
 social:
     weibo: 叫我郝俊生 
     github: haojunsheng
-    zhihu: anapodoton
+    zhihu: hjs.junyu
     # juejin: xxx
     jianshu: hjs1995
     # twitter: 
-    mail: haojunsheng@ruc.edu.cn
+    mail: hjs.junyu@gmail.com
 
 
 # 百度统计 
