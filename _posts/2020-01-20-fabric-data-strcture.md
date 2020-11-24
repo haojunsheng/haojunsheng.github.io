@@ -8,24 +8,6 @@ tag: fabric
 
 ---
 
-<!--ts-->
-   * [前言](#前言)
-   * [Block](#block)
-      * [BlockData](#blockdata)
-         * [Payload](#payload)
-            * [header](#header)
-               * [ChannelHeader](#channelheader)
-               * [SignatureHeader](#signatureheader)
-            * [Transaction](#transaction)
-               * [TransactionAction](#transactionaction)
-                  * [ChaincodeProposalPayload](#chaincodeproposalpayload)
-                  * [ChaincodeEndorsedAction](#chaincodeendorsedaction)
-      * [BlockMetadata](#blockmetadata)
-
-<!-- Added by: anapodoton, at: 2020年11月 5日 星期四 21时33分01秒 CST -->
-
-<!--te-->
-
 # 前言
 
 我们知道，对于一个程序来讲，其核心是数据结构和算法。正如我们之前学习TCP/IP协议的时候。对于Fabric来讲，我们很关心区块是怎么存储的，那么了解其数据结构是很重要的，本文将带你了解Fabric区块的数据结构。

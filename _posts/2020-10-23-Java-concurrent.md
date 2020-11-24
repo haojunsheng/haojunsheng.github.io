@@ -6,43 +6,7 @@ description: "2020-10-23-Java-concurrent"
 categories: java
 tag: [Java,并发]
 ---
-<!--ts-->
-   * [前言](#前言)
-   * [1. 并发理论基础](#1-并发理论基础)
-      * [1. 可见性，有序性和原子性](#1-可见性有序性和原子性)
-      * [2. java内存模型解决可见性和有序性问题](#2-java内存模型解决可见性和有序性问题)
-      * [3. 互斥锁：解决原子性问题](#3-互斥锁解决原子性问题)
-      * [4. 一把锁保护多个资源](#4-一把锁保护多个资源)
-      * [5. 死锁怎么办](#5-死锁怎么办)
-      * [6. 等待通知优化循环等待](#6-等待通知优化循环等待)
-      * [7. <strong>安全性、活跃性以及性能问题</strong>](#7-安全性活跃性以及性能问题)
-      * [8. <strong>管程:并发编程的万能钥匙</strong>](#8-管程并发编程的万能钥匙)
-      * [9 java线程的生命周期](#9-java线程的生命周期)
-      * [10 <strong>创建多少线程才是合适的</strong>](#10-创建多少线程才是合适的)
-      * [12 如何用面向对象思想写好并发程序](#12-如何用面向对象思想写好并发程序)
-      * [13 小结](#13-小结)
-   * [2. 并发工具类](#2-并发工具类)
-      * [14. <strong>Lock和Condition(上):隐藏在并发包中的管程</strong>](#14-lock和condition上隐藏在并发包中的管程)
-      * [15. <strong>Dubbo</strong>如何用管程实现异步转同步?](#15-dubbo如何用管程实现异步转同步)
-      * [16. <strong>Semaphore</strong>:如何快速实现一个限流器?](#16-semaphore如何快速实现一个限流器)
-      * [17. <strong>ReadWriteLock</strong>:如何快速实现一个完备的缓存](#17-readwritelock如何快速实现一个完备的缓存)
-      * [19. <strong>CountDownLatch</strong>和CyclicBarrier:如何让多线程步调一致?](#19-countdownlatch和cyclicbarrier如何让多线程步调一致)
-         * [<strong>用</strong> <strong>CountDownLatch</strong> <strong>实现线程等待</strong>](#用-countdownlatch-实现线程等待)
-         * [<strong>用</strong> <strong>CyclicBarrier</strong> <strong>实现线程同步</strong>](#用-cyclicbarrier-实现线程同步)
-      * [20. 并发容器](#20-并发容器)
-      * [21 <strong>原子类:无锁工具类的典范</strong>](#21-原子类无锁工具类的典范)
-      * [22. <strong>Executor</strong>与线程池](#22-executor与线程池)
-      * [23. <strong>Future</strong>:如何用多线程实现最优的烧水泡茶程序](#23-future如何用多线程实现最优的烧水泡茶程序)
-      * [24. <strong>CompletableFuture</strong>:异步编程没那么难](#24-completablefuture异步编程没那么难)
-      * [27 小结](#27-小结)
-   * [3. 并发设计模式](#3-并发设计模式)
-      * [28 <strong>Immutability</strong>模式:如何利用不变性解决并发问题](#28-immutability模式如何利用不变性解决并发问题)
-   * [4. 案例分析](#4-案例分析)
-   * [5. 其他并发模型](#5-其他并发模型)
 
-<!-- Added by: anapodoton, at: 2020年10月23日 星期五 15时06分52秒 CST -->
-
-<!--te-->
 # 前言
 
 管程作为一种解决并发问题的模型，是继信号量模型之后的一项重大创新，它与信号量在逻 辑上是等价的(可以用管程实现信号量，也可以用信号量实现管程)，但是相比之下管程更易用。

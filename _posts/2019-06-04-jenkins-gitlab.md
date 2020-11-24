@@ -7,17 +7,6 @@ categories: fabric
 tag: fabric
 ---
 
-<!--ts-->
-   * [1.相关概念](#1相关概念)
-   * [2. Jenkins介绍及相关软件的安装](#2-jenkins介绍及相关软件的安装)
-      * [2.1Jenkins的安装](#21jenkins的安装)
-      * [2.2 docker gitlab的安装](#22-docker-gitlab的安装)
-   * [3. jenkins实战](#3-jenkins实战)
-      * [3.1 流水线](#31-流水线)
-
-<!-- Added by: anapodoton, at: 2019年12月 9日 星期一 14时43分48秒 CST -->
-
-<!--te-->
 # 1.相关概念
 
 互联网软件的开发和发布，已经形成了一套标准流程，假如把开发工作流程分为以下几个阶段：编码 --> 构建 --> 集成 --> 测试 --> 交付 --> 部署

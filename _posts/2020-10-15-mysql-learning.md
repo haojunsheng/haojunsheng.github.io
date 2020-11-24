@@ -6,22 +6,6 @@ description: "2020-10-15-mysql"
 categories: mysql
 tag: [mysql,数据库]
 ---
-<!--ts-->
-   * [数据库基本操作](#数据库基本操作)
-      * [SQL函数](#sql函数)
-      * [事务](#事务)
-      * [索引](#索引)
-      * [定位sql为什么执行慢](#定位sql为什么执行慢)
-      * [Python操作Mysql](#python操作mysql)
-         * [Python ORM框架SQLAlchemy](#python-orm框架sqlalchemy)
-   * [Mysql实战45讲](#mysql实战45讲)
-      * [1. 基础架构](#1-基础架构)
-      * [2. 日志系统](#2-日志系统)
-   * [4. 索引](#4-索引)
-
-<!-- Added by: anapodoton, at: 2020年10月15日 星期四 20时04分54秒 CST -->
-
-<!--te-->
 
 # 数据库基本操作
 

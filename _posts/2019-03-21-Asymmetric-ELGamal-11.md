@@ -7,17 +7,6 @@ categories: 密码学
 tag: [密码学,非对称加密算法,ELGamal]
 ---
 
-<!--ts-->
-   * [1. 前言](#1-前言)
-   * [2. ELGamal加解密算法](#2-elgamal加解密算法)
-   * [3.  ELGamal算法细节](#3--elgamal算法细节)
-   * [4. ELGamal密码的安全性](#4-elgamal密码的安全性)
-   * [5.  基于ELGamal的java源码的实现](#5--基于elgamal的java源码的实现)
-
-<!-- Added by: anapodoton, at: 2020年 7月 4日 星期六 19时59分11秒 CST -->
-
-<!--te-->
-
 # 1. 前言
 
 ELGamal密码是除了RSA之外最有代表性的公开密钥密码之一，它的安全性建立在**离散对数问题的困难性之上**，是一种公认安全的公钥密码。

@@ -3,11 +3,16 @@ layout: page
 title: 关于我 
 ---
 
-一个区块链开发者，平时喜欢研究一些新技术，目前是研究生在读。
+2018-至今：研究生在读，方向区块链开发，了解了密码学和分布式的一些东西。
 
-建立了一个区块链在校生交流群，想交流的朋友，可以加我微信（请备注“blog”）: hjs_wechat
+2020.05-2020.10：某大厂实习，方向安全研发。
 
-邮箱: haojunsheng@ruc.edu.cn
+2020.11-至今：某大厂实习，做交易交易系统研发。
+
+
+邮箱: hjs.junyu@gmail.com
+
+微信：hjs_wechat（请备注“blog”）
 
 Github Repositories: https://github.com/haojunsheng
 

@@ -7,47 +7,6 @@ categories: 计算机网络
 tag: 计算机网络
 ---
 
-<!--ts-->
-   * [前言](#前言)
-   * [1. Http的前世今生](#1-http的前世今生)
-      * [1.1 HTTP 0.9 / 1.0](#11-http-09--10)
-      * [1.2 HTTP/1.1](#12-http11)
-      * [1.3 HTTP/2](#13-http2)
-      * [1.4 HTTP/3](#14-http3)
-   * [2. http必备知识](#2-http必备知识)
-      * [2.1 http的诞生](#21-http的诞生)
-      * [2.2 编码](#22-编码)
-      * [2.3 URI和URL](#23-uri和url)
-      * [2.4 http方法](#24-http方法)
-      * [2.5 持久连接](#25-持久连接)
-      * [2.6 cookie](#26-cookie)
-      * [2.7 http报文](#27-http报文)
-      * [2.8 压缩](#28-压缩)
-      * [2.9 MIME类型](#29-mime类型)
-      * [2.10 状态码](#210-状态码)
-      * [2.11 一个机器部署多个域名](#211-一个机器部署多个域名)
-      * [2.12 代理](#212-代理)
-      * [2.13 缓存](#213-缓存)
-      * [2.14 重定向](#214-重定向)
-      * [2.15 http首部](#215-http首部)
-      * [2.16 https](#216-https)
-      * [2.17 认证方式](#217-认证方式)
-         * [2.17.1 HTTP Basic](#2171-http-basic)
-         * [2.17.2 Digest Access](#2172-digest-access)
-         * [2.17.3 App Secret Key   HMAC](#2173-app-secret-key--hmac)
-         * [2.17.4 JWT – JSON Web Tokens](#2174-jwt--json-web-tokens)
-         * [2.17.5 OAuth 1.0](#2175-oauth-10)
-         * [2.17.6 OAuth 2.0](#2176-oauth-20)
-            * [2.17.6.1 <strong>Authorization Code Flow</strong>](#21761-authorization-code-flow)
-            * [2.17.6.2 Client Credential Flow](#21762-client-credential-flow)
-         * [2.17.7 总结](#2177-总结)
-      * [2.18 消除http瓶颈之Websocket](#218-消除http瓶颈之websocket)
-      * [2.19 静态服务器到动态服务器](#219-静态服务器到动态服务器)
-   * [3. HTTP幂等性概念和应用](#3-http幂等性概念和应用)
-
-<!-- Added by: anapodoton, at: 2020年 5月22日 星期五 16时00分12秒 CST -->
-
-<!--te-->
 
 ![image-20200217143935986](/images/posts/http/image-20200217143935986.png)
 
