@@ -7,9 +7,6 @@ categories: 计算机网络
 tag: 计算机网络
 ---
 
-
-![image-20200217143935986](/images/posts/http/image-20200217143935986.png)
-
 # 前言
 
 本篇文章主要学习http的相关知识。主要学习以下内容。
