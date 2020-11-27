@@ -510,7 +510,7 @@ HashSet基于HashMap。
   8. TreeSet是有序的；
   
   9. TreeSet是非线程安全的；
-  
+
   
 
 <img src="../images/posts/java/image-20200315203832949.png" alt="image-20200315203832949" style="zoom: 33%;" />
@@ -3729,11 +3729,11 @@ free查看内存占用；
  3. **Docker与虚拟机有何不同？**<img src="../images/posts/docker/image-20200317141435309.png" alt="image-20200317141435309" style="zoom:50%;" />
 1. Docker不是虚拟化方法。它依赖于实际实现基于容器的虚拟化或操作系统级虚拟化的其他工具。为此，Docker最初使用LXC驱动程序，然后移动到libcontainer现在重命名为runc。Docker主要专注于在应用程序容器内自动部署应用程序。应用程序容器旨在打包和运行单个服务，而系统容器则设计为运行多个进程，如虚拟机。因此，Docker被视为容器化系统上的容器管理或应用程序部署工具。
     	2. 容器虚拟的是操作系统，虚拟机虚拟的是硬件
-    	4. 与虚拟机不同（加载内核，是硬件层的抽象），容器（为每个运行的程序提供了隔离的环境）不需要引导操作系统内核，因此可以在不到一秒的时间内创建容器。此功能使基于容器的虚拟化比其他虚拟化方法更加独特和可取。
-    	5. 由于基于容器的虚拟化为主机增加了很少或没有开销，因此基于容器的虚拟化具有接近本机的性能
-    	7. 主机上的所有容器共享主机的调度程序，从而节省了额外资源的需求。
-    	8. 与虚拟机映像相比，容器状态（Docker或LXC映像）的大小很小，因此容器映像很容易分发。
-    	9. 容器中的资源管理是通过cgroup实现的。Cgroups不允许容器消耗比分配给它们更多的资源。虽然主机的所有资源都在虚拟机中可见，但无法使用。这可以通过在容器和主机上同时运行top或htop来实现。所有环境的输出看起来都很相似。
+        	4. 与虚拟机不同（加载内核，是硬件层的抽象），容器（为每个运行的程序提供了隔离的环境）不需要引导操作系统内核，因此可以在不到一秒的时间内创建容器。此功能使基于容器的虚拟化比其他虚拟化方法更加独特和可取。
+            	5. 由于基于容器的虚拟化为主机增加了很少或没有开销，因此基于容器的虚拟化具有接近本机的性能
+                	7. 主机上的所有容器共享主机的调度程序，从而节省了额外资源的需求。
+                    	8. 与虚拟机映像相比，容器状态（Docker或LXC映像）的大小很小，因此容器映像很容易分发。
+                        	9. 容器中的资源管理是通过cgroup实现的。Cgroups不允许容器消耗比分配给它们更多的资源。虽然主机的所有资源都在虚拟机中可见，但无法使用。这可以通过在容器和主机上同时运行top或htop来实现。所有环境的输出看起来都很相似。
 
 # 6. 设计模式
 
@@ -3847,7 +3847,7 @@ public class Singleton {
   - 在提交阶段，当所有参与者都回复“同意”时，协调者会向所有节点发出“正式提交”操作请求。如果有节点不同意或者超时，所有节点回滚，否则，提交。
   - 缺点：事务的提交的过程中节点是处于阻塞状态的，节点在等待其他节点返回时无法响应其他服务。并且如果出现参与者宕机或者无响应时，协调者需要通过超时机制来恢复，系统无法容错且低效。
 
-<img src="../images/posts/java/image-20200825232310121.png" alt="image-20200825232310121" style="zoom: 33%;" />
+<img src="https://gitee.com/haojunsheng/ImageHost/raw/master/img/20201127114045.png" alt="image-20201127114045146" style="zoom:33%;" />
 
 ## 7.2 Paxos
 
@@ -3861,7 +3861,7 @@ public class Singleton {
 
 批准阶段（Accept）：当一个proposer收到了多数acceptors对prepare的回复后，就进入批准阶段。它要向回复prepare请求的acceptors发送accept请求，Acceptor在不违背其他提案的前提下对收到的Propose请求进行Accept处理。Proposer在收到多数节点的accept消息后，提案就已经达成。
 
-<img src="../images/posts/consensus/image-20200317130941991.png" alt="image-20200317130941991" style="zoom:33%;" />
+<img src="https://gitee.com/haojunsheng/ImageHost/raw/master/img/20201127114327.png" alt="image-20201127114326978" style="zoom:33%;" />
 
 但是每个节点都可能是Proposer，所以效率还是不够高。
 
@@ -3871,13 +3871,13 @@ public class Singleton {
 
 Raft算法将时间分为一个个的任期（term），每一个term的开始都是Leader选举。在成功选举Leader之后，Leader会在整个term内管理整个集群。如果Leader选举失败，该term就会因为没有Leader而结束。split vote
 
-<img src="../images/posts/java/image-20200826000050379.png" alt="image-20200826000050379" style="zoom:25%;" />
+<img src="https://gitee.com/haojunsheng/ImageHost/raw/master/img/20201127114721.png" alt="image-20201127114721040" style="zoom:50%;" />
 
 1. leader选举
    1. Follower, Candidate, Leader。最开始都是Follower，正常情况下，Leader会不停的给Follower发心跳，来保持自己的权威。当Leader异常，Follower收不到新的心跳的时候，follower就变成Candidate，term加1，参加选举，当收到多数派的同意后，这个Candidate就变成了leader（如果发现leader，则降级为follower；没有获取多数派，则重新选举）。每个leader对应一个term，每个term最多只有一个leader。为了防止split vote，引入了**随机化的election timeout**，election timeout小的那个节点最先参与选举，有效的避免了split vote的问题。还有就是节点数尽量为奇数。
    2. 投票者的原则：一个任期只投一票；候选者的任期要比本地任期大；先到先得；
 
-<img src="../images/posts/consensus/image-20200316235552142.png" alt="image-20200316235552142" style="zoom: 50%;" />
+<img src="https://gitee.com/haojunsheng/ImageHost/raw/master/img/20201127114809.png" alt="image-20200316235552142" style="zoom: 50%;" />
 
 2. **日志复制** （leader视角）
    1. 本地追加日志
@@ -3889,7 +3889,7 @@ Raft算法将时间分为一个个的任期（term），每一个term的开始�
 
 logs由顺序编号的log entry组成 ，每个log entry除了包含command，还包含产生该log entry时的leader term。每条日志都记录有日志所在的term，以及日志的index。在AppendEntry的时候，会对比上一条日志的term和index看和leader的是否一致，如果不一致的话，会向前滚动，直到一致为止，然后从这个一致的地方开始同步日志，这样所有的日志都以leader的为准。
 
-<img src="../images/posts/consensus/815275-20160301175358173-526445555.png" alt="img" style="zoom:33%;" />
+<img src="https://gitee.com/haojunsheng/ImageHost/raw/master/img/20201127114850.png" alt="img" style="zoom:33%;" />
 
 
 
