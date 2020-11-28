@@ -61,10 +61,6 @@ $ git add [dir]
 # 添加当前目录的所有文件到暂存区
 $ git add .
 
-# 添加每个变化前，都会要求确认
-# 对于同一个文件的多处变化，可以实现分次提交
-$ git add -p
-
 # 删除工作区文件，并且将这次删除放入暂存区
 $ git rm [file1] [file2] ...
 
@@ -145,6 +141,22 @@ $ git branch -d [branch-name]
 $ git push origin --delete [branch-name]
 $ git branch -dr [remote/branch]
 ```
+
+在merge的时候，如果无法快速合并，比如这样，master和feacture都有了新的提交，且有冲突：
+
+![git-br-feature1](https://gitee.com/haojunsheng/ImageHost/raw/master/img/20201128174732.png)
+
+这个时候，git会把各自的commit进行合并。如果存在冲突，则需要手动解决冲突，在进行合并。
+
+![git-br-conflict-merged](https://gitee.com/haojunsheng/ImageHost/raw/master/img/20201128174935.png)
+
+rebase:提交历史会成一条线；merge：提交历史会变成交织的网状(保留详细的merge的信息)；第一幅图是merge，第二幅图是rebase。
+
+![通过合并操作来整合分叉了的历史。](https://gitee.com/haojunsheng/ImageHost/raw/master/img/20201128175433.png)
+
+![将 `C4` 中的修改变基到 `C3` 上。](https://gitee.com/haojunsheng/ImageHost/raw/master/img/20201128175444.png)
+
+在rebase的时候，如果遇到冲突，可以手动解决（也可以使用git checkout --theirs .,git add .  / git checkout --ours . , git add .），解决好之后，可以git rebase --continue继续合并；
 
 ## 标签
 
@@ -233,6 +245,8 @@ $ git checkout -b [branch] [tag]
 > $ git reflog
 > ```
 
+在Git中，用`HEAD`表示当前版本,上一个版本就是`HEAD^`，上上一个版本就是`HEAD^^`，当然往上100个版本写100个`^`比较容易数不过来，所以写成`HEAD~100`。
+
 ## 远程同步
 
 ```bash
@@ -264,8 +278,8 @@ $ git push [remote] --all
 ## 撤销
 
 > ```bash
-> # 恢复暂存区的指定文件到工作区
-> $ git checkout [file]
+> # 丢弃工作区(或者暂存放到工作区)
+> $ git checkout -- [file]
 > 
 > # 恢复某个commit的指定文件到暂存区和工作区
 > $ git checkout [commit] [file]
@@ -296,12 +310,6 @@ $ git push [remote] --all
 > $ git stash
 > $ git stash pop
 > ```
-
-git merge和git rebase的区别：
-
-rebase:提交历史会成一条线；merge：提交历史会变成交织的网状(保留详细的merge的信息)；
-
-在rebase的时候，如果遇到冲突，可以手动解决（也可以使用git checkout --theirs .,git add .  / git checkout --ours . , git add .），解决好之后，可以git rebase --continue继续合并；
 
 # git协同工作流
 
@@ -345,7 +353,105 @@ rebase:提交历史会成一条线；merge：提交历史会变成交织的网�
 4. 其他程序员可以通过git pull --rebase来拿到最新的这个分支的代码。
 5. 最后通过 Pull Request 的方式做完 Code Review 后合并到 Master 分支上。
 
+## GitFlow 协同工作流
 
+在真实的生产过程中，前面的协同工作流还是不能满足工作的要求。这主要因为我们的生产过程是比较复杂的，软件生产中会有各式各样的问题，并要面对不同的环境。我们要在不停地开发新代码的同时，维护线上的代码，于是，就有了下面这些需求。
+
+1. 希望有一个分支是非常干净的，上面是可以发布的代码，上面的改动永远都是可以发布到生产环境中的。这个分支上不能有中间开发过程中不可以上生产线的代码提交。
+2. 希望当代码达到可以上线的状态时，也就是在 alpha/beta release 时，在测试和交付的过程中，依然可以开发下一个版本的代码。
+3. 最后，对于已经发布的代码，也会有一些 Bug-fix 的改动，不会将正在开发的代码提交到生产线上去。
+
+你看，面对这些需求，前面的那些协同方式就都不行了。因为我们不仅是要在整个团队中共享代码，我们要的更是管理好不同环境下的代码不互相干扰。说得技术一点儿就是，要管理好代码与环境的一致性。
+
+为了解决这些问题，GitFlow 协同工作流就出来了。
+
+GitFlow 协同工作流是由 Vincent Driessen 于 2010 年在 A successful Git branching model 这篇文章介绍给世人的。这个协同工作流的核心思想如下图所示。
+
+<img src="https://gitee.com/haojunsheng/ImageHost/raw/master/img/20201128153654.png" alt="img" style="zoom:33%;" />
+
+整个代码库中一共有五种分支。
+
+- Master 分支。也就是主干分支，用作发布环境，上面的每一次提交都是可以发布的。
+- Feature 分支。也就是功能分支，用于开发功能，其对应的是开发环境。
+- Developer 分支。是开发分支，一旦功能开发完成，就向 Developer 分支合并，合并完成后，删除功能分支。这个分支对应的是集成测试环境。
+- Release 分支。当 Developer 分支测试达到可以发布状态时，开出一个 Release 分支来，然后做发布前的准备工作。这个分支对应的是预发环境。之所以需要这个 Release 分支，是我们的开发可以继续向前，不会因为要发布而被 block 住而不能提交。
+
+一旦 Release 分支上的代码达到可以上线的状态，那么需要把 Release 分支向 Master 分支和 Developer 分支同时合并，以保证代码的一致性。然后再把 Release 分支删除掉。
+
+- Hotfix 分支。是用于处理生产线上代码的 Bug-fix，每个线上代码的 Bug-fix 都需要开一个 Hotfix 分支，完成后，向 Developer 分支和 Master 分支上合并。合并完成后，删除 Hotfix 分支。
+
+这就是整个 GitFlow 协同工作流的工作过程。我们可以看到：
+
+1. 我们需要长期维护 Master 和 Developer 两个分支。
+2. 这其中的方式还是有一定复杂度的，尤其是 Release 和 Hotfix 分支需要同时向两个分支作合并。所以，如果没有一个好的工具来支撑的话，这会因为我们可能会忘了做一些操作而导致代码不一致。
+3. GitFlow 协同虽然工作流比较重。但是它几乎可以应对所有公司的各种开发流程，包括瀑布模型，或是快速迭代模型。
+
+## GitHub/GitLab 协同工作流
+
+### GitFlow 的问题
+
+对于 GitFlow 来说，虽然可以解决我们的问题，但是也有很多问题。在 GitFlow 流行了一段时间后，圈内出现了一些不同的声音。
+
+其中有个问题就是因为分支太多，所以会出现 git log 混乱的局面。具体来说，主要是 git-flow 使用git merge --no-ff来合并分支，在 git-flow 这样多个分支的环境下会让你的分支管理的 log 变得很难看。如下所示，左边是使用–no-ff 参数在多个分支下的问题。
+
+![img](https://gitee.com/haojunsheng/ImageHost/raw/master/img/20201128154544.png)
+
+所谓--no-ff参数的意思是——no fast forward的意思。也就是说，合并的方法不要把这个分支的提交以前置合并的方式，而是留下一个 merge 的提交。这是把双刃剑，我们希望我们的--no-ff能像右边那样，而不是像左边那样。
+
+对此的建议是：只有 feature 合并到 developer 分支时，使用–no-ff 参数，其他的合并都不使用--no-ff参数来做合并。
+
+另外，还有一个问题就是，在开发得足够快的时候，你会觉得同时维护 Master 和 Developer 两个分支是一件很无聊的事，因为这两个分支在大多数情况下都是一样的。包括 Release 分支，你会觉得创建的这些分支太无聊。
+
+而你的整个开发过程也会因为这么复杂的管理变得非常复杂。尤其当你想回滚某些人的提交时，你就会发现这事似乎有点儿不好干了。而且在工作过程中，你会来来回回地切换工作的分支，有时候一不小心没有切换，就提交到了不正确的分支上，你还要回滚和重新提交，等等。
+
+GitLab 一开始是 GitFlow 的坚定支持者，后来因为这些吐槽，以及 Hacker News 和 Reddit 上大量的讨论，GitLab 也开始不玩了。他们写了一篇 blog来创造了一个新的 Workflow——GitLab Flow，这个 GitLab Flow 是基于 GitHub Flow 来做的（参看： GitHub Flow ）。
+
+### GitHub Flow
+
+所谓 GitHub Flow，其实也叫 Forking flow，也就是 GitHub 上的那个开发方式。
+
+1. 每个开发人员都把“官方库”的代码 fork 到自己的代码仓库中。
+2. 然后，开发人员在自己的代码仓库中做开发，想干啥干啥。
+3. 因此，开发人员的代码库中，需要配两个远程仓库，一个是自己的库，一个是官方库（用户的库用于提交代码改动，官方库用于同步代码）。
+4. 然后在本地建“功能分支”，在这个分支上做代码开发。
+5. 这个功能分支被 push 到开发人员自己的代码仓库中。
+6. 然后，向“官方库”发起 pull request，并做 Code Review。
+7. 一旦通过，就向官方库进行合并。这就是 GitHub 的工作流程。
+
+### GitLab Flow
+
+然而，GitHub Flow 这种玩法依然会有好多问题，因为其虽然变得很简单，但是没有把我们的代码和我们的运行环境给联系在一起。所以，GitLab 提出了几个优化点。
+
+其中一个是引入环境分支，如下图所示，其包含了预发布（Pre-Production）和生产（Production）分支。
+
+![img](https://gitee.com/haojunsheng/ImageHost/raw/master/img/20201128160314.png)
+
+而有些时候，我们还会有不同版本的发布，所以，还需要有各种 release 的分支。如下图所示。Master 分支是一个 roadmap 分支，然后，一旦稳定了就建稳定版的分支，如 2.3.stable 分支和 2.4.stable 分支，其中可以 cherry-pick master 分支上的一些改动过去。
+
+![img](https://gitee.com/haojunsheng/ImageHost/raw/master/img/20201128160347.png)
+
+这样也就解决了两个问题：
+
+- 环境和代码分支对应的问题；
+
+- 版本和代码分支对应的问题。
+
+## 协同工作流的本质
+
+对于上面这些各式各样的工作流的比较和思考，虽然，我个人非常喜欢 GitHub Flow，在必要的时候使用上 GitLab 中的版本或环境分支。不过，我们现实生活中，还是有一些开发工作不是以功能为主，而是以项目为主的。也就是说，项目的改动量可能比较大，时间和周期可能也比较长。
+
+我在想，是否有一种工作流，可以面对我们现实工作中的各种情况。但是，我想这个世界太复杂了，应该不存在一种一招鲜吃遍天的放之四海皆准的银弹方案。所以，我们还要根据自己的实际情况来挑选适合我们的协同工作的方式。
+
+而代码的协同工作流属于 SCM（Software Configuration Management）的范畴，要挑选好适合自己的方式，我们需要知道软件工程配置管理的本质。
+
+首先，我们知道软件开发的趋势一定是下面这个样子的。
+
+- 以微服务或是 SOA 为架构的方式。一个大型软件会被拆分成若干个服务，那么，我们的代码应该也会跟着服务拆解成若干个代码仓库。这样一来，我们的每个代码仓库都会变小，于是我们的协同工作流程就会变简单。对于每个服务的代码仓库，我们的开发和迭代速度也会变得很快，开发团队也会跟服务一样被拆分成多个小团队。这样一来， GitFlow 这种协同工作流程就非常重了，而 GitHub 这种方式或是功能分支这种方式会更适合我们的开发。
+- 以 DevOps 为主的开发流程。DevOps 关注于 CI/CD，需要我们有自动化的集成测试和持续部署的工具。这样一来，我们的代码发布速度就会大大加快，每一次提交都能很快地被完整地集成测试，并很快地发布到生产线上。
+
+## 参考
+
+[gitlab flow](https://about.gitlab.com/blog/2014/09/29/gitlab-flow/)
 
 # 参考
 
@@ -354,3 +460,5 @@ rebase:提交历史会成一条线；merge：提交历史会变成交织的网�
 [阮一峰](https://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html)
 
 [git动画](https://gitmap.novenn.com/)
+
+[git官方文档](https://git-scm.com/book/zh/v2)
