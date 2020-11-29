@@ -449,10 +449,6 @@ GitLab 一开始是 GitFlow 的坚定支持者，后来因为这些吐槽，以�
 - 以微服务或是 SOA 为架构的方式。一个大型软件会被拆分成若干个服务，那么，我们的代码应该也会跟着服务拆解成若干个代码仓库。这样一来，我们的每个代码仓库都会变小，于是我们的协同工作流程就会变简单。对于每个服务的代码仓库，我们的开发和迭代速度也会变得很快，开发团队也会跟服务一样被拆分成多个小团队。这样一来， GitFlow 这种协同工作流程就非常重了，而 GitHub 这种方式或是功能分支这种方式会更适合我们的开发。
 - 以 DevOps 为主的开发流程。DevOps 关注于 CI/CD，需要我们有自动化的集成测试和持续部署的工具。这样一来，我们的代码发布速度就会大大加快，每一次提交都能很快地被完整地集成测试，并很快地发布到生产线上。
 
-## 参考
-
-[gitlab flow](https://about.gitlab.com/blog/2014/09/29/gitlab-flow/)
-
 # 参考
 
 [廖雪峰](https://www.liaoxuefeng.com/wiki/896043488029600)
@@ -462,3 +458,5 @@ GitLab 一开始是 GitFlow 的坚定支持者，后来因为这些吐槽，以�
 [git动画](https://gitmap.novenn.com/)
 
 [git官方文档](https://git-scm.com/book/zh/v2)
+
+[gitlab flow](https://about.gitlab.com/blog/2014/09/29/gitlab-flow/)
