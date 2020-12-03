@@ -547,4 +547,4 @@ type Endorsement struct {
 
 ![](/images/posts/fabric/20200119192734.png)
 
-原文链接是在这里：https://docs.qq.com/sheet/DVlVna3dDdnFkbG1i?tab=BB08J2&c=M3A0K0
+如果想查看高清大图，欢迎关注我的微信公众号「俊语」，回复「区块结构」即可。
