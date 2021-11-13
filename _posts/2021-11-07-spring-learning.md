@@ -9,13 +9,19 @@ tag: [Spring]
 
 # 1. 前言
 
+![image-20211113172026739](https://cdn.jsdelivr.net/gh/haojunsheng/ImageHost@master/img/20211113172125.png)
+
 Spring的重要性毋庸置疑，前前后后也花了很多心思去学习，包括极客时间上的小马哥的课程，丁雪峰的玩转Spring全家桶，Spring编程常见错误50例。
 
 此外，还学习了刘欣的《从零开始造Spring》，以及Spring官方文档。今天对所学习的内容进行比较系统的总结。
 
 我们大体上可以把Spring技术分为核心特性和Web技术。
 
+这篇文章我们主要讨论核心特性。
+
 # 2. 核心特性
+
+> dependency injection, events, resources, i18n, validation, data binding, type conversion, SpEL, AOP.
 
 Spring最为核心的特性是IoC和AoP。围绕这两者会有大量的面试题目。
 
@@ -666,6 +672,108 @@ AOP是OOP的一种补充。
 这个可以参考[这里](https://github.com/haojunsheng/LiteSpring#5-aop)。
 
 ## 2.5 附录
+
+# 3. 测试
+
+> mock objects, TestContext framework, Spring MVC Test, `WebTestClient`
+
+TODO。
+
+# 4. 数据存储
+
+> transactions, DAO support, JDBC, ORM, Marshalling XML.
+
+  本部分介绍的是数据存储层和业务层的交互。
+
+## 4.1 事务管理
+
+Spring提供的事务管理的优势如下：
+
+- 事务管理可以跨不同的API，如JTA，JDBC和JPA等；
+- 支持声明式事务；
+- 使用起来比JTA等复杂的API简单；
+
+### 4.1.1 Spring事务支持模型的优势
+
+TODO
+
+## 4.2 支持DAO
+
+> 目标是在不同的技术之间（JDBC, Hibernate,或者 JPA）快速切换。同时具备完善的异常体系。
+
+### 4.2.1 统一的异常层次体系
+
+![DataAccessException](https://cdn.jsdelivr.net/gh/haojunsheng/ImageHost@master/img/20211113175913.png)
+
+### 4.2.2 使用注解配置DAO对象
+
+```java
+@Repository
+public class HibernateMovieFinder implements MovieFinder {
+
+    private SessionFactory sessionFactory;
+
+    @Autowired
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    // ...
+}
+```
+
+## 4.3 JDBC
+
+### 4.3.1 JDBC数据库的访问方法
+
+- JdbcTemplate
+
+  - ```java
+    int rowCount = this.jdbcTemplate.queryForObject("select count(*) from t_actor", Integer.class);
+    
+    int countOfActorsNamedJoe = this.jdbcTemplate.queryForObject(
+            "select count(*) from t_actor where first_name = ?", Integer.class, "Joe");
+    
+    Actor actor = jdbcTemplate.queryForObject(
+            "select first_name, last_name from t_actor where id = ?",
+            (resultSet, rowNum) -> {
+                Actor newActor = new Actor();
+                newActor.setFirstName(resultSet.getString("first_name"));
+                newActor.setLastName(resultSet.getString("last_name"));
+                return newActor;
+            },
+            1212L);
+    
+    this.jdbcTemplate.update(
+            "insert into t_actor (first_name, last_name) values (?, ?)",
+            "Leonor", "Watling");
+    
+    this.jdbcTemplate.update(
+            "update t_actor set last_name = ? where id = ?",
+            "Banjo", 5276L);
+    
+    
+    ```
+
+    
+
+- SimpleJdbcInsert
+
+
+
+
+
+
+
+# 5. Web框架
+
+
+
+# 6. 技术整合
+
+
+
+
 
 # 参考
 
