@@ -11,12 +11,21 @@ tag: [git]
 
 这篇文章整理自网络，文末有参考来源。
 
+# .git目录
+
+![image-20211113191753657](/Users/haojunsheng/Library/Application Support/typora-user-images/image-20211113191753657.png)
+
+
+
 # 常用命令
 
-![img](https://gitee.com/haojunsheng/ImageHost/raw/master/img/20201127203507.png)
+![img](https://cdn.jsdelivr.net/gh/haojunsheng/ImageHost@master/img/20211113185559.png)
 
 - Workspace：工作区（写代码的地方）
 - Index / Stage：暂存区（add之后）
+  - [暂存区的优点](https://stackoverflow.com/questions/49228209/whats-the-use-of-the-staging-area-in-git#:~:text=staging%20helps%20you%20keep%20extra,practice%20but%20can%20happen%20sometimes)
+    - review变化
+    - 合并冲突
 - Repository：仓库区（或本地仓库，commit会后）
 - Remote：远程仓库
 
@@ -35,7 +44,7 @@ $ git clone [url]
 
 ## 配置
 
-Git的设置文件为`.gitconfig`，它可以在用户主目录下（全局配置），也可以在项目目录下（项目配置）。
+Git的设置文件为`.gitconfig`，它可以在用户主目录下（全局配置global），也可以在项目目录下（项目配置local）。
 
 ```bash
 # 显示当前的Git配置
@@ -47,6 +56,9 @@ $ git config -e [--global]
 # 设置提交代码时的用户信息
 $ git config [--global] user.name "[name]"
 $ git config [--global] user.email "[email address]"
+
+# 清除配置信息
+git config --unset --local user.name
 ```
 
 ## 增加删除文件
@@ -92,6 +104,35 @@ $ git commit --amend -m [message]
 
 # 重做上一次commit，并包括指定文件的新变化
 $ git commit --amend [file1] [file2] ...
+
+# 修改历史的commit
+# 需要注意的是，执行完下面的命令，不管是修改了文件内容，commit的message，作者，邮箱，都会影响当前commit以及以后的commit的id
+git rebase -i commit_id
+pick -> r
+
+# 连续commit合并
+git rebase -i commit_id
+pick -> s
+输入message
+
+# rebase参数小结
+pick:保留该commit
+reword：保留该commit，修改信息
+edit：保留commit，修改文件或者信息
+squash：合并commit
+fixup：合并commit，但是放弃commit信息
+
+# 工作区恢复为暂存区
+git checkout filename
+git checkout *（所有的都恢复）
+
+# 不同commit文件差异
+git diff commit-id1 commit-id2 path-to-filename
+
+# 代码暂存
+git stash 把当前工作区的内容放入暂存区
+git stash pop 把暂存区的内容恢复到工作区，且删除
+git stash apply把暂存区的内容恢复到工作区，且保留
 ```
 
 ## 分支
@@ -144,7 +185,7 @@ $ git branch -dr [remote/branch]
 
 在merge的时候，如果无法快速合并，比如这样，master和feacture都有了新的提交，且有冲突：
 
-![git-br-feature1](https://gitee.com/haojunsheng/ImageHost/raw/master/img/20201128174732.png)
+![img](https://cdn.jsdelivr.net/gh/haojunsheng/ImageHost@master/img/20211113225028.png)
 
 这个时候，git会把各自的commit进行合并。如果存在冲突，则需要手动解决冲突，在进行合并。
 

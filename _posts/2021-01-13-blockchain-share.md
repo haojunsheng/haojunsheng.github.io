@@ -1,5 +1,5 @@
 ---
-bilayout: post
+layout: post
 title: "一文带你了解区块链"
 date: 2021-01-13
 description: "2021-01-13-blockchain-share"
