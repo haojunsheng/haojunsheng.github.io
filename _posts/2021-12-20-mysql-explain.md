@@ -13,6 +13,8 @@ Mysql Explain是非常重要的，在我们写完Mysql命令之后，帮我们�
 
 其使用是十分简单的，在sql语句前面加上explain即可。
 
+<img src="https://cdn.jsdelivr.net/gh/haojunsheng/ImageHost@master/img/20220110203026.png" alt="image-20220110203026199" style="zoom:50%;" />
+
 # 准备
 
 我们准备了一张表用于演示。
@@ -114,6 +116,8 @@ mysql> explain select * from myOrder where order_id=1;
 # Extra
 
 ## Using filesort文件排序
+
+额外的排序
 
 ## Using index覆盖索引
 
