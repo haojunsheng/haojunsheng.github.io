@@ -13,9 +13,7 @@ tag: [git]
 
 # .git目录
 
-![image-20211113191753657](/Users/haojunsheng/Library/Application Support/typora-user-images/image-20211113191753657.png)
-
-
+![image-20211113191753657](https://cdn.jsdelivr.net/gh/haojunsheng/ImageHost@master/img/20211218165955.png)
 
 # 常用命令
 
@@ -172,8 +170,8 @@ $ git branch --set-upstream [branch] [remote-branch]
 $ git merge [branch]
 $ git rebase [branch]
 
-# 选择一个commit，合并进当前分支
-$ git cherry-pick [commit]
+# 选择一个commit id，合并进当前分支
+$ git cherry-pick [commit id]
 
 # 删除分支
 $ git branch -d [branch-name]

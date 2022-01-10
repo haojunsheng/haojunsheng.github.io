@@ -29,9 +29,12 @@ create table myOrder
 create index idx_userid_order_id_createdate on myOrder(user_id,order_id,create_date);
 ```
 
-#select_type查询类型
+# id:select子句或者操作的顺序
 
-我们主要关注
+- id相同：执行顺序自上而下
+- id不同：id值越大优先级越高，越先被执行
+
+# select_type查询类型
 
 - simple:不需要union操作或者不包含子查询
 
@@ -76,12 +79,17 @@ mysql> explain select * from myOrder where order_id=1;
 
 前面有，不在赘述。
 
-#partitions分区信息
+# partitions分区信息
 
 # type类型
 
 - System:只有一行数据或者是空表
 - const：使用唯一索引或者主键
+- eq_ref:唯一性索引扫描，对于每个索引键，表示只有一条记录与之匹配，常见于主键或唯一索引扫描
+- ref：非唯一性索引扫描，返回匹配某个单独值的所有行
+-  range：只检索给定范围的行，使用一个索引来选择行，一般就是在where语句中出现了between、<、>、in等的查询
+- index：从索引中读取
+- all：从硬盘中读取，遍历全表
 
 ## System:只有一行数据或者是空表
 
@@ -104,8 +112,6 @@ mysql> explain select * from myOrder where order_id=1;
 预估的扫描行数
 
 # Extra
-
-## **using temporary**
 
 ## Using filesort文件排序
 
@@ -177,7 +183,10 @@ mysql> explain select user_id,order_id,create_date from myOrder where user_id=1;
 
 ## Using temporary，表示的是需要使用临时表
 
+这里比较复杂，可能是内存临时表，也可能是磁盘临时表。
 
+- 内存临时表：指的是使用Memory引擎的表。
+- 磁盘临时表：一般使用Innodb引擎。
 
 # 参考
 

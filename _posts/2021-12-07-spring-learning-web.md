@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "一文学习Spring-基于Spring官方文档"
+title: "一文学习Spring(网络篇)-基于Spring官方文档"
 date: 2021-11-07
-description: "2021-11-07-Spring-learning"
+description: "2021-11-07-spring-learning-web"
 categories: Spring
 tag: [Spring]
 ---
