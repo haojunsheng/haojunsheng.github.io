@@ -120,7 +120,7 @@ O/R Mapping ：Object Relational Mapping。
 
 Java对象和Mysql的表数据映射需要我们手动操作，希望把这个过程自动化完成。
 
-![image-20220111001208201](/Users/haojunsheng/Library/Application Support/typora-user-images/image-20220111001208201.png)
+![image-20220111001208201](https://cdn.jsdelivr.net/gh/haojunsheng/ImageHost@master/img/20220111104548.png)
 
 <img src="https://cdn.jsdelivr.net/gh/haojunsheng/ImageHost@master/img/20220110234831.png" alt="image-20220110234831474" style="zoom: 25%;" />
 
@@ -440,8 +440,11 @@ HikariCP，Druid。
 
 ## 锁
 
+
+
 ## 事务
 
 ## Explain
 
 [参考](https://haojunsheng.github.io/2021/12/mysql-explain/)
+

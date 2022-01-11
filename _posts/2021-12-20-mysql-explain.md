@@ -93,8 +93,6 @@ mysql> explain select * from myOrder where order_id=1;
 - index：从索引中读取
 - all：从硬盘中读取，遍历全表
 
-## System:只有一行数据或者是空表
-
 # possible_keys
 
 查询中可能使用的索引。

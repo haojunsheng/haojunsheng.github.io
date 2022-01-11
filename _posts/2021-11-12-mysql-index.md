@@ -13,6 +13,8 @@ tag: [Mysql]
 
 # 核心概念
 
+<img src="https://cdn.jsdelivr.net/gh/haojunsheng/ImageHost@master/img/20220111131149.png" alt="image-20220111131148931" style="zoom:33%;" />
+
 - 什么是索引？
   - 索引是为了加速对表中数据行的检索而创建的一种分散存储的数据结构
 - 为什么要索引？索引的核心是减少查找的IO次数
@@ -37,7 +39,19 @@ tag: [Mysql]
 
 <img src="https://cdn.jsdelivr.net/gh/haojunsheng/ImageHost@master/img/20220110202321.png" alt="image-20220110202321153" style="zoom:50%;" />
 
-# 索引优化
+# 索引优化&慢查询优化
+
+> 查询时间超过0.1秒
+
+工具：[Explain](https://haojunsheng.github.io/2021/12/mysql-explain/)，Profile。
+
+Profile：
+
+- set profiling = 1;
+- show profiles;
+- show profile for query id;
+
+
 
 - 使用区分度高的字段
   - good case: 更新时间
@@ -52,6 +66,7 @@ tag: [Mysql]
   - 如果查询中有某个列的范围查询，则其右边所有的列都无法用到索引优化,如select \* from t where a > ? and c = ?
   - 不要使用%进行前缀模糊查询，如like "%name"
 - 禁止select *
+- 避免使用Order by/Group by/Distinct,因为会产生临时表
 - 避免索引失效
   - 隐私转换，如select \* from t where a = "2",假设a是整形
   - 避免在索引字段上进行运算，如select \* from t where a -1= 2
