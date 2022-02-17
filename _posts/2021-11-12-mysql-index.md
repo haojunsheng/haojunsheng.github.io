@@ -9,6 +9,8 @@ tag: [Mysql]
 
 # 前言
 
+> 索引是解决快速查找的问题。
+
 索引是Mysql中的最为核心的概念之一。
 
 # 核心概念
@@ -22,6 +24,12 @@ tag: [Mysql]
   - 索引可以把随机IO变成顺序IO
   - 索引可以帮助我们在进行分组、排序等操作时，避免使用临时表
 
+# 数据结构
+
+为什么选择B+树？
+
+<img src="https://cdn.jsdelivr.net/gh/haojunsheng/ImageHost@master/img/20220110202321.png" alt="image-20220110202321153" style="zoom:50%;" />
+
 ## 索引划分
 
 - 存储类型
@@ -31,13 +39,22 @@ tag: [Mysql]
 - 功能划分
   - 唯一索引：unique key
   - 联合索引
+    - 最左前缀匹配原则：索引项是按照索引定义里面出现的字段顺序排序的。
+    - 索引下推：在索引遍历过程中，对索引中包含的字段先做判断，直接过滤掉不满足条件的记录，减少回表次数。
   - 全文索引
+  - 覆盖索引：无需进行回表。索引已经覆盖了我们的查询需求。
 
-# 数据结构
 
-为什么选择B+树？
 
-<img src="https://cdn.jsdelivr.net/gh/haojunsheng/ImageHost@master/img/20220110202321.png" alt="image-20220110202321153" style="zoom:50%;" />
+索引下推举例：
+
+<img src="https://gitee.com/haojunsheng/ImageHost/raw/master/img/20220212155459.jpg" alt="img" style="zoom:25%;" />
+
+```mysql
+select * from tuser where name like '张%' and age=10 and ismale=1;
+```
+
+<img src="https://gitee.com/haojunsheng/ImageHost/raw/master/img/20220212155541.png" alt="image-20220212155541394" style="zoom:25%;" /
 
 # 索引优化&慢查询优化
 
@@ -53,6 +70,16 @@ Profile：
 
 
 
+- 主键规范：有序主键能保证顺序io提升性能，无序主键是随机io，会导致聚簇索引的插入变成完成随机和频繁页分裂。
+  - good case：使用int/bitint类型自增id作为主键。
+  - bad case:使用uuid等无序数据作为主键。
+- 使用前缀索引
+  - good case:大的列，只对部分进行索引
+  - 缺点:MySQL无法利用前缀索引做order by和group by 操作，也无法作为覆盖索引。
+  - 前缀区分度不高，如身份证号，解决办法
+    - 使用倒序存储：select * from T where id_card = reverse('input_id_card')
+    - 使用hash
+- 建立覆盖索引
 - 使用区分度高的字段
   - good case: 更新时间
   - bad case：性别
@@ -68,7 +95,7 @@ Profile：
 - 禁止select *
 - 避免使用Order by/Group by/Distinct,因为会产生临时表
 - 避免索引失效
-  - 隐私转换，如select \* from t where a = "2",假设a是整形
+  - 隐式转换，如select \* from t where a = "2",假设a是整形
   - 避免在索引字段上进行运算，如select \* from t where a -1= 2
 
 # 参考

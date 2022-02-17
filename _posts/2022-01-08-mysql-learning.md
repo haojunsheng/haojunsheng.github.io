@@ -38,6 +38,7 @@ public class JDBCTest {
 
     public static void main(String[] args) {
         try {
+          // 注册驱动
             Class.forName("com.mysql.jdbc.driver");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -79,10 +80,15 @@ public class JDBCTest {
 }
 ```
 
-了解下**PreparedStatement**对象：
+上面的个Statement对象是SQL拼接完成的，存在SQL注入的风险，了解下**PreparedStatement**对象：
 
 - 预编译，提高效率
 - 防止SQL注入
+
+```java
+PreparedStatement ps = conn.prepareStatement("SELECT * FROM student WHERE id=?");
+ps.setInt(1, 10);
+```
 
 ## JDBCTemplate
 
@@ -176,6 +182,14 @@ Java Persistence API。
 - 对象的状态
 
 JPA针对这些问题，定义了一系列的规范，Hibernate和Spring Data JPA实现了JPA规范。
+
+| 方式           | 优点                                                         | 缺点                                                         | 应用场景                                                 |
+| :------------- | :----------------------------------------------------------- | :----------------------------------------------------------- | :------------------------------------------------------- |
+| **Hibernate**  | 不再需要编写SQL就可以通过映射关系来操作数据库                | 当多表关联超过3个时Hibermate的级联会损失很多性能；学习成本高 | 适合性能要求不太苛刻的系统，不适合需要大量复杂查询的系统 |
+| **SpringJDBC** | 内嵌Spring框架中、支持AOP；提供了统一的异常处理，框架处理了异常；事务管理 | 只是对原生JDBC进行一层非常薄的封装，没有缓存                 | 需要在代码中嵌入SQL语句，适用中小型项目                  |
+| **MyBatis**    | 满足灵活定制SQL和性能优化的需求                              | 编写SQL和映射规则，工作量相对大些                            | 性能要求高、响应快、灵活的系统；sql修改、优化比较方便    |
+
+
 
 ## Hibernate
 
@@ -319,9 +333,10 @@ JPA针对这些问题，定义了一系列的规范，Hibernate和Spring Data JP
   }
   ```
 
-  
 
 ## Mybatis
+
+### Mybatis使用
 
 需要关注SQL的编写。
 
@@ -405,7 +420,10 @@ JPA针对这些问题，定义了一系列的规范，Hibernate和Spring Data JP
   }
   ```
 
-  
+
+### Mybatis原理
+
+[mybatis查询](https://github.com/haojunsheng/JavaDeveloper/blob/master/web/mysql/mybatis-query-core.md)
 
 ### MyBatis Generator
 
@@ -432,19 +450,102 @@ HikariCP，Druid。
 
 手动实现一个数据库连接池。
 
+
+
+## Spring事务管理
+
+在Spring中，事务是我们必须要掌握的。
+
+[事务详解](https://github.com/haojunsheng/JavaDeveloper/blob/master/web/spring/spring-transaction.md)
+
 # 3. Mysql进阶
+
+## Mysql结构
+
+[mysql查询](https://github.com/haojunsheng/JavaDeveloper/blob/master/geekbang/mysql/mysql-practice-linxiaobin/01-how-mysql-select-run.md)
+
+[mysql更新](https://github.com/haojunsheng/JavaDeveloper/blob/master/geekbang/mysql/mysql-practice-linxiaobin/02-how-mysql-update-run.md)
+
+### 逻辑架构
+
+<img src="https://static001.geekbang.org/resource/image/0d/d9/0d2070e8f84c4801adbfa03bda1f98d9.png" alt="img" style="zoom:33%;" />
+
+### 存储引擎
+
+其中，需要关注各个存储引擎的区别。
+
+| 特性         | InnoDB | MyISAM | Memory      | Archive |
+| :----------- | :----- | :----- | :---------- | :------ |
+| 存储限制     | 64TB   | 256TB  | RAM         | None    |
+| 事务支持     | ✔️      | ✖️      | ✖️           | ✖️       |
+| 锁粒度       | 行级锁 | 表级锁 | 表级锁      | 行级锁  |
+| 支持MVCC     | ✔️      | ✖️      | ✖️           | ✔️       |
+| 支持B+树索引 | ✔️      | ✔️      | ✔️           | ✖️       |
+| 支持哈希索引 | ✔️      | ✖️      | ✔️           | ✖️       |
+| 支持全文索引 | ✔️      | ✔️      | ✖️           | ✖️       |
+| 支持聚簇索引 | ✔️      | ✖️      | ✖️           | ✖️       |
+| 支持外键     | ✔️      | ✖️      | ✖️           | ✖️       |
+| 存储成本     | 高     | 低     | N/A（内存） | 非常低  |
+| 内存成本     | 高     | 低     | 中等        | 低      |
+| 批量插入速度 | 低     | 高     | 高          | 非常高  |
+
+- 如果对事务安全（ACID）要求较高，需要并发控制，或者表上数据更新、删除很频繁，就要选择InnoDB引擎，InnoDB能确保事务完整提交和回滚，并且能有效降低更新、删除操作导致的锁定
+- 如果应用主要以插入和查询操作为主，对事务和并发控制没有要求，可以选择MyISAM引擎，MyISAM提供了较高的处理效率
+- 如果只是临时存放数据，数据量不大，并且不需要较高的数据安全性，可以选择将数据保存在内存中的Memory引擎，Memory引擎可以提供极快的访问速度。MySQL就使用Memory引擎作为临时表，存放查询的中间结果
+- 如果只有插入和查询操作，不要求事务安全，但是对存储成本要求较高，可以选择Archive引擎，Archive支持高并发的插入操作，而且对数据的压缩比很高，适合存储归档数据，例如日志信息
+
+### InnoDB核心概念
+
+需要掌握Redo Log，Binlog，（WAL）Write-Ahead Logging和两阶段提交的概念。
+
+这些概念本质上是为了解决：
+
+- 数据更新/插入过程中：高效。
+- 系统异常崩溃：数据可恢复
+
+
+
+- redolog vs binlog vs undolog
+  - redolog：重做日志，存储引擎层。记录这一页做了什么改动。
+  - binlog：归档日志，Server层。2种模式，statement格式是sql语句，row格式是更新前后的数据。
+  - Undolog:回滚日志，用于多版本并发控制，MVCC
+
+- 两阶段提交（跨系统维持数据逻辑一致性时常用的一个方案）
+  - redolog用来恢复原库（Mysql异常重启），binlog用来恢复临时库（数据误删除，表扩容）
+
+- WAL
+  - Write-Ahead Logging，先写日志，在写磁盘。
+
+- Crash-safe
+- redo log vs change buffer
+  - redo log节省的是**随机写磁盘**的IO消耗，转成了顺序写
+  - change buffer节省的是**随机读磁盘**的IO消耗
 
 ## 索引那些事
 
-[参考](https://haojunsheng.github.io/2021/11/mysql-index/)
+> 索引本质上是解决数据快速查找的问题。
 
-## 锁
+需要掌握数据存储的模型，索引的工作原理，常见的索引分类，常见的索引优化技巧。
 
-
+[mysql-索引](https://haojunsheng.github.io/2021/11/mysql-index/)
 
 ## 事务
+
+事务，隔离，MVCC，锁，这些概念之间有什么关系呢？
+
+[事务详解](https://github.com/haojunsheng/JavaDeveloper/blob/master/web/mysql/mysql-transaction-lock-mvcc.md)
+
+## 锁&MVCC
+
+[锁详解](https://github.com/haojunsheng/JavaDeveloper/blob/master/web/mysql/mysql-lock-detail.md)
 
 ## Explain
 
 [参考](https://haojunsheng.github.io/2021/12/mysql-explain/)
+
+[explain实战](https://tech.meituan.com/2014/06/30/mysql-index.html)
+
+# 参考
+
+[美团技术博客-锁](https://tech.meituan.com/tags/mysql.html)
 
