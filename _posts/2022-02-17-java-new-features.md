@@ -30,7 +30,7 @@ s-> s.toUpperCase();
 (x,y) -> x +y ; 
 ```
 
-本质上而言，Lambda就是匿名函数。 箭头(->) 左边是**函数的参数列表**， 右边是**方法体**”。
+本质上而言，Lambda就是匿名函数。 箭头(->) 左边是**函数的参数列表**， 右边是**方法体**。
 
 那么，Lambda表达式自然也是可以嵌套的。
 
@@ -92,11 +92,62 @@ public interface Consumer<T> {
     void accept(T t);
     ......
 }
-
+// 4. Supplier<T>接口，返回一个类型为T的参数
+public interface Supplier<T> {
+    T get();
+}
+// BinaryOperator<T>接口，
 s -> s.length()  就可以匹配 (1)   
 x -> x>5   就可以匹配 (2) 
 s ->  System.out.println(s)  就可以匹配 (3) 
 ```
 
 Java引入了Stream来实现延迟计算（惰性求值的功能）。
+
+```java
+public class EvenNumber implements Supplier<Long>{
+    long num = 0;
+    @Override
+    public Long get() {
+        num += 2;
+        return num ;
+    }    
+}
+// numbers代表无穷无尽的偶数序列，只是没有计算出来而已
+Stream<Long> numbers = Stream.generate(new EvenNumber());
+numbers.limit(5).forEach(x->System.out.println(x));
+输出： 2 4 6 8 10
+```
+
+集合中的流式处理：
+
+```java
+Arrays.asList("Hello", "Java8", "Java7").stream()
+                .map(s -> s.toUpperCase())
+                .filter(s -> s.startsWith("J"))
+                .forEach(s -> System.out.println(s));
+// 输出
+JAVA8
+JAVA7
+
+Arrays.asList("Hello", "Java8", "Java7").stream()
+                .map(s -> {
+                    System.out.println("map: " + s);
+                    return s.toUpperCase();
+                })
+                .filter(s -> {
+                    System.out.println("filter:" + s);
+                    return s.startsWith("J");
+                })
+                .forEach(s -> System.out.println(s));
+// 输出
+map: Hello
+filter:HELLO
+map: Java8
+filter:JAVA8
+JAVA8
+map: Java7
+filter:JAVA7
+JAVA7
+```
 
