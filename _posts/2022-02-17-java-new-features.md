@@ -5,7 +5,6 @@ date: 2022-02-17
 description: "2022-02-17-java-new-features"
 categories: Java
 tag: [Java]
-
 ---
 
 # 前言
@@ -100,6 +99,7 @@ public interface Supplier<T> {
 s -> s.length()  就可以匹配 (1)   
 x -> x>5   就可以匹配 (2) 
 s ->  System.out.println(s)  就可以匹配 (3) 
+() -> "OK" 可以匹配到(4)
 ```
 
 Java引入了Stream来实现延迟计算（惰性求值的功能）。
@@ -151,3 +151,6 @@ filter:JAVA7
 JAVA7
 ```
 
+![img](https://static001.geekbang.org/resource/image/44/04/44a6f4cb8b413ef62c40a272cb474104.jpg)
+
+![img](https://static001.geekbang.org/resource/image/5a/de/5af5ba60d7af2c8780b69bc6c71cf3de.png)
