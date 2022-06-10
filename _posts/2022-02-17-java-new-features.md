@@ -154,3 +154,8 @@ JAVA7
 ![img](https://static001.geekbang.org/resource/image/44/04/44a6f4cb8b413ef62c40a272cb474104.jpg)
 
 ![img](https://static001.geekbang.org/resource/image/5a/de/5af5ba60d7af2c8780b69bc6c71cf3de.png)
+
+# 参考
+
+[深入剖析 Java 新特性](https://time.geekbang.org/column/intro/100097301)
+

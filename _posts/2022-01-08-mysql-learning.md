@@ -126,9 +126,9 @@ O/R Mapping ：Object Relational Mapping。
 
 Java对象和Mysql的表数据映射需要我们手动操作，希望把这个过程自动化完成。
 
-![image-20220111001208201](https://cdn.jsdelivr.net/gh/haojunsheng/ImageHost@master/img/20220111104548.png)
+![image-20220111001208201](https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20220111104548.png)
 
-<img src="https://cdn.jsdelivr.net/gh/haojunsheng/ImageHost@master/img/20220110234831.png" alt="image-20220110234831474" style="zoom: 25%;" />
+<img src="https://raw.githubusercontent.com/haojunsheng/ImageHost/master/img/20220110234831.png" alt="image-20220110234831474" style="zoom: 25%;" />
 
 ## JPA
 
@@ -188,8 +188,6 @@ JPA针对这些问题，定义了一系列的规范，Hibernate和Spring Data JP
 | **Hibernate**  | 不再需要编写SQL就可以通过映射关系来操作数据库                | 当多表关联超过3个时Hibermate的级联会损失很多性能；学习成本高 | 适合性能要求不太苛刻的系统，不适合需要大量复杂查询的系统 |
 | **SpringJDBC** | 内嵌Spring框架中、支持AOP；提供了统一的异常处理，框架处理了异常；事务管理 | 只是对原生JDBC进行一层非常薄的封装，没有缓存                 | 需要在代码中嵌入SQL语句，适用中小型项目                  |
 | **MyBatis**    | 满足灵活定制SQL和性能优化的需求                              | 编写SQL和映射规则，工作量相对大些                            | 性能要求高、响应快、灵活的系统；sql修改、优化比较方便    |
-
-
 
 ## Hibernate
 

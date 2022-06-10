@@ -761,20 +761,6 @@ public class HibernateMovieFinder implements MovieFinder {
 
 
 
-
-
-
-
-# 5. Web框架
-
-
-
-# 6. 技术整合
-
-
-
-
-
 # 参考
 
 - [Spring官方文档](https://docs.spring.io/spring-framework/docs/5.2.18.RELEASE/spring-framework-reference/)
