@@ -38,6 +38,8 @@ create index idx_userid_order_id_createdate on myOrder(user_id,order_id,create_d
 
 # select_type查询类型
 
+查询类型是简单还是复杂的。
+
 - simple:不需要union操作或者不包含子查询
 
 ```mysql
@@ -85,13 +87,15 @@ mysql> explain select * from myOrder where order_id=1;
 
 # type类型
 
+访问类型，Mysql决定如何查找表中的行。
+
+- all：全表扫描
+- index：从索引中读取
+- range：只检索给定范围的行，使用一个索引来选择行，一般就是在where语句中出现了between、<、>、in等的查询
+- ref：非唯一性索引扫描，返回匹配某个单独值的所有行
 - System:只有一行数据或者是空表
 - const：使用唯一索引或者主键
 - eq_ref:唯一性索引扫描，对于每个索引键，表示只有一条记录与之匹配，常见于主键或唯一索引扫描
-- ref：非唯一性索引扫描，返回匹配某个单独值的所有行
--  range：只检索给定范围的行，使用一个索引来选择行，一般就是在where语句中出现了between、<、>、in等的查询
-- index：从索引中读取
-- all：从硬盘中读取，遍历全表
 
 # possible_keys
 
