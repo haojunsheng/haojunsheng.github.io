@@ -90,7 +90,7 @@ mysql> explain select * from myOrder where order_id=1;
 访问类型，Mysql决定如何查找表中的行。
 
 - all：全表扫描
-- index：从索引中读取
+- index：按照索引扫描
 - range：只检索给定范围的行，使用一个索引来选择行，一般就是在where语句中出现了between、<、>、in等的查询
 - ref：非唯一性索引扫描，返回匹配某个单独值的所有行
 - System:只有一行数据或者是空表
@@ -123,6 +123,8 @@ mysql> explain select * from myOrder where order_id=1;
 
 ## Using index覆盖索引
 
+避免回表。
+
 where筛选条件是索引的前导列
 
 ```mysql
@@ -135,31 +137,9 @@ mysql> explain select user_id,order_id,create_date from myOrder where user_id=1;
 1 row in set, 1 warning (0.00 sec)
 ```
 
-## Using where；Using index，覆盖索引
+## Using where
 
-- where筛选条件是索引列之一但是不是索引的不是前导列
-
-  ```mysql
-  mysql> explain select user_id,order_id,create_date from myOrder where order_id=1;
-  +----+-------------+------------+------------+-------+--------------------------------+--------------------------------+---------+------+------+----------+--------------------------+
-  | id | select_type | table      | partitions | type  | possible_keys                  | key                            | key_len | ref  | rows | filtered | Extra                    |
-  +----+-------------+------------+------------+-------+--------------------------------+--------------------------------+---------+------+------+----------+--------------------------+
-  |  1 | SIMPLE      | test_order | NULL       | index | idx_userid_order_id_createdate | idx_userid_order_id_createdate | 16      | NULL |    1 |   100.00 | Using where; Using index |
-  +----+-------------+------------+------------+-------+--------------------------------+--------------------------------+---------+------+------+----------+--------------------------+
-  1 row in set, 1 warning (0.00 sec)
-  ```
-
-- where筛选条件是索引的前导列，但是是一个范围
-
-  ```mysql
-  mysql> explain select user_id,order_id,create_date from myOrder where user_id>1 and user_id<5;
-  +----+-------------+------------+------------+-------+--------------------------------+--------------------------------+---------+------+------+----------+--------------------------+
-  | id | select_type | table      | partitions | type  | possible_keys                  | key                            | key_len | ref  | rows | filtered | Extra                    |
-  +----+-------------+------------+------------+-------+--------------------------------+--------------------------------+---------+------+------+----------+--------------------------+
-  |  1 | SIMPLE      | test_order | NULL       | index | idx_userid_order_id_createdate | idx_userid_order_id_createdate | 16      | NULL |    1 |   100.00 | Using where; Using index |
-  +----+-------------+------------+------------+-------+--------------------------------+--------------------------------+---------+------+------+----------+--------------------------+
-  1 row in set, 1 warning (0.01 sec)
-  ```
+只有where条件包含**索引**列时才会显示，意味着并非所有带where的查询都会显示Using where。
 
 ## Using index condition：需要回表
 
